@@ -1,0 +1,68 @@
+# SETUP
+
+Como preparar uma máquina (Mac ou Linux) para trabalhar no Pipoca.
+
+## Requisitos
+
+- **JDK:** o JBR que vem com o Android Studio basta (hoje OpenJDK 25). JDK 25 exige Gradle ≥ 9.1; o wrapper usa 9.8.0 (D-015). O bytecode alvo é Java 17.
+- **Android SDK:** platform `android-37` (compileSdk/targetSdk), build-tools recentes, platform-tools. Instalar pelo SDK Manager do Android Studio.
+- Gradle não precisa estar instalado: usar `./gradlew`.
+
+## Variáveis de ambiente
+
+Mac (`~/.zshrc`, já feito na máquina original):
+```sh
+export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+```
+
+Linux (`~/.bashrc` ou `~/.zshrc`; ajustar o caminho de instalação do Android Studio):
+```sh
+export JAVA_HOME="/opt/android-studio/jbr"        # ou ~/android-studio/jbr, ou via JetBrains Toolbox
+export PATH="$JAVA_HOME/bin:$PATH"
+export ANDROID_HOME="$HOME/Android/Sdk"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+```
+
+Conferir: `java -version` e `ls $ANDROID_HOME/platforms`.
+
+## Clonar e configurar o Git (identidade pessoal)
+
+A configuração do repo é local e não vem no clone. Em máquina nova:
+```sh
+git clone git@github.com:thalyspenha/pipoca.git   # se a chave pessoal não for a padrão, usar GIT_SSH_COMMAND abaixo
+cd pipoca
+git config user.name "Thalys Penha"
+git config user.email "thalyspenha@outlook.com.br"
+git config core.sshCommand "ssh -i ~/.ssh/id_rsa_personal -o IdentitiesOnly=yes"
+```
+Clone com a chave pessoal antes de configurar o repo:
+`GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa_personal -o IdentitiesOnly=yes" git clone git@github.com:thalyspenha/pipoca.git`
+
+A chave `~/.ssh/id_rsa_personal` precisa existir na máquina (copiar ou gerar uma nova e cadastrar no GitHub).
+
+## local.properties (não commitado)
+
+Criar na raiz do projeto:
+```properties
+sdk.dir=/home/<usuario>/Android/Sdk          # Mac: /Users/<usuario>/Library/Android/sdk
+TMDB_API_TOKEN=seu_token_aqui                # opcional; sem ele o app roda e mostra aviso
+```
+Ver `.env.example` e `docs/TMDB.md`.
+
+## Verificar
+
+```sh
+./gradlew build
+```
+Deve terminar em `BUILD SUCCESSFUL` com todos os testes unitários passando.
+
+## Rodar no aparelho
+
+S25: ativar modo desenvolvedor e depuração USB, conectar e `./gradlew installDebug` (ou Run no Android Studio). No Linux pode ser preciso regra `udev` para o `adb` enxergar o aparelho (`adb devices`).
+
+## Claude Code
+
+A memória local do Claude (`~/.claude/projects/...`) não é sincronizada entre máquinas. O que importa para continuar o trabalho está em `CLAUDE.md` e `docs/` (estado atual: `docs/ROADMAP.md`).
