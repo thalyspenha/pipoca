@@ -78,3 +78,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Tema `PipocaTheme` com paleta própria (amarelo manteiga + vermelho), segue claro/escuro do sistema; dynamic color existe mas desligado por padrão.
 - Bottom bar com 5 abas (Início, Busca, Biblioteca, Coleção, Mais), cada uma com pilha própria (`saveState`/`restoreState`). Telas são placeholders.
 **Consequência:** novas telas entram como rota `@Serializable` em `presentation/navigation/Routes.kt`.
+
+### D-017 — Hilt, UiState e configuração TMDB injetada
+**Decisão:**
+- Hilt 2.60.1 com KSP 2.3.12; `hilt-lifecycle-viewmodel-compose` 1.4.0 para `hiltViewModel()` (substitui `hilt-navigation-compose`); `lifecycle-runtime-compose` para `collectAsStateWithLifecycle`.
+- `UiState<T>` (Loading/Success/Error) em `util/`; `UiStateContent` em `presentation/components` padroniza loading/erro/retry.
+- `BuildConfig.TMDB_API_TOKEN` só é lido em `di/AppModule`, que fornece `domain.model.TmdbConfig`. Home mostra aviso quando o token falta.
+- `kotlinx-coroutines-test` fica para quando houver ViewModel com coroutine.
+**Consequência:** ViewModels testáveis com construtor simples, sem Android.
