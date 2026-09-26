@@ -23,9 +23,9 @@
 | Testes | JUnit, kotlinx-coroutines-test, AndroidX Test, Room in-memory | |
 | Build | Gradle Kotlin DSL + version catalog (`libs.versions.toml`) | |
 
-Versões exatas (AGP, Kotlin, bibliotecas) são fixadas no version catalog na Fase 1, usando as versões estáveis mais recentes compatíveis entre si.
+Versões exatas (AGP, Kotlin, bibliotecas) estão em `gradle/libs.versions.toml` (D-015 a D-018).
 
-SDK: `minSdk 26`, `compileSdk`/`targetSdk` = último estável na Fase 1 (D-010).
+SDK: `minSdk 26`, `compileSdk`/`targetSdk` = 37 (D-010, D-015).
 
 Nenhuma outra dependência deve ser adicionada sem registro em DECISIONS.md.
 
@@ -126,7 +126,7 @@ Cada entidade de cache TMDB tem `fetchedAt` (epoch millis). Política stale-whil
 - Vencido: mostra cache e atualiza em segundo plano.
 - Pull-to-refresh força atualização.
 - Cache TMDB **nunca** apaga dados pessoais (D-007).
-- Imagens: guardamos só os paths TMDB; Coil mantém cache em disco (tamanho a definir na Fase 1). Poster pode faltar offline se nunca foi exibido.
+- Imagens: guardamos só os paths TMDB; Coil mantém cache em disco de 250 MB, com cliente HTTP sem o token (D-018). Poster pode faltar offline se nunca foi exibido.
 
 Valores são ponto de partida; ajustar se necessário e registrar.
 

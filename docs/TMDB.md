@@ -1,6 +1,6 @@
 # TMDB
 
-Integração com a API oficial do The Movie Database. Status: **planejado**.
+Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl`. `TmdbApi` ainda sem endpoints.
 
 ## Autenticação
 

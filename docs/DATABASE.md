@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **planejado** (nenhuma tabela implementada ainda).
+Room. Status: **infraestrutura pronta** (Fase 1). `AppDatabase` v1 com apenas `tmdb_genre`; `Converters` para `LocalDate`; schema exportado em `app/schemas/`. Demais tabelas chegam nas fases seguintes.
 
 ## Princípios
 

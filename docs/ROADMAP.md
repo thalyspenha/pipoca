@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 1 em andamento — partes 1 a 3 concluídas** (esqueleto, tema, navegação, Hilt, UiState). Próxima: parte 4.
+**Fase 1 concluída.** Fundação pronta: projeto compila, 10 testes unitários passando. Próxima: Fase 2 (aguardando "IMPLEMENTAR FASE 2" e permissão para ler `fase2.md`).
 
 ## Fases
 
@@ -13,7 +13,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Arquitetura, modelo de dados, estratégia de cache e integração TMDB definidos.
 - Nome definido: Pipoca, `com.thalyspenha.pipoca` (D-011).
 
-### 🚧 Fase 1 — Fundação (ver `fase1.md`)
+### ✅ Fase 1 — Fundação (ver `fase1.md`)
 - Projeto Android funcional: Kotlin, Compose, Material 3.
 - Navigation Compose, Hilt, Room, Retrofit/OkHttp, Coil configurados.
 - Estrutura de pacotes conforme ARCHITECTURE.md.
@@ -27,7 +27,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   1. ✅ Esqueleto Android — Gradle ≥ 9.1, Kotlin, Compose, Material 3, `MainActivity`, `local.properties` → `BuildConfig`, `.gitignore`, `.env.example` (objetivos 1–4, 15, 16).
   2. ✅ Tema e navegação — pacotes, tema Dark/Light, Navigation Compose, Home inicial (10–13).
   3. ✅ Hilt e estado da UI — Hilt, `UiState` Loading/Success/Error, ViewModel da Home (6, 14).
-  4. Room, Retrofit/OkHttp, Coil — infraestrutura sem endpoints/tabelas finais; build, testes, docs (7–9).
+  4. ✅ Room, Retrofit/OkHttp, Coil — infraestrutura sem endpoints/tabelas finais; build, testes, docs (7–9).
 
 ### ⏳ Fases 2–11
 Definidas nos arquivos `fase2.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

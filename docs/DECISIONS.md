@@ -86,3 +86,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `BuildConfig.TMDB_API_TOKEN` só é lido em `di/AppModule`, que fornece `domain.model.TmdbConfig`. Home mostra aviso quando o token falta.
 - `kotlinx-coroutines-test` fica para quando houver ViewModel com coroutine.
 **Consequência:** ViewModels testáveis com construtor simples, sem Android.
+
+### D-018 — Room, rede e imagens
+**Decisão:**
+- Room 2.8.5 com plugin `androidx.room` (schemas em `app/schemas/`). Room exige ao menos uma entidade: `tmdb_genre` (já definida em DATABASE.md) é a primeira; versão 1 ainda não é "usada de verdade", então pode mudar sem migração até a primeira instalação real.
+- Retrofit 3.0.0 + `converter-kotlinx-serialization`, OkHttp 5.5.0 + `logging-interceptor` (só debug, `Authorization` oculto). Timeouts 15 s.
+- Dois `OkHttpClient`: base (imagens) e `@TmdbClient` (base + auth + idioma), para o token nunca ir para o servidor de imagens.
+- Coil 3.6.3 (`coil-compose`, `coil-network-okhttp`) com cache em disco de 250 MB; `App` implementa `SingletonImageLoader.Factory` com o `ImageLoader` do Hilt.
+- Teste: `mockwebserver3` (só `testImplementation`).
+**Consequência:** fases seguintes só adicionam endpoints em `TmdbApi`, entidades/DAOs em `AppDatabase` e repositórios.
