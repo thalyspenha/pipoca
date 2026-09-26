@@ -7,7 +7,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -16,11 +20,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
+import com.thalyspenha.pipoca.presentation.screens.details.MovieDetailsScreen
+import com.thalyspenha.pipoca.presentation.screens.details.TvShowDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.home.HomeScreen
 import com.thalyspenha.pipoca.presentation.screens.library.LibraryScreen
 import com.thalyspenha.pipoca.presentation.screens.more.MoreScreen
 import com.thalyspenha.pipoca.presentation.screens.search.SearchScreen
+import com.thalyspenha.pipoca.presentation.screens.search.detailsRoute
 
 @Composable
 fun PipocaApp() {
@@ -28,14 +36,21 @@ fun PipocaApp() {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
 
+    // Em telas empilhadas (detalhes), a aba de origem continua marcada.
+    var lastTab by rememberSaveable { mutableStateOf(TopLevelDestination.HOME) }
+    val currentTab = TopLevelDestination.entries
+        .firstOrNull { tab -> currentDestination?.hierarchy?.any { it.hasRoute(tab.route::class) } == true }
+    LaunchedEffect(currentTab) {
+        if (currentTab != null) lastTab = currentTab
+    }
+    val selectedTab = currentTab ?: lastTab
+
     Scaffold(
         bottomBar = {
             NavigationBar {
                 TopLevelDestination.entries.forEach { destination ->
-                    val selected = currentDestination?.hierarchy
-                        ?.any { it.hasRoute(destination.route::class) } == true
                     NavigationBarItem(
-                        selected = selected,
+                        selected = destination == selectedTab,
                         onClick = {
                             navController.navigate(destination.route) {
                                 // Padrão de abas: uma pilha por aba, sem duplicar destinos.
@@ -59,10 +74,18 @@ fun PipocaApp() {
             modifier = Modifier.padding(innerPadding),
         ) {
             composable<HomeRoute> { HomeScreen() }
-            composable<SearchRoute> { SearchScreen() }
+            composable<SearchRoute> {
+                SearchScreen(onResultClick = { item -> navController.navigate(item.detailsRoute()) })
+            }
             composable<LibraryRoute> { LibraryScreen() }
             composable<CollectionRoute> { CollectionScreen() }
             composable<MoreRoute> { MoreScreen() }
+            composable<MovieDetailsRoute> { entry ->
+                MovieDetailsScreen(id = entry.toRoute<MovieDetailsRoute>().id, onBack = navController::navigateUp)
+            }
+            composable<TvShowDetailsRoute> { entry ->
+                TvShowDetailsScreen(id = entry.toRoute<TvShowDetailsRoute>().id, onBack = navController::navigateUp)
+            }
         }
     }
 }

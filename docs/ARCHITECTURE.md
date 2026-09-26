@@ -133,7 +133,7 @@ Valores são ponto de partida; ajustar se necessário e registrar.
 ## Navegação
 
 - `NavHost` único com bottom bar: Home, Busca, Biblioteca, Coleção, Mais (Estatísticas, Histórico, Configurações).
-- Detalhes (filme, série, temporada) empilhados sobre a aba atual.
+- Detalhes (filme, série, temporada) empilhados sobre a aba atual (`MovieDetailsRoute(id)`, `TvShowDetailsRoute(id)`); a aba de origem continua marcada na bottom bar.
 - Rotas type-safe com argumentos simples (IDs TMDB), nunca objetos grandes.
 - Estrutura final das abas pode mudar na fase de UI; registrar.
 

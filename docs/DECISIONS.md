@@ -136,3 +136,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `DataError.toMessage()` e `isRetryable` em `presentation/components`: "Tentar novamente" só aparece para erros passageiros (`Network`, `Unknown`); chave ausente/inválida e não encontrado orientam a corrigir.
 - Tela de Busca: campo com limpar, `SegmentedButton` FILMES | SÉRIES, lista com poster, título e "ano · tipo". Pesquisa ocorre enquanto digita; o botão Buscar do teclado só fecha o teclado.
 **Consequência:** `SearchScreen(onResultClick)` já expõe o clique; a parte 3 liga à navegação.
+
+### D-026 — Rotas de detalhes e aba marcada
+**Decisão:** `MovieDetailsRoute(id)` e `TvShowDetailsRoute(id)` no mesmo `NavHost` (grafo plano), empilhadas sobre a aba atual. A bottom bar marca a aba da rota atual ou, em telas empilhadas, a última aba visitada. Telas de detalhes são placeholder com botão voltar (D-023). `SearchResultItem.detailsRoute()` escolhe a rota.
+**Consequência:** a tela real de detalhes só troca o conteúdo dessas rotas; outras abas (Biblioteca etc.) reutilizam as mesmas rotas.

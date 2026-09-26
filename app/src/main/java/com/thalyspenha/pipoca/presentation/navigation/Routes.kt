@@ -8,3 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object LibraryRoute
 @Serializable data object CollectionRoute
 @Serializable data object MoreRoute
+
+// Detalhes: empilhados sobre a aba atual; só o ID TMDB vai na rota.
+@Serializable data class MovieDetailsRoute(val id: Long)
+@Serializable data class TvShowDetailsRoute(val id: Long)

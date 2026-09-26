@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 3 em andamento — partes 1 e 2 concluídas** (SearchViewModel e tela de Busca; 61 testes unitários passando). Próxima: parte 3 (aguardando "IMPLEMENTAR FASE 3 – PARTE 3").
+**Fase 3 concluída.** Busca completa (filmes/séries) com navegação para detalhes placeholder; 63 testes unitários passando. Próxima: Fase 4 (aguardando permissão para ler `fase4.md`).
 
 ## Fases
 
@@ -39,7 +39,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ RemoteDataSource, erros e mapeamento — erros de domínio (rede, não encontrado, chave ausente/inválida, desconhecido); modelos de domínio; mappers DTO → domínio; testes de mapeamento e erro.
   3. ✅ Repository e cache — busca direto na rede sem persistir (D-008); detalhes com cache no Room (`tmdb_movie`, `tmdb_tv_show`, gêneros, elenco) e validade conforme ARCHITECTURE.md; docs `TMDB.md`/`DATABASE.md` e ROADMAP.
 
-### 🚧 Fase 3 — Busca (ver `fase3.md`)
+### ✅ Fase 3 — Busca (ver `fase3.md`)
 - Tela Search completa: campo, debounce, loading, erro, vazio, resultados (poster, título, ano, tipo), alternância FILMES | SÉRIES, navegação para detalhes.
 - Sem requisição com texto vazio, durante digitação rápida ou repetindo a pesquisa em andamento.
 - ViewModel + StateFlow, sem lógica de API na UI; testes do ViewModel.
@@ -47,7 +47,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - **Executada em 3 partes** (D-023). Uma por vez, só com "IMPLEMENTAR FASE 3 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ SearchViewModel e testes — debounce 400 ms, ignora texto vazio/curto, não repete a mesma pesquisa, cancela a anterior, alternância filmes/séries; `kotlinx-coroutines-test`.
   2. ✅ Tela de Busca — campo, alternância FILMES/SÉRIES, lista com poster (Coil), título, ano, tipo; loading, erro (chave ausente, sem conexão) e vazio.
-  3. ⏳ Navegação para detalhes — rotas `MovieDetailsRoute(id)`/`TvShowDetailsRoute(id)` com telas placeholder; docs e ROADMAP.
+  3. ✅ Navegação para detalhes — rotas `MovieDetailsRoute(id)`/`TvShowDetailsRoute(id)` com telas placeholder; docs e ROADMAP.
 
 ### ⏳ Fases 4–11
 Definidas nos arquivos `fase4.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.
@@ -64,6 +64,6 @@ Ordem provável derivada do prompt mestre, apenas como referência:
 ## Pendências gerais
 
 - Token TMDB (Read Access Token v4): ✅ validado e configurado no Mac (2026-09-26). Em outra máquina, repetir no `local.properties` (ver SETUP.md).
-- Ainda não rodado no S25 nem em emulador; só build e testes unitários.
+- Ainda não rodado no S25 nem em emulador; só build e testes unitários. Primeira validação visual pendente (Busca, pôsteres, navegação).
 - Testes instrumentados (`app/src/androidTest`, DAO com Room in-memory) compilam mas nunca rodaram: não há AVD nem aparelho conectado. Rodar com `./gradlew connectedDebugAndroidTest` quando o S25 estiver conectado.
 - ~~Verificar JDK/Android SDK~~ ✅ JDK 25 (JBR do Android Studio, `JAVA_HOME` no `~/.zshrc`), SDK em `~/Library/Android/sdk` (android-33…37.1). JDK 25 exige Gradle ≥ 9.1.
