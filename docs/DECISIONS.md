@@ -61,3 +61,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** a seção 19 do `prompt_mestre.md` pede, já na etapa inicial, estrutura do projeto, primeira tela mínima e compilação.
 **Decisão:** Fase 0 cobre apenas planejamento e documentação. Estrutura Android, tela mínima e `./gradlew build` passando ficam na Fase 1 (`fase1.md`).
 **Consequência:** nenhum código Android até "IMPLEMENTAR FASE 1"; a Fase 1 entrega os itens 2, 8 e 9 da seção 19.
+
+### D-014 — Fase 1 em 4 partes
+**Contexto:** a Fase 1 tem 16 objetivos; fazer tudo de uma vez dificulta revisão.
+**Decisão:** executar em 4 partes (ver ROADMAP.md), uma por vez, apenas quando o usuário disser "PARTE N". Cada parte compila e termina com sugestão de commit.
+**Consequência:** nunca encadear partes sozinho; revisar e commitar entre elas.

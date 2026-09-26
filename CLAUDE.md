@@ -11,6 +11,7 @@ Leia, nesta ordem: `docs/PROJECT.md`, `docs/ARCHITECTURE.md`, `docs/DATABASE.md`
 ## Regras
 
 - Desenvolvimento por fases. Só implemente uma fase quando o usuário disser "IMPLEMENTAR FASE X", e apenas ela.
+- Fase 1 é feita em 4 partes (ROADMAP.md, D-014): só a parte pedida ("PARTE N"), depois parar e sugerir commit. Nunca fazer a fase inteira de uma vez.
 - Não leia `faseN.md` sem permissão do usuário (lidos até agora: `fase1.md`).
 - Nunca commitar sem pedido. Sugerir mensagem de commit no fim da fase.
 - Decisão arquitetural relevante vai para `docs/DECISIONS.md`; sempre atualizar `docs/ROADMAP.md`.

@@ -23,6 +23,11 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - `TMDB_API_TOKEN` via `local.properties` → `BuildConfig`; `.env.example`; `.gitignore`.
 - Sem funcionalidade TMDB completa.
 - `./gradlew build` passando.
+- **Executada em 4 partes** (decisão do usuário, D-014). Uma parte por vez, só quando o usuário disser "PARTE N"; cada parte compila e termina com sugestão de commit:
+  1. Esqueleto Android — Gradle ≥ 9.1, Kotlin, Compose, Material 3, `MainActivity`, `local.properties` → `BuildConfig`, `.gitignore`, `.env.example` (objetivos 1–4, 15, 16).
+  2. Tema e navegação — pacotes, tema Dark/Light, Navigation Compose, Home inicial (10–13).
+  3. Hilt e estado da UI — Hilt, `UiState` Loading/Success/Error, ViewModel da Home (6, 14).
+  4. Room, Retrofit/OkHttp, Coil — infraestrutura sem endpoints/tabelas finais; build, testes, docs (7–9).
 
 ### ⏳ Fases 2–11
 Definidas nos arquivos `fase2.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.
