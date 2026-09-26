@@ -24,6 +24,12 @@ Não será publicado na Google Play inicialmente. Uso por um único usuário, se
 - Estatísticas calculadas a partir dos dados locais.
 - Uso offline para tudo que já foi baixado.
 
+## Dispositivo alvo
+
+- Aparelho principal: **Samsung Galaxy S25, Android 16 (API 36), One UI**. Testes manuais priorizam ele.
+- Implicações: edge-to-edge obrigatório, predictive back ativo, conferir layouts com fonte/zoom grandes da One UI.
+- Continua suportando `minSdk 26` (D-010).
+
 ## Princípios
 
 1. **Estado pessoal é local e soberano.** Nunca depende da API para saber se algo foi assistido.
