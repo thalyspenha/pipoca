@@ -100,3 +100,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** `fase2.md` pede Repository mas não fala de persistência; ARCHITECTURE.md (D-003) diz que detalhes vêm do Room.
 **Decisão:** Fase 2 em 3 partes (ver ROADMAP.md), uma por vez: (1) API e DTOs, (2) RemoteDataSource, erros e mapeamento, (3) Repository com cache de detalhes no Room. Busca não persiste (D-008).
 **Consequência:** Fase 2 cria as tabelas de cache `tmdb_movie`, `tmdb_tv_show`, gêneros e elenco; tabelas pessoais continuam para as fases seguintes.
+
+### D-020 — DTOs enxutos e `TmdbJson` compartilhado
+**Decisão:** DTOs só com campos usados, todos com default (tolerantes a `null`/ausência via `coerceInputValues`). Datas como `String` no DTO; conversão para `LocalDate` no mapeamento. `TmdbJson` é a única configuração JSON (Retrofit e testes). `include_adult=false` fixo nas buscas. Fixtures de teste são respostas reais do TMDB, reduzidas.
+**Consequência:** campo novo necessário = adicionar ao DTO + fixture.

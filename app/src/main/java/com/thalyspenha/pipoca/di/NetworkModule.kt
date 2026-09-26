@@ -7,6 +7,7 @@ import coil3.disk.directory
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import com.thalyspenha.pipoca.BuildConfig
 import com.thalyspenha.pipoca.data.remote.TmdbApi
+import com.thalyspenha.pipoca.data.remote.TmdbJson
 import com.thalyspenha.pipoca.data.remote.interceptor.AuthInterceptor
 import com.thalyspenha.pipoca.data.remote.interceptor.LanguageInterceptor
 import dagger.Module
@@ -38,10 +39,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-    }
+    fun provideJson(): Json = TmdbJson
 
     @Provides
     @Singleton

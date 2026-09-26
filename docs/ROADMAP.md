@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 1 concluída.** Fundação pronta: projeto compila, 10 testes unitários passando. Próxima: Fase 2, parte 1 (aguardando "IMPLEMENTAR FASE 2 – PARTE 1").
+**Fase 2 em andamento — parte 1 concluída** (API e DTOs; 20 testes unitários passando). Próxima: parte 2 (aguardando "IMPLEMENTAR FASE 2 – PARTE 2").
 
 ## Fases
 
@@ -29,13 +29,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   3. ✅ Hilt e estado da UI — Hilt, `UiState` Loading/Success/Error, ViewModel da Home (6, 14).
   4. ✅ Room, Retrofit/OkHttp, Coil — infraestrutura sem endpoints/tabelas finais; build, testes, docs (7–9).
 
-### ⏳ Fase 2 — Integração TMDB (ver `fase2.md`)
+### 🚧 Fase 2 — Integração TMDB (ver `fase2.md`)
 - Busca de filmes e séries; detalhes de filme e série (com elenco).
 - Retrofit/API service, DTOs, RemoteDataSource, mapeamento DTO → domínio, erros, URLs de imagem, Repository.
 - Testes: parsing, mapeamento, erro básico. Docs em `TMDB.md`; informar endpoints usados.
 - Sem UI nova (tela de Busca continua placeholder). Fora: histórico, favoritos, coleção, progresso de episódios.
 - **Executada em 3 partes** (decisão do usuário, D-019). Uma por vez, só com "IMPLEMENTAR FASE 2 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ API e DTOs — endpoints `search/movie`, `search/tv`, `movie/{id}` e `tv/{id}` com `append_to_response=credits`; DTOs `@Serializable`; testes de parsing com JSON de exemplo.
+  1. ✅ API e DTOs — endpoints `search/movie`, `search/tv`, `movie/{id}` e `tv/{id}` com `append_to_response=credits`; DTOs `@Serializable`; testes de parsing com JSON de exemplo.
   2. ⏳ RemoteDataSource, erros e mapeamento — erros de domínio (rede, não encontrado, chave ausente/inválida, desconhecido); modelos de domínio; mappers DTO → domínio; testes de mapeamento e erro.
   3. ⏳ Repository e cache — busca direto na rede sem persistir (D-008); detalhes com cache no Room (`tmdb_movie`, `tmdb_tv_show`, gêneros, elenco) e validade conforme ARCHITECTURE.md; docs `TMDB.md`/`DATABASE.md` e ROADMAP.
 

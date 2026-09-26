@@ -1,6 +1,6 @@
 # TMDB
 
-Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl`. `TmdbApi` ainda sem endpoints.
+Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl`. Fase 2 parte 1: `TmdbApi` com os 4 endpoints abaixo e DTOs em `data/remote/dto/`.
 
 ## Autenticação
 
@@ -30,6 +30,21 @@ Regras:
 - Idioma: `language=pt-BR` via interceptor. Se sinopse vier vazia, tentar `en-US` (definir na fase de detalhes).
 - `region=BR` onde aplicável.
 - Timeouts OkHttp padrão razoáveis (~15 s); logging interceptor apenas em debug.
+
+## Endpoints em uso
+
+| Uso | Endpoint | Método em `TmdbApi` |
+|---|---|---|
+| Buscar filmes | `GET search/movie?query=&page=&include_adult=false` | `searchMovies` |
+| Buscar séries | `GET search/tv?query=&page=&include_adult=false` | `searchTvShows` |
+| Detalhes filme + elenco | `GET movie/{id}?append_to_response=credits` | `getMovieDetails` |
+| Detalhes série + elenco | `GET tv/{id}?append_to_response=credits` | `getTvShowDetails` |
+
+Todos recebem `language=pt-BR` pelo `LanguageInterceptor` e `Authorization: Bearer` pelo `AuthInterceptor`.
+
+DTOs: só os campos usados (ver DATABASE.md); o resto é ignorado (`TmdbJson`). Datas chegam como `String` (podem vir vazias) e são convertidas no mapeamento. Diretor = `credits.crew` com `job == "Director"`. `episode_run_time` costuma vir vazio.
+
+Testes usam respostas reais reduzidas em `app/src/test/resources/tmdb/` (Matrix, Breaking Bad, erro 34).
 
 ## Endpoints previstos
 

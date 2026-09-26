@@ -1,0 +1,70 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/tlm8UkiQsitc8rSuIAscQDCnP8d.jpg",
+      "genre_ids": [
+        28,
+        878
+      ],
+      "id": 603,
+      "title": "Matrix",
+      "original_language": "en",
+      "original_title": "The Matrix",
+      "overview": "O jovem programador Thomas Anderson é atormentado por estranhos pesadelos em que está sempre conectado por cabos a um imenso sistema de computadores do futuro. À medida que o sonho se repete, ele começa a desconfiar da realidade. Thomas conhece os misteriosos Morpheus e Trinity e descobre que é vítima de um sistema inteligente e artificial chamado Matrix, que manipula a mente das pessoas e cria a ilusão de um mundo real enquanto usa os cérebros e corpos dos indivíduos para produzir energia.",
+      "popularity": 50.3794,
+      "poster_path": "/lDqMDI3xpbB9UQRyeXfei0MXhqb.jpg",
+      "release_date": "1999-03-31",
+      "softcore": false,
+      "video": false,
+      "vote_average": 8.259,
+      "vote_count": 28807
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/eNI7PtK6DEYgZmHWP9gQNuff8pv.jpg",
+      "genre_ids": [
+        878,
+        28,
+        12
+      ],
+      "id": 624860,
+      "title": "Matrix Resurrections",
+      "original_language": "en",
+      "original_title": "The Matrix Resurrections",
+      "overview": "Em um mundo de duas realidades — a vida cotidiana e o que está por trás dela —, Thomas Anderson terá que escolher seguir o coelho branco mais uma vez. A escolha, embora seja uma ilusão, ainda é a única maneira de entrar ou sair da Matrix, que é mais forte, mais segura e mais perigosa do que nunca.",
+      "popularity": 17.5165,
+      "poster_path": "/9DT4WVqZqBEI9Kub18gZ3m1D89m.jpg",
+      "release_date": "2021-12-16",
+      "softcore": false,
+      "video": false,
+      "vote_average": 6.303,
+      "vote_count": 6743
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/ihOJcrorpDQtHTzIOrobbOhpJsj.jpg",
+      "genre_ids": [
+        12,
+        28,
+        53,
+        878
+      ],
+      "id": 604,
+      "title": "Matrix Reloaded",
+      "original_language": "en",
+      "original_title": "The Matrix Reloaded",
+      "overview": "Após derrotar as máquinas em seu combate inicial, Neo ainda vive na Nabucodonosor ao lado de Morpheus, Trinity e Link, o novo tripulante da nave. As máquinas estão realizando uma grande ofensiva contra Zion, onde 250 mil delas escavam rumo à cidade e podem alcançá-la em poucos dias. A Nabucodonosor é convocada para retornar a Zion e participar da reunião que definirá o contra-ataque para salvar a humanidade da extinção. Entretanto, um recado enviado pelo Oráculo faz com que Neo retorne à Matrix.",
+      "popularity": 26.4335,
+      "poster_path": "/ayZkaN2f3ASjWW8ooCfuJT3T8Va.jpg",
+      "release_date": "2003-05-15",
+      "softcore": false,
+      "video": false,
+      "vote_average": 7.085,
+      "vote_count": 12344
+    }
+  ],
+  "total_pages": 5,
+  "total_results": 92
+}

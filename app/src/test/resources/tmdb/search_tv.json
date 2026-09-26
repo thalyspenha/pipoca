@@ -1,0 +1,48 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+      "genre_ids": [
+        18,
+        80
+      ],
+      "id": 1396,
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Breaking Bad",
+      "overview": "Ao saber que tem câncer, um professor passa a fabricar metanfetamina pelo futuro da família, mudando o destino de todos.",
+      "popularity": 216.3599,
+      "poster_path": "/hGwm9Cj3CdbJIqQWNExQqiYmCd4.jpg",
+      "first_air_date": "2008-01-20",
+      "softcore": false,
+      "name": "Breaking Bad",
+      "vote_average": 8.952,
+      "vote_count": 18699
+    },
+    {
+      "adult": false,
+      "backdrop_path": null,
+      "genre_ids": [],
+      "id": 326283,
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_name": "Breaking the Deal with My Hockey Bad Boy",
+      "overview": "",
+      "popularity": 0.959,
+      "poster_path": "/cjvq9nh9oVMC2ike0s6L9f72pZF.jpg",
+      "first_air_date": "2025-06-08",
+      "softcore": false,
+      "name": "Breaking the Deal with My Hockey Bad Boy",
+      "vote_average": 0.0,
+      "vote_count": 0
+    }
+  ],
+  "total_pages": 1,
+  "total_results": 4
+}
