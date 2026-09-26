@@ -119,3 +119,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `java.time.Clock` injetado (UTC) para testar validade do cache.
 - Testes de repositório usam DAO fake em memória (herda as transações do DAO real); DAO real testado em `androidTest` (Room in-memory), com `androidx.test` 1.3.0/1.7.0.
 **Consequência:** novas telas de detalhes só observam e pedem refresh; nada de chamada de rede direto da UI.
+
+### D-023 — Fase 3 em 3 partes; detalhes como placeholder
+**Contexto:** `fase3.md` pede navegação para detalhes, mas não a tela de detalhes.
+**Decisão:** Fase 3 em 3 partes (ver ROADMAP.md): (1) SearchViewModel e testes, (2) tela de Busca, (3) rotas de detalhes com telas placeholder. Tela real de detalhes fica para fase futura (opção B, escolha do usuário).
+**Consequência:** repositórios de detalhes da Fase 2 continuam sem uso na UI até essa fase.
