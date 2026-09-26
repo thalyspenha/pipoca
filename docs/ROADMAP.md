@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 2 em andamento — parte 1 concluída** (API e DTOs; 20 testes unitários passando). Próxima: parte 2 (aguardando "IMPLEMENTAR FASE 2 – PARTE 2").
+**Fase 2 em andamento — partes 1 e 2 concluídas** (API, DTOs, RemoteDataSource, erros, mapeamento; 34 testes unitários passando). Próxima: parte 3 (aguardando "IMPLEMENTAR FASE 2 – PARTE 3").
 
 ## Fases
 
@@ -36,7 +36,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Sem UI nova (tela de Busca continua placeholder). Fora: histórico, favoritos, coleção, progresso de episódios.
 - **Executada em 3 partes** (decisão do usuário, D-019). Uma por vez, só com "IMPLEMENTAR FASE 2 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ API e DTOs — endpoints `search/movie`, `search/tv`, `movie/{id}` e `tv/{id}` com `append_to_response=credits`; DTOs `@Serializable`; testes de parsing com JSON de exemplo.
-  2. ⏳ RemoteDataSource, erros e mapeamento — erros de domínio (rede, não encontrado, chave ausente/inválida, desconhecido); modelos de domínio; mappers DTO → domínio; testes de mapeamento e erro.
+  2. ✅ RemoteDataSource, erros e mapeamento — erros de domínio (rede, não encontrado, chave ausente/inválida, desconhecido); modelos de domínio; mappers DTO → domínio; testes de mapeamento e erro.
   3. ⏳ Repository e cache — busca direto na rede sem persistir (D-008); detalhes com cache no Room (`tmdb_movie`, `tmdb_tv_show`, gêneros, elenco) e validade conforme ARCHITECTURE.md; docs `TMDB.md`/`DATABASE.md` e ROADMAP.
 
 ### ⏳ Fases 3–11

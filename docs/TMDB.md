@@ -46,6 +46,24 @@ DTOs: só os campos usados (ver DATABASE.md); o resto é ignorado (`TmdbJson`). 
 
 Testes usam respostas reais reduzidas em `app/src/test/resources/tmdb/` (Matrix, Breaking Bad, erro 34).
 
+## Erros
+
+`TmdbRemoteDataSource` é o único ponto que chama `TmdbApi` e devolve `DataResult<DTO>`:
+
+| Situação | `DataError` |
+|---|---|
+| Token vazio em `local.properties` (nenhuma chamada é feita) | `MissingApiKey` |
+| HTTP 401 | `InvalidApiKey` |
+| HTTP 404 | `NotFound` |
+| `IOException` (sem conexão, timeout, DNS) | `Network` |
+| Outros HTTP, JSON inesperado, exceções | `Unknown(cause)` |
+
+Cancelamento de coroutine é repassado, nunca vira erro.
+
+## Mapeamento DTO → domínio
+
+`data/mapper/TmdbMappers.kt`: datas `""`/inválidas → `null`; strings vazias → `null`; `runtime` 0 → `null`; `episode_run_time` → média (ignorando 0); diretores = crew com `job == "Director"`; elenco ordenado por `order`, máximo 15; temporadas ordenadas por número.
+
 ## Endpoints previstos
 
 | Uso | Endpoint |

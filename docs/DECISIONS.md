@@ -104,3 +104,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-020 — DTOs enxutos e `TmdbJson` compartilhado
 **Decisão:** DTOs só com campos usados, todos com default (tolerantes a `null`/ausência via `coerceInputValues`). Datas como `String` no DTO; conversão para `LocalDate` no mapeamento. `TmdbJson` é a única configuração JSON (Retrofit e testes). `include_adult=false` fixo nas buscas. Fixtures de teste são respostas reais do TMDB, reduzidas.
 **Consequência:** campo novo necessário = adicionar ao DTO + fixture.
+
+### D-021 — `DataResult`/`DataError` no domínio
+**Decisão:** camada de dados devolve `DataResult<T>` (Success/Failure) com `DataError` (`Network`, `NotFound`, `MissingApiKey`, `InvalidApiKey`, `Unknown`), em `domain/model`. `TmdbRemoteDataSource` devolve DTOs (o repositório da parte 3 decide entre cache e domínio); mappers DTO → domínio são funções de extensão em `data/mapper`. Modelos de domínio usam `java.time.LocalDate`.
+**Consequência:** UI traduz `DataError` em mensagem; exceções não passam da camada de dados.
