@@ -70,3 +70,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-015 — Versões base do build
 **Decisão:** Gradle 9.8.0, AGP 9.4.1 (Kotlin embutido no AGP 9, sem plugin `kotlin-android`), Kotlin 2.4.20 (plugin Compose), Compose BOM 2026.09.00, `compileSdk`/`targetSdk` 37, Java 17 como alvo de bytecode. Build roda com o JDK 25 do Android Studio.
 **Consequência:** versões centralizadas em `gradle/libs.versions.toml`; atualizar em bloco e registrar aqui.
+
+### D-016 — Tema, navegação e ícones
+**Decisão:**
+- Dependências novas: Navigation Compose 2.10.2, plugin + `kotlinx-serialization-json` 1.11.0 (rotas type-safe, D-004), `material-icons-core` 1.7.8.
+- `material-icons-core` parou em 1.7.8 e fica fixado fora do BOM; só ícones básicos, sem `material-icons-extended` (pesado). Trocar por vetores próprios se faltar ícone.
+- Tema `PipocaTheme` com paleta própria (amarelo manteiga + vermelho), segue claro/escuro do sistema; dynamic color existe mas desligado por padrão.
+- Bottom bar com 5 abas (Início, Busca, Biblioteca, Coleção, Mais), cada uma com pilha própria (`saveState`/`restoreState`). Telas são placeholders.
+**Consequência:** novas telas entram como rota `@Serializable` em `presentation/navigation/Routes.kt`.

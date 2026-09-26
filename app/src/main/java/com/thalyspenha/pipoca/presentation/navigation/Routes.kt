@@ -1,0 +1,10 @@
+package com.thalyspenha.pipoca.presentation.navigation
+
+import kotlinx.serialization.Serializable
+
+// Rotas type-safe. Argumentos futuros (IDs TMDB) entram como propriedades.
+@Serializable data object HomeRoute
+@Serializable data object SearchRoute
+@Serializable data object LibraryRoute
+@Serializable data object CollectionRoute
+@Serializable data object MoreRoute
