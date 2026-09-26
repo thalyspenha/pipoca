@@ -1,0 +1,20 @@
+# Gradle / build
+.gradle/
+.kotlin/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# IDE
+.idea/
+*.iml
+
+# Secrets e configuração local — nunca commitar
+local.properties
+.env
+*.jks
+*.keystore
+
+# SO
+.DS_Store

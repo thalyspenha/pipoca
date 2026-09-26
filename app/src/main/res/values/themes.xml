@@ -1,0 +1,4 @@
+<resources>
+    <!-- Tema só da janela; o tema Compose real chega na parte 2. -->
+    <style name="Theme.Pipoca" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

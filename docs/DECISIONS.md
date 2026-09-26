@@ -66,3 +66,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** a Fase 1 tem 16 objetivos; fazer tudo de uma vez dificulta revisão.
 **Decisão:** executar em 4 partes (ver ROADMAP.md), uma por vez, apenas quando o usuário disser "PARTE N". Cada parte compila e termina com sugestão de commit.
 **Consequência:** nunca encadear partes sozinho; revisar e commitar entre elas.
+
+### D-015 — Versões base do build
+**Decisão:** Gradle 9.8.0, AGP 9.4.1 (Kotlin embutido no AGP 9, sem plugin `kotlin-android`), Kotlin 2.4.20 (plugin Compose), Compose BOM 2026.09.00, `compileSdk`/`targetSdk` 37, Java 17 como alvo de bytecode. Build roda com o JDK 25 do Android Studio.
+**Consequência:** versões centralizadas em `gradle/libs.versions.toml`; atualizar em bloco e registrar aqui.
