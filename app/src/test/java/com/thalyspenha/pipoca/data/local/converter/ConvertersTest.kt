@@ -23,4 +23,14 @@ class ConvertersTest {
         assertNull(converters.localDateToString(null))
         assertNull(converters.stringToLocalDate(null))
     }
+
+    @Test
+    fun `lista de nomes vira JSON e volta igual`() {
+        val names = listOf("Lana Wachowski", "Lilly \"Wachowski\"")
+
+        val stored = converters.stringListToJson(names)
+
+        assertEquals(names, converters.jsonToStringList(stored))
+        assertEquals(emptyList<String>(), converters.jsonToStringList(converters.stringListToJson(emptyList())))
+    }
 }

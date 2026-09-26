@@ -1,6 +1,6 @@
 # TMDB
 
-Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl`. Fase 2 parte 1: `TmdbApi` com os 4 endpoints abaixo e DTOs em `data/remote/dto/`.
+Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl`. Fase 2 concluída: busca de filmes/séries e detalhes de filme/série, com cache de detalhes no Room.
 
 ## Autenticação
 
@@ -63,6 +63,16 @@ Cancelamento de coroutine é repassado, nunca vira erro.
 ## Mapeamento DTO → domínio
 
 `data/mapper/TmdbMappers.kt`: datas `""`/inválidas → `null`; strings vazias → `null`; `runtime` 0 → `null`; `episode_run_time` → média (ignorando 0); diretores = crew com `job == "Director"`; elenco ordenado por `order`, máximo 15; temporadas ordenadas por número.
+
+## Repositórios
+
+| Interface (`domain/repository`) | Comportamento |
+|---|---|
+| `SearchRepository` | `searchMovies`/`searchTvShows` direto na rede, sem persistir (D-008). Consulta com menos de 2 caracteres devolve página vazia sem chamar a rede. |
+| `MovieRepository` | `observeMovieDetails(id)`: `Flow` do Room (`null` sem cache). `refreshMovieDetails(id, force)`: busca se não houver cache válido (7 dias) e grava. |
+| `TvShowRepository` | Igual, para séries. Validade 30 dias se `Ended`/`Canceled`, senão 1 dia. |
+
+Falha no refresh devolve `DataResult.Failure` e não apaga o cache: com cache, a UI mostra os dados e um aviso; sem cache, mostra erro. Validade em `data/cache/CachePolicy.kt`; hora vem de `Clock` injetado.
 
 ## Endpoints previstos
 

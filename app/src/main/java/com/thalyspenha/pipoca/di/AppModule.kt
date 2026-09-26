@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.time.Clock
 import javax.inject.Singleton
 
 @Module
@@ -16,4 +17,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTmdbConfig(): TmdbConfig = TmdbConfig(apiToken = BuildConfig.TMDB_API_TOKEN)
+
+    /** Relógio injetável: validade do cache testável sem depender da hora real. */
+    @Provides
+    @Singleton
+    fun provideClock(): Clock = Clock.systemUTC()
 }

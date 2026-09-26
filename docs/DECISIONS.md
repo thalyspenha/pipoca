@@ -108,3 +108,14 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-021 — `DataResult`/`DataError` no domínio
 **Decisão:** camada de dados devolve `DataResult<T>` (Success/Failure) com `DataError` (`Network`, `NotFound`, `MissingApiKey`, `InvalidApiKey`, `Unknown`), em `domain/model`. `TmdbRemoteDataSource` devolve DTOs (o repositório da parte 3 decide entre cache e domínio); mappers DTO → domínio são funções de extensão em `data/mapper`. Modelos de domínio usam `java.time.LocalDate`.
 **Consequência:** UI traduz `DataError` em mensagem; exceções não passam da camada de dados.
+
+### D-022 — Cache de detalhes: DAO único, observe + refresh
+**Decisão:**
+- Um único `TmdbCacheDao` (abstract class) para todo o cache TMDB; gravação em transação (`saveMovie`/`saveTvShow`) com `@Upsert`.
+- Diretores (`tmdb_movie.directors`) e criadores (`tmdb_tv_show.creators`) como `List<String>` serializada em JSON; evita tabelas extras para dado só exibido. Muda o `director String?` planejado em DATABASE.md.
+- `tmdb_season` já é preenchida com o resumo das temporadas que vem nos detalhes da série.
+- Repositórios de detalhes expõem `observe…(id): Flow` (Room) + `refresh…(id, force): DataResult<Unit>` (rede → Room). ViewModel combina os dois.
+- DTO → Entity passa pelo modelo de domínio para reaproveitar as regras dos mappers.
+- `java.time.Clock` injetado (UTC) para testar validade do cache.
+- Testes de repositório usam DAO fake em memória (herda as transações do DAO real); DAO real testado em `androidTest` (Room in-memory), com `androidx.test` 1.3.0/1.7.0.
+**Consequência:** novas telas de detalhes só observam e pedem refresh; nada de chamada de rede direto da UI.

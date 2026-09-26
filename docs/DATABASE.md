@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **infraestrutura pronta** (Fase 1). `AppDatabase` v1 com apenas `tmdb_genre`; `Converters` para `LocalDate`; schema exportado em `app/schemas/`. Demais tabelas chegam nas fases seguintes.
+Room. Status: **cache TMDB implementado** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`. Acesso por `TmdbCacheDao`. `tmdb_episode` e tabelas pessoais chegam nas fases seguintes. `AppDatabase` versão 1, schema em `app/schemas/`; ainda sem instalação real, então muda sem migração (D-018).
 
 ## Princípios
 
@@ -28,7 +28,7 @@ Room. Status: **infraestrutura pronta** (Fase 1). `AppDatabase` v1 com apenas `t
 | release_date | LocalDate? | ano derivado |
 | runtime_minutes | Int? | |
 | vote_average | Double? | nota TMDB |
-| director | String? | nome(s) do diretor, extraído dos créditos |
+| directors | List<String> | nomes dos diretores (JSON), extraídos dos créditos (D-022) |
 | fetched_at | Long | controle de cache |
 
 ### tmdb_tv_show
@@ -45,6 +45,7 @@ Room. Status: **infraestrutura pronta** (Fase 1). `AppDatabase` v1 com apenas `t
 | number_of_episodes | Int? | |
 | episode_run_time | Int? | média, para horas estimadas |
 | vote_average | Double? | |
+| creators | List<String> | criadores (JSON) (D-022) |
 | fetched_at | Long | |
 
 ### tmdb_season
@@ -85,9 +86,9 @@ Room. Status: **infraestrutura pronta** (Fase 1). `AppDatabase` v1 com apenas `t
 
 ### tmdb_person / tmdb_credit
 - `tmdb_person(id PK, name, profile_path)`
-- `tmdb_credit(media_type, media_id, person_id, character, order)` PK `(media_type, media_id, person_id)` — só elenco principal (ex.: top 15).
+- `tmdb_credit(media_type, media_id, person_id, character, order)` PK `(media_type, media_id, person_id)` — só elenco principal (top 15). `media_type` = enum `MOVIE`/`TV`; sem FK (aponta para tabelas diferentes).
 
-Elenco pode ficar para fase posterior; tabela planejada desde já.
+Gravação é transacional (`saveMovie`/`saveTvShow`): upsert (não REPLACE, para não disparar CASCADE), gêneros e elenco da obra são substituídos, temporadas que sumiram são removidas.
 
 ## Dados pessoais
 
