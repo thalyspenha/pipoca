@@ -128,3 +128,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-024 — Pipeline da busca no SearchViewModel
 **Decisão:** `combine(texto.trim.distinct.debounce(400ms), tipo, tentativa)` → `distinctUntilChanged` → `flatMapLatest`. Assim: digitação rápida só dispara ao parar; texto vazio/curto (< 2) vira `Idle` sem rede; mesma pesquisa (texto + tipo) não se repete; pesquisa nova cancela a anterior; trocar FILMES/SÉRIES pesquisa na hora; `retry()` incrementa a tentativa para repetir de propósito. Estado próprio (`SearchUiState` + `SearchContent`: Idle, Loading, Results, Empty, Error com `DataError`) em vez do `UiState` genérico. Só página 1 por enquanto.
 **Consequência:** `kotlinx-coroutines-test` 1.11.0 entra como dependência de teste (tempo virtual para testar debounce e cancelamento).
+
+### D-025 — Tela de Busca e utilitários compartilhados
+**Decisão:**
+- `TmdbImageUrl` saiu de `data/remote` para `util/`: a UI monta URLs de poster e `presentation` não deve depender de `data`. Novo tamanho `POSTER_THUMB = w154` para listas.
+- `PosterImage` (componente) mostra a inicial do título quando não há poster ou enquanto carrega.
+- `DataError.toMessage()` e `isRetryable` em `presentation/components`: "Tentar novamente" só aparece para erros passageiros (`Network`, `Unknown`); chave ausente/inválida e não encontrado orientam a corrigir.
+- Tela de Busca: campo com limpar, `SegmentedButton` FILMES | SÉRIES, lista com poster, título e "ano · tipo". Pesquisa ocorre enquanto digita; o botão Buscar do teclado só fecha o teclado.
+**Consequência:** `SearchScreen(onResultClick)` já expõe o clique; a parte 3 liga à navegação.

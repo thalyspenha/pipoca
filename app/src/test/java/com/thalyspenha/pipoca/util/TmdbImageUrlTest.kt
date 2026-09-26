@@ -1,4 +1,4 @@
-package com.thalyspenha.pipoca.data.remote
+package com.thalyspenha.pipoca.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

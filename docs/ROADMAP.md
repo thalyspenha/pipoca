@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 3 em andamento — parte 1 concluída** (SearchViewModel; 59 testes unitários passando). Próxima: parte 2 (aguardando "IMPLEMENTAR FASE 3 – PARTE 2").
+**Fase 3 em andamento — partes 1 e 2 concluídas** (SearchViewModel e tela de Busca; 61 testes unitários passando). Próxima: parte 3 (aguardando "IMPLEMENTAR FASE 3 – PARTE 3").
 
 ## Fases
 
@@ -46,7 +46,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Detalhes: só rota + tela placeholder (opção B, D-023); tela real de detalhes fica para fase futura.
 - **Executada em 3 partes** (D-023). Uma por vez, só com "IMPLEMENTAR FASE 3 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ SearchViewModel e testes — debounce 400 ms, ignora texto vazio/curto, não repete a mesma pesquisa, cancela a anterior, alternância filmes/séries; `kotlinx-coroutines-test`.
-  2. ⏳ Tela de Busca — campo, alternância FILMES/SÉRIES, lista com poster (Coil), título, ano, tipo; loading, erro (chave ausente, sem conexão) e vazio.
+  2. ✅ Tela de Busca — campo, alternância FILMES/SÉRIES, lista com poster (Coil), título, ano, tipo; loading, erro (chave ausente, sem conexão) e vazio.
   3. ⏳ Navegação para detalhes — rotas `MovieDetailsRoute(id)`/`TvShowDetailsRoute(id)` com telas placeholder; docs e ROADMAP.
 
 ### ⏳ Fases 4–11

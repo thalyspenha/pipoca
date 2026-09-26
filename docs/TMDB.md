@@ -1,6 +1,6 @@
 # TMDB
 
-Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl`. Fase 2 concluída: busca de filmes/séries e detalhes de filme/série, com cache de detalhes no Room.
+Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl` (em `util/`, D-025). Fase 2 concluída: busca de filmes/séries e detalhes de filme/série, com cache de detalhes no Room.
 
 ## Autenticação
 
@@ -26,7 +26,7 @@ Regras:
 ## Configuração do cliente
 
 - Base URL: `https://api.themoviedb.org/3/`
-- Imagens: `https://image.tmdb.org/t/p/{size}{path}` — tamanhos típicos: poster `w342`/`w500`, backdrop `w780`/`w1280`, perfil `w185`, still `w300`. Montagem centralizada em um helper; apenas o `path` é salvo no banco.
+- Imagens: `https://image.tmdb.org/t/p/{size}{path}` — tamanhos típicos: poster `w342`/`w500`, backdrop `w780`/`w1280`, perfil `w185`, still `w300`. Montagem centralizada em `util/TmdbImageUrl` (lista de busca usa `w154`); apenas o `path` é salvo no banco.
 - Idioma: `language=pt-BR` via interceptor. Se sinopse vier vazia, tentar `en-US` (definir na fase de detalhes).
 - `region=BR` onde aplicável.
 - Timeouts OkHttp padrão razoáveis (~15 s); logging interceptor apenas em debug.
