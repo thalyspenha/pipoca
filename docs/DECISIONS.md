@@ -95,3 +95,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Coil 3.6.3 (`coil-compose`, `coil-network-okhttp`) com cache em disco de 250 MB; `App` implementa `SingletonImageLoader.Factory` com o `ImageLoader` do Hilt.
 - Teste: `mockwebserver3` (só `testImplementation`).
 **Consequência:** fases seguintes só adicionam endpoints em `TmdbApi`, entidades/DAOs em `AppDatabase` e repositórios.
+
+### D-019 — Fase 2 em 3 partes, com cache de detalhes já no Room
+**Contexto:** `fase2.md` pede Repository mas não fala de persistência; ARCHITECTURE.md (D-003) diz que detalhes vêm do Room.
+**Decisão:** Fase 2 em 3 partes (ver ROADMAP.md), uma por vez: (1) API e DTOs, (2) RemoteDataSource, erros e mapeamento, (3) Repository com cache de detalhes no Room. Busca não persiste (D-008).
+**Consequência:** Fase 2 cria as tabelas de cache `tmdb_movie`, `tmdb_tv_show`, gêneros e elenco; tabelas pessoais continuam para as fases seguintes.

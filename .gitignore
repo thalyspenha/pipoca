@@ -13,6 +13,7 @@ captures/
 # Secrets e configuração local — nunca commitar
 local.properties
 .env
+apikey.txt
 *.jks
 *.keystore
 
