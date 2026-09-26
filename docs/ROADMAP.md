@@ -40,4 +40,4 @@ Ordem provável derivada do prompt mestre, apenas como referência:
 ## Pendências gerais
 
 - Obter token TMDB e colocar em `local.properties` para testar integração.
-- Verificar JDK/Android SDK no ambiente de build.
+- ~~Verificar JDK/Android SDK~~ ✅ JDK 25 (JBR do Android Studio, `JAVA_HOME` no `~/.zshrc`), SDK em `~/Library/Android/sdk` (android-33…37.1). JDK 25 exige Gradle ≥ 9.1.
