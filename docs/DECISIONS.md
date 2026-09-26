@@ -124,3 +124,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** `fase3.md` pede navegação para detalhes, mas não a tela de detalhes.
 **Decisão:** Fase 3 em 3 partes (ver ROADMAP.md): (1) SearchViewModel e testes, (2) tela de Busca, (3) rotas de detalhes com telas placeholder. Tela real de detalhes fica para fase futura (opção B, escolha do usuário).
 **Consequência:** repositórios de detalhes da Fase 2 continuam sem uso na UI até essa fase.
+
+### D-024 — Pipeline da busca no SearchViewModel
+**Decisão:** `combine(texto.trim.distinct.debounce(400ms), tipo, tentativa)` → `distinctUntilChanged` → `flatMapLatest`. Assim: digitação rápida só dispara ao parar; texto vazio/curto (< 2) vira `Idle` sem rede; mesma pesquisa (texto + tipo) não se repete; pesquisa nova cancela a anterior; trocar FILMES/SÉRIES pesquisa na hora; `retry()` incrementa a tentativa para repetir de propósito. Estado próprio (`SearchUiState` + `SearchContent`: Idle, Loading, Results, Empty, Error com `DataError`) em vez do `UiState` genérico. Só página 1 por enquanto.
+**Consequência:** `kotlinx-coroutines-test` 1.11.0 entra como dependência de teste (tempo virtual para testar debounce e cancelamento).

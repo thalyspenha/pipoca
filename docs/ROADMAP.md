@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 2 concluída.** Integração TMDB (busca + detalhes com cache no Room) pronta; 49 testes unitários passando. Próxima: Fase 3, parte 1 (aguardando "IMPLEMENTAR FASE 3 – PARTE 1").
+**Fase 3 em andamento — parte 1 concluída** (SearchViewModel; 59 testes unitários passando). Próxima: parte 2 (aguardando "IMPLEMENTAR FASE 3 – PARTE 2").
 
 ## Fases
 
@@ -39,13 +39,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ RemoteDataSource, erros e mapeamento — erros de domínio (rede, não encontrado, chave ausente/inválida, desconhecido); modelos de domínio; mappers DTO → domínio; testes de mapeamento e erro.
   3. ✅ Repository e cache — busca direto na rede sem persistir (D-008); detalhes com cache no Room (`tmdb_movie`, `tmdb_tv_show`, gêneros, elenco) e validade conforme ARCHITECTURE.md; docs `TMDB.md`/`DATABASE.md` e ROADMAP.
 
-### ⏳ Fase 3 — Busca (ver `fase3.md`)
+### 🚧 Fase 3 — Busca (ver `fase3.md`)
 - Tela Search completa: campo, debounce, loading, erro, vazio, resultados (poster, título, ano, tipo), alternância FILMES | SÉRIES, navegação para detalhes.
 - Sem requisição com texto vazio, durante digitação rápida ou repetindo a pesquisa em andamento.
 - ViewModel + StateFlow, sem lógica de API na UI; testes do ViewModel.
 - Detalhes: só rota + tela placeholder (opção B, D-023); tela real de detalhes fica para fase futura.
 - **Executada em 3 partes** (D-023). Uma por vez, só com "IMPLEMENTAR FASE 3 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ SearchViewModel e testes — debounce 400 ms, ignora texto vazio/curto, não repete a mesma pesquisa, cancela a anterior, alternância filmes/séries; `kotlinx-coroutines-test`.
+  1. ✅ SearchViewModel e testes — debounce 400 ms, ignora texto vazio/curto, não repete a mesma pesquisa, cancela a anterior, alternância filmes/séries; `kotlinx-coroutines-test`.
   2. ⏳ Tela de Busca — campo, alternância FILMES/SÉRIES, lista com poster (Coil), título, ano, tipo; loading, erro (chave ausente, sem conexão) e vazio.
   3. ⏳ Navegação para detalhes — rotas `MovieDetailsRoute(id)`/`TvShowDetailsRoute(id)` com telas placeholder; docs e ROADMAP.
 
