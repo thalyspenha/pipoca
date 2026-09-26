@@ -56,3 +56,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-012 — Autenticação TMDB por Bearer token
 **Decisão:** usar API Read Access Token (v4) no header `Authorization`, via interceptor, lido de `local.properties` → `BuildConfig.TMDB_API_TOKEN`.
 **Consequência:** chave fora das URLs/logs de query. Obs.: chave em `BuildConfig` fica no APK — aceitável para app pessoal não publicado.
+
+### D-013 — Fase 0 só com documentação
+**Contexto:** a seção 19 do `prompt_mestre.md` pede, já na etapa inicial, estrutura do projeto, primeira tela mínima e compilação.
+**Decisão:** Fase 0 cobre apenas planejamento e documentação. Estrutura Android, tela mínima e `./gradlew build` passando ficam na Fase 1 (`fase1.md`).
+**Consequência:** nenhum código Android até "IMPLEMENTAR FASE 1"; a Fase 1 entrega os itens 2, 8 e 9 da seção 19.
