@@ -140,5 +140,5 @@ Valores são ponto de partida; ajustar se necessário e registrar.
 ## Testes
 
 - Unitários: mappers, use cases (progresso, status), cálculo de validade do cache, ViewModels com repositórios fake.
-- Instrumentados: DAOs com Room in-memory, migrações.
+- Instrumentados: DAOs com Room in-memory, migrações (`MigrationTestHelper`). Como rodar sem apagar dados do aparelho: `docs/SETUP.md`.
 - Cada fase entrega testes da lógica que introduziu.

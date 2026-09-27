@@ -63,6 +63,14 @@ Deve terminar em `BUILD SUCCESSFUL` com todos os testes unitários passando.
 
 S25: ativar modo desenvolvedor e depuração USB, conectar e `./gradlew installDebug` (ou Run no Android Studio). No Linux pode ser preciso regra `udev` para o `adb` enxergar o aparelho (`adb devices`).
 
+Testes instrumentados (DAOs, migrações) sem perder os dados do app (D-028):
+```sh
+./gradlew installDebug installDebugAndroidTest
+adb shell am instrument -w com.thalyspenha.pipoca.test/androidx.test.runner.AndroidJUnitRunner
+adb shell "run-as com.thalyspenha.pipoca sh -c 'rm -f databases/migration-test.db*'"
+```
+Não usar `./gradlew connectedDebugAndroidTest`: ao final ele desinstala o app e apaga o banco do aparelho.
+
 ## Claude Code
 
 A memória local do Claude (`~/.claude/projects/...`) não é sincronizada entre máquinas. O que importa para continuar o trabalho está em `CLAUDE.md` e `docs/` (estado atual: `docs/ROADMAP.md`).

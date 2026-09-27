@@ -21,7 +21,7 @@ Máquina nova ou build falhando por ambiente: ver `docs/SETUP.md`.
 - Quando o usuário pedir commit: antes, conferir se docs (`ROADMAP.md`, `DECISIONS.md`, docs afetados) e este arquivo estão atualizados; depois commit + push para `main`.
 - Decisão arquitetural relevante vai para `docs/DECISIONS.md`; sempre atualizar `docs/ROADMAP.md`.
 - Nunca commitar a chave TMDB (`local.properties`); conferir o que está staged antes de commitar.
-- Ao fim de cada parte/fase: `./gradlew build` (inclui lint e testes unitários), corrigir erros e avisos.
+- Ao fim de cada parte/fase: `./gradlew build` (inclui lint e testes unitários), corrigir erros e avisos. Com aparelho conectado, rodar também os instrumentados conforme `docs/SETUP.md` (nunca `connectedDebugAndroidTest`: desinstala o app e apaga os dados).
 - Dependência nova só com registro em `DECISIONS.md`; versões em `gradle/libs.versions.toml`.
 
 ## Git
