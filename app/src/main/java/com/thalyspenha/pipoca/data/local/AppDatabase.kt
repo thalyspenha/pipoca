@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thalyspenha.pipoca.data.local.converter.Converters
 import com.thalyspenha.pipoca.data.local.dao.TmdbCacheDao
+import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
 import com.thalyspenha.pipoca.data.local.entity.TmdbCreditEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbGenreEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbMovieEntity
@@ -13,6 +14,9 @@ import com.thalyspenha.pipoca.data.local.entity.TmdbPersonEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbSeasonEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbTvShowEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbTvShowGenreCrossRef
+import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
+import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
+import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
 
 @Database(
     entities = [
@@ -24,13 +28,18 @@ import com.thalyspenha.pipoca.data.local.entity.TmdbTvShowGenreCrossRef
         TmdbSeasonEntity::class,
         TmdbPersonEntity::class,
         TmdbCreditEntity::class,
+        UserMovieEntity::class,
+        UserTvShowEntity::class,
+        WatchHistoryEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun tmdbCacheDao(): TmdbCacheDao
+
+    abstract fun userLibraryDao(): UserLibraryDao
 
     companion object {
         const val NAME = "pipoca.db"

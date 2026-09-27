@@ -146,3 +146,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** `fase4.md` (biblioteca pessoal) cobre entidades, migration, operações, Use Cases e Home com dados reais.
 **Decisão:** Fase 4 em 3 partes (ver ROADMAP.md): (1) entidades, DAOs e migration, (2) Repository e Use Cases, (3) Home com dados reais. Uma por vez, só com pedido explícito.
 **Consequência:** cada parte compila, passa em `./gradlew build` e termina com sugestão de commit.
+
+### D-028 — Tabelas pessoais e migrações explícitas
+**Contexto:** `fase4.md` pede entidades `UserMovie`, `UserTvShow`, `Favorite`, `WatchHistory`, `Rating` e migrations corretas; o app já está instalado no S25 (o banco ainda não é aberto pela UI, mas será na parte 3); daqui em diante qualquer instalação pode ter dados pessoais.
+**Decisão:**
+- `user_movie`, `user_tv_show` e `watch_history` conforme DATABASE.md. Favorite e Rating continuam colunas (`is_favorite`, `rating`), não tabelas (D-009). Sem FK para o cache (D-007). Nota 1–10 validada no use case (Room não gera CHECK).
+- `user_episode` e `collection_item` ficam para as fases de episódios e coleção.
+- Fim da exceção de D-018: toda mudança de schema a partir da versão 1 tem `Migration` explícita (SQL copiado do schema exportado), registrada em `ALL_MIGRATIONS`; nunca `fallbackToDestructiveMigration`.
+- `room-testing` 2.8.5 (mesma versão do Room) em `androidTestImplementation` para `MigrationTestHelper`; schemas entram automaticamente nos assets do teste pelo plugin do Room.
+**Consequência:** testes de DAO e migração são instrumentados. Rodar com `./gradlew installDebug installDebugAndroidTest` + `adb shell am instrument -w com.thalyspenha.pipoca.test/androidx.test.runner.AndroidJUnitRunner`; evitar `connectedDebugAndroidTest`, que desinstala o app ao final e apaga os dados do aparelho.

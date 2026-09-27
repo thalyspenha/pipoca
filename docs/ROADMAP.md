@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 3 concluída.** Busca completa (filmes/séries) com navegação para detalhes placeholder; 63 testes unitários passando. Próxima: Fase 4 — Biblioteca pessoal, dividida em 3 partes (D-027); aguardando "IMPLEMENTAR FASE 4 – PARTE 1".
+**Fase 3 concluída.** Busca completa (filmes/séries) com navegação para detalhes placeholder; 63 testes unitários passando. Fase 4 em andamento: parte 1 concluída (tabelas pessoais, `UserLibraryDao`, migração 1→2). Próxima: "IMPLEMENTAR FASE 4 – PARTE 2" (Repository e Use Cases).
 
 ## Fases
 
@@ -49,13 +49,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela de Busca — campo, alternância FILMES/SÉRIES, lista com poster (Coil), título, ano, tipo; loading, erro (chave ausente, sem conexão) e vazio.
   3. ✅ Navegação para detalhes — rotas `MovieDetailsRoute(id)`/`TvShowDetailsRoute(id)` com telas placeholder; docs e ROADMAP.
 
-### ⏳ Fase 4 — Biblioteca pessoal (ver `fase4.md`)
+### 🚧 Fase 4 — Biblioteca pessoal (ver `fase4.md`)
 - Entidades Room separando dados do TMDB (`Movie`, `TvShow`) de dados do usuário (`UserMovie`, `UserTvShow`, `Favorite`, `WatchHistory`, `Rating`).
 - Operações: adicionar/remover filme e série; filme assistido/quero assistir; série quero assistir/assistindo/concluída; favoritar/remover favorito; adicionar/remover nota pessoal.
 - Repository e Use Cases; Home usando dados reais do banco.
 - Migrations corretas, sem apagar banco automaticamente; testes dos principais casos de uso; atualizar DATABASE.md e ROADMAP.md.
 - **Executada em 3 partes** (D-027). Uma por vez, só com "IMPLEMENTAR FASE 4 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ Entidades, DAOs e migration — tabelas do usuário, migration para nova versão do banco sem destructive fallback, testes de DAO/migration, DATABASE.md.
+  1. ✅ Entidades, DAOs e migration — tabelas do usuário, migration para nova versão do banco sem destructive fallback, testes de DAO/migration, DATABASE.md.
   2. ⏳ Repository e Use Cases — todas as operações listadas, com testes dos casos de uso.
   3. ⏳ Home com dados reais — HomeViewModel lendo a biblioteca via Use Cases, estados vazio/lista, ROADMAP.
 

@@ -1,6 +1,15 @@
 # DATABASE
 
-Room. Status: **cache TMDB implementado** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`. Acesso por `TmdbCacheDao`. `tmdb_episode` e tabelas pessoais chegam nas fases seguintes. `AppDatabase` versão 1, schema em `app/schemas/`; ainda sem instalação real, então muda sem migração (D-018).
+Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao`. `tmdb_episode`, `user_episode` e `collection_item` chegam nas fases seguintes. `AppDatabase` versão 2, schema em `app/schemas/`.
+
+## Migrações
+
+A partir da versão 1 toda mudança de schema tem `Migration` explícita em `data/local/migration/Migrations.kt`, registrada em `ALL_MIGRATIONS` e testada em `MigrationTest` (`MigrationTestHelper` valida contra o schema exportado). Nunca `fallbackToDestructiveMigration` (D-028).
+
+| Versão | Mudança |
+|---|---|
+| 1 | Cache TMDB |
+| 2 | `user_movie`, `user_tv_show`, `watch_history` (+ índices) |
 
 ## Princípios
 
@@ -12,7 +21,7 @@ Room. Status: **cache TMDB implementado** (Fase 2): `tmdb_genre`, `tmdb_movie`, 
 4. Nada de duplicar dado TMDB nas tabelas pessoais (título, poster etc. vêm do cache via JOIN).
 5. Progresso, contagens e estatísticas são **calculados**, não armazenados.
 6. Datas: `Long` epoch millis (UTC) para instantes; `LocalDate` via converter (ISO string) para datas sem hora (lançamento, aquisição).
-7. `exportSchema = true`; migrações explícitas a partir da primeira versão usada de verdade.
+7. `exportSchema = true`; migrações explícitas desde a versão 1 (ver Migrações).
 
 ## Cache TMDB
 
@@ -174,4 +183,4 @@ Um título pode ter vários itens (ex.: 4K e DVD).
 
 ## Enums
 
-Guardados como `String` (nome do enum) via converter, para não quebrar se a ordem mudar.
+Guardados como `String` (nome do enum, conversão nativa do Room), para não quebrar se a ordem mudar. `MovieStatus` e `TvShowStatus` ficam em `domain/model` (usados pela UI); `WatchMediaType` e `CreditMediaType` são da camada `data`.
