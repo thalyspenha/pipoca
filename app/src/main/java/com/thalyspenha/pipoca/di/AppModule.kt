@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import java.time.Clock
+import java.time.ZoneId
 import javax.inject.Singleton
 
 @Module
@@ -22,4 +23,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideClock(): Clock = Clock.systemUTC()
+
+    /** Fuso do aparelho para agrupar por dia/mês/ano (estatísticas). */
+    @Provides
+    fun provideZoneId(): ZoneId = ZoneId.systemDefault()
 }

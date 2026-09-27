@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thalyspenha.pipoca.data.local.converter.Converters
 import com.thalyspenha.pipoca.data.local.dao.CollectionDao
+import com.thalyspenha.pipoca.data.local.dao.StatsDao
 import com.thalyspenha.pipoca.data.local.dao.TmdbCacheDao
 import com.thalyspenha.pipoca.data.local.dao.TmdbEpisodeDao
 import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
@@ -52,6 +53,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun tmdbEpisodeDao(): TmdbEpisodeDao
 
     abstract fun collectionDao(): CollectionDao
+
+    abstract fun statsDao(): StatsDao
 
     companion object {
         const val NAME = "pipoca.db"

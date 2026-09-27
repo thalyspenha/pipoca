@@ -309,3 +309,13 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Gêneros, opção (a) escolhida pelo usuário: filmes `WATCHED` + séries com ≥ 1 episódio assistido ou `COMPLETED`, cada título uma vez por gênero.
 - Gráficos como barras em Compose, sem dependência nova.
 **Consequência:** limitações do cálculo documentadas em DATABASE.md na parte 2.
+
+### D-048 — Consultas e cálculos das estatísticas
+**Decisão:**
+- `StatsDao` com sete consultas agregadas, uma por bloco (filmes, séries, episódios, tempo, gêneros, notas, coleção), todas Flow; `COALESCE(SUM(...), 0)` para tabelas vazias. Nenhuma tabela nova, nada duplicado.
+- Filmes: assistidos, quero assistir, favoritos e filmes distintos na coleção (4K + DVD do mesmo filme = 1). Séries: total, assistindo, concluídas, quero ver. Episódios: distintos em `user_episode`; mês/ano pela data em que foram marcados.
+- Tempo: por visualização em `watch_history`; filme `runtime_minutes`, episódio `runtime_minutes` ou `episode_run_time` da série; o que não tem duração **ou cache** fica fora dos minutos e é contado em `withoutRuntime`. Horas = minutos / 60 (inteiro); dias = minutos / 1440.
+- Gêneros (opção a, D-047) via UNION de filmes `WATCHED` e séries `COMPLETED` ou com episódio assistido; título sem cache não aparece. Percentual arredondado para baixo.
+- Notas: filmes e séries juntos, sempre 1–10 com zeros; média calculada no domain. Coleção: itens por formato, sempre os 5.
+- `ObserveStatisticsUseCase` calcula início do mês/ano no fuso do aparelho (`ZoneId` injetado). `LocalDate.ofInstant` evitado (API 34; minSdk 26), apontado pelo lint.
+**Consequência:** a parte 2 só desenha `Statistics`.

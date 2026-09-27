@@ -5,12 +5,14 @@ import com.thalyspenha.pipoca.data.repository.LibraryRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.MovieRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.SearchRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.SeasonRepositoryImpl
+import com.thalyspenha.pipoca.data.repository.StatsRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.TvShowRepositoryImpl
 import com.thalyspenha.pipoca.domain.repository.CollectionRepository
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.repository.SearchRepository
 import com.thalyspenha.pipoca.domain.repository.SeasonRepository
+import com.thalyspenha.pipoca.domain.repository.StatsRepository
 import com.thalyspenha.pipoca.domain.repository.TvShowRepository
 import dagger.Binds
 import dagger.Module
@@ -45,4 +47,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindCollectionRepository(impl: CollectionRepositoryImpl): CollectionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindStatsRepository(impl: StatsRepositoryImpl): StatsRepository
 }

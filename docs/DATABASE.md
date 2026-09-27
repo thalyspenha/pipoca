@@ -185,7 +185,7 @@ Um título pode ter vários itens (ex.: 4K e DVD). Independente de `user_movie`/
 - **Home (D-044)**: progresso de todas as séries `WATCHING` sai de consultas fixas com JOIN em `user_tv_show.status = 'WATCHING'` (`observeWatchingShowsEpisodes`/`Seasons` em `TmdbEpisodeDao`, `observeWatchingShowsWatchedEpisodes` em `UserLibraryDao`), sem consulta por série.
 - **Próximo episódio** = primeiro disponível não assistido, em ordem (temporada, número), mesmo com posteriores assistidos. **Próxima temporada** = temporada dele. **Próximo a estrear** = primeiro regular não exibido (para "Em dia").
 - **Status automático** (D-035): `COMPLETED` automático quando todos os episódios lançados (sem temporada 0) estão assistidos **e** `tmdb_status` é `Ended`/`Canceled`; no ar, fica `WATCHING` ("Em dia"). Marcar episódio de série fora da biblioteca ou em `WANT_TO_WATCH` passa a `WATCHING`; desmarcar episódio de `COMPLETED` volta a `WATCHING`.
-- **Horas assistidas** = soma de `runtime_minutes` dos filmes assistidos (considerando reassistidos) + episódios assistidos (fallback `episode_run_time`).
+- **Tempo assistido** (`StatsDao.observeWatchTime`, D-048) = soma por visualização em `watch_history` (reassistir conta): filme `runtime_minutes`, episódio `runtime_minutes` ou `episode_run_time` da série; sem duração ou sem cache fica fora dos minutos e é contado à parte. Demais estatísticas em `StatsDao` (consultas agregadas, sem tabela nova).
 
 ## Enums
 
