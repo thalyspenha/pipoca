@@ -178,3 +178,10 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** `fase5.md` pede, no filme, "coleção" e "Adicionar à coleção", e na série, "progresso"; ainda não existem `collection_item` nem episódios.
 **Decisão:** Fase 5 em 3 partes (ver ROADMAP.md): (1) ViewModel de detalhes do filme e testes, (2) tela do filme e componentes reutilizáveis, (3) série. Coleção e progresso aparecem como placeholder "em breve" (opção A, escolha do usuário); nada de `collection_item` nem migração nesta fase.
 **Consequência:** fases de coleção física e episódios trocam os placeholders pelo conteúdo real.
+
+### D-032 — ViewModel de detalhes do filme
+**Decisão:**
+- `MovieDetailsViewModel` combina `observeMovieDetails` (cache), `LibraryRepository.observeMovie` e o estado do refresh. Estado próprio `MovieDetailsUiState`: `Loading`/`Error` só sem cache; com cache sempre `Success`, e falha de refresh vira `refreshError` não bloqueante (dispensável). `refresh(force)` ao abrir e para "tentar novamente".
+- ID lido do `SavedStateHandle` pela chave `id` (propriedade de `MovieDetailsRoute`), sem `toRoute()`, para testar sem Android.
+- Ações pelos use cases da Fase 4; a tela atualiza pela reemissão do Room. Botões de status funcionam como alternância: tocar no status atual tira o filme da biblioteca (e apaga o histórico, D-029). Favorito alterna; nota 1–10 ou `null`.
+**Consequência:** a parte 2 só desenha a tela a partir de `MovieDetailsUiState` e liga os eventos.

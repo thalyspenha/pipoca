@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 4 concluída.** Biblioteca pessoal no Room (migração 1→2), repository e use cases, Home com dados reais; 92 testes unitários e 11 instrumentados passando. Ainda não há tela para adicionar itens à biblioteca (detalhes são placeholder), então a Home real mostra o estado vazio até a fase de detalhes. Próxima: Fase 5 — Detalhes, dividida em 3 partes (D-031); aguardando "IMPLEMENTAR FASE 5 – PARTE 1".
+**Fase 4 concluída** (biblioteca pessoal, Home com dados reais). **Fase 5 em andamento:** parte 1 concluída (`MovieDetailsViewModel` + testes, ainda sem tela); 102 testes unitários passando. Próxima: "IMPLEMENTAR FASE 5 – PARTE 2" (tela do filme e componentes).
 
 ## Fases
 
@@ -59,13 +59,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Repository e Use Cases — todas as operações listadas, com testes dos casos de uso.
   3. ✅ Home com dados reais — HomeViewModel lendo a biblioteca via Use Cases, estados vazio/lista, ROADMAP.
 
-### ⏳ Fase 5 — Detalhes (ver `fase5.md`)
+### 🚧 Fase 5 — Detalhes (ver `fase5.md`)
 - Filme: backdrop, poster, título, título original, ano, duração, gêneros, nota TMDB, sinopse, diretor, elenco, status pessoal, favorito, nota pessoal, coleção. Ações: quero assistir, marcar assistido, favoritar, adicionar à coleção, avaliar.
 - Série: backdrop, poster, título, ano, gêneros, nota TMDB, sinopse, elenco, número de temporadas, progresso, status pessoal, favorito.
 - Componentes Compose reutilizáveis; estados Loading/Success/Error; ações gravam no banco na hora; funciona com cache.
 - Coleção e progresso da série: placeholder "em breve" nesta fase (opção A, D-031); implementados nas fases de coleção física e episódios.
 - **Executada em 3 partes** (D-031). Uma por vez, só com "IMPLEMENTAR FASE 5 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ Detalhes do filme: ViewModel e testes — observa cache + biblioteca, refresh, ações via use cases da Fase 4.
+  1. ✅ Detalhes do filme: ViewModel e testes — observa cache + biblioteca, refresh, ações via use cases da Fase 4.
   2. ⏳ Tela do filme e componentes reutilizáveis — cabeçalho backdrop/poster, chips de gênero, faixa de elenco, seletor de status, favorito, avaliação 1–10.
   3. ⏳ Série — ViewModel + tela reusando componentes, status assistindo/concluída; docs e ROADMAP.
 
