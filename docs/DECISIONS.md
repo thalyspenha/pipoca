@@ -185,3 +185,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - ID lido do `SavedStateHandle` pela chave `id` (propriedade de `MovieDetailsRoute`), sem `toRoute()`, para testar sem Android.
 - Ações pelos use cases da Fase 4; a tela atualiza pela reemissão do Room. Botões de status funcionam como alternância: tocar no status atual tira o filme da biblioteca (e apaga o histórico, D-029). Favorito alterna; nota 1–10 ou `null`.
 **Consequência:** a parte 2 só desenha a tela a partir de `MovieDetailsUiState` e liga os eventos.
+
+### D-033 — Tela de detalhes do filme e componentes reutilizáveis
+**Decisão:**
+- Componentes em `presentation/components/details`: `DetailsHeader` (backdrop 16:9 com degradê e pôster sobreposto 48 dp, sem espaço vazio abaixo), `DetailsSection`, `GenreChips`, `Overview` (4 linhas, toque expande), `CastRow`, `ComingSoonCard`, `StatusSelector<T>` (segmentado genérico), `FavoriteButton`, `RatingSelector` (10 estrelas, tocar na nota atual remove).
+- `MovieDetailsScreen`: `Scaffold` com título e voltar; Loading/Error de tela cheia só sem cache; com cache, falha de refresh em snackbar com "Tentar"; barra de progresso fina durante o refresh. Coleção como "Em breve" (D-031).
+- `util/DisplayFormat.kt`: `formatRuntime` ("2h 16min") e `formatVote` ("8,2", pt-BR).
+- `MovieDetailsRoute` agora abre a tela real; a série segue placeholder até a parte 3.
+**Consequência:** a série reutiliza os mesmos componentes; nenhuma dependência nova.

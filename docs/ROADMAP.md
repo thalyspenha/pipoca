@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 4 concluída** (biblioteca pessoal, Home com dados reais). **Fase 5 em andamento:** parte 1 concluída (`MovieDetailsViewModel` + testes, ainda sem tela); 102 testes unitários passando. Próxima: "IMPLEMENTAR FASE 5 – PARTE 2" (tela do filme e componentes).
+**Fase 4 concluída** (biblioteca pessoal, Home com dados reais). **Fase 5 em andamento:** partes 1 e 2 concluídas (tela completa de detalhes do filme com ações, componentes em `presentation/components/details`); 104 testes unitários passando; testado no S25. Série ainda é placeholder. Próxima: "IMPLEMENTAR FASE 5 – PARTE 3" (série).
 
 ## Fases
 
@@ -66,7 +66,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Coleção e progresso da série: placeholder "em breve" nesta fase (opção A, D-031); implementados nas fases de coleção física e episódios.
 - **Executada em 3 partes** (D-031). Uma por vez, só com "IMPLEMENTAR FASE 5 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Detalhes do filme: ViewModel e testes — observa cache + biblioteca, refresh, ações via use cases da Fase 4.
-  2. ⏳ Tela do filme e componentes reutilizáveis — cabeçalho backdrop/poster, chips de gênero, faixa de elenco, seletor de status, favorito, avaliação 1–10.
+  2. ✅ Tela do filme e componentes reutilizáveis — cabeçalho backdrop/poster, chips de gênero, faixa de elenco, seletor de status, favorito, avaliação 1–10.
   3. ⏳ Série — ViewModel + tela reusando componentes, status assistindo/concluída; docs e ROADMAP.
 
 ### ⏳ Fases 6–11

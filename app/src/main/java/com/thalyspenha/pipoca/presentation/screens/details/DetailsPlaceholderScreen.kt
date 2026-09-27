@@ -16,14 +16,8 @@ import com.thalyspenha.pipoca.presentation.components.PlaceholderScreen
 import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
 
 /**
- * Detalhes provisórios (D-023): só confirma a navegação. A tela real usa
- * MovieRepository/TvShowRepository numa fase futura.
+ * Detalhes provisórios da série (D-023); a tela real chega na Fase 5, parte 3.
  */
-@Composable
-fun MovieDetailsScreen(id: Long, onBack: () -> Unit) {
-    DetailsPlaceholder(title = "Filme", id = id, onBack = onBack)
-}
-
 @Composable
 fun TvShowDetailsScreen(id: Long, onBack: () -> Unit) {
     DetailsPlaceholder(title = "Série", id = id, onBack = onBack)
@@ -54,6 +48,6 @@ private fun DetailsPlaceholder(title: String, id: Long, onBack: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-private fun MovieDetailsPreview() {
-    PipocaTheme { MovieDetailsScreen(id = 603, onBack = {}) }
+private fun TvShowDetailsPreview() {
+    PipocaTheme { TvShowDetailsScreen(id = 1396, onBack = {}) }
 }
