@@ -3,6 +3,11 @@ package com.thalyspenha.pipoca.domain.repository
 import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.LibrarySort
+import com.thalyspenha.pipoca.domain.model.MovieLibraryCounts
+import com.thalyspenha.pipoca.domain.model.MovieLibraryFilter
+import com.thalyspenha.pipoca.domain.model.TvShowLibraryCounts
+import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
@@ -49,6 +54,18 @@ interface LibraryRepository {
     suspend fun removeTvShow(showId: Long)
 
     fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>>
+
+    /** Biblioteca (D-050): filtro e ordenação no banco; [LibrarySort.PROGRESS] cai na ordem padrão. */
+    fun observeMovieList(filter: MovieLibraryFilter, sort: LibrarySort): Flow<List<LibraryMovieItem>>
+
+    fun observeTvShowList(filter: TvShowLibraryFilter, sort: LibrarySort): Flow<List<LibraryTvShowItem>>
+
+    fun observeMovieLibraryCounts(): Flow<MovieLibraryCounts>
+
+    fun observeTvShowLibraryCounts(): Flow<TvShowLibraryCounts>
+
+    /** Assistidos de todas as séries da biblioteca, numa consulta. */
+    fun observeLibraryShowsWatchedEpisodes(): Flow<List<WatchedEpisode>>
 
     /** Histórico de visualizações, mais recente primeiro (D-046). */
     fun observeHistory(): Flow<List<HistoryEntry>>

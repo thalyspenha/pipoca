@@ -201,3 +201,10 @@ Guardados como `String` (nome do enum, conversão nativa do Room), para não que
 - **Notas** juntam filmes e séries; itens sem nota não entram na média.
 - **Coleção** conta itens (um 4K e um DVD do mesmo filme são 2 itens); "Filmes na coleção" conta filmes distintos.
 
+## Biblioteca (D-050, D-051)
+
+- `UserLibraryDao.observeMovieList`/`observeTvShowList`: filtro (status, favoritos) e ordenação no SQL com `ORDER BY CASE WHEN :sort = ...` (adicionado, título A-Z/Z-A, ano de lançamento, última atividade, nota, último episódio). Sem cache, título/ano nulos vão para o fim. Título ordena com `COLLATE NOCASE`: acentos seguem a ordem binária do SQLite (ex.: "Árvore" depois de "Z"), limitação aceita.
+- Ordenar por progresso é feito em memória (depende do cálculo de episódios exibidos), sobre as consultas agregadas de toda a biblioteca (`observeLibraryShowsEpisodes`/`Seasons`/`WatchedEpisodes`) — três consultas fixas, nenhuma por série.
+- Contagens por filtro: `observeMovieLibraryCounts`/`observeTvShowLibraryCounts` (`COUNT`/`SUM`).
+- Pesquisa local: em memória sobre a lista já filtrada, ignorando acento e caixa; títulos sem cache não aparecem numa busca não vazia. Nunca consulta o TMDB.
+

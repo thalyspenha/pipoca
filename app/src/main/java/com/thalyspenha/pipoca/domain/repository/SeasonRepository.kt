@@ -19,6 +19,11 @@ interface SeasonRepository {
     /** Temporadas (resumo) das séries `WATCHING`, por série. */
     fun observeWatchingShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>>
 
+    /** Episódios em cache de todas as séries da biblioteca (D-050). */
+    fun observeLibraryShowsEpisodes(): Flow<List<Episode>>
+
+    fun observeLibraryShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>>
+
     /** Busca `tv/{id}/season/{n}` se não houver cache válido (ou se [force]) e grava no Room. */
     suspend fun refreshSeason(showId: Long, seasonNumber: Int, force: Boolean = false): DataResult<Unit>
 }

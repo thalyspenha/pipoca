@@ -338,3 +338,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Preferência Grid/Lista em `SharedPreferences` (sem dependência nova); mesma solução servirá ao tema da Fase 10.
 - Ações rápidas (assistido, favorito, remover) em menu de toque longo; status com ícones Material, não emoji.
 **Consequência:** Fase 10 retomada depois, com a divisão já proposta.
+
+### D-051 — Dados da Biblioteca
+**Decisão:**
+- Enums `MovieLibraryFilter`/`TvShowLibraryFilter` (status exatos do banco + favoritos) e `LibrarySort` (inclui `PROGRESS` e `LAST_EPISODE`, só séries). Contagens `MovieLibraryCounts`/`TvShowLibraryCounts` com `of(filter)`.
+- Uma consulta parametrizada por tipo, com `ORDER BY CASE` (enum passado como texto); `UserTvShowWithCache` ganhou `last_watched_at` (subconsulta `MAX(user_episode.watched_at)`; `NULL` nas consultas antigas).
+- `ObserveLibraryTvShowsUseCase` junta lista + três consultas agregadas de toda a biblioteca e calcula `ShowProgress` por série; progresso nulo quando não há episódios em cache nem assistidos. `PROGRESS` ordena em memória (maior % primeiro, sem progresso no fim).
+- Pesquisa local `matchesSearch` (NFD sem marcas, minúsculas) em memória; nunca TMDB.
+**Consequência:** a parte 2 monta a tela sobre esses use cases; nada de nova fonte de dados.

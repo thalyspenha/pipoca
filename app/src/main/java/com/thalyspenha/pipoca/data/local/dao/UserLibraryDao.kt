@@ -39,6 +39,24 @@ data class UserTvShowWithCache(
     @ColumnInfo(name = "poster_path") val posterPath: String?,
     @ColumnInfo(name = "first_air_date") val firstAirDate: LocalDate?,
     @ColumnInfo(name = "tmdb_status") val tmdbStatus: String?,
+    @ColumnInfo(name = "last_watched_at") val lastWatchedAt: Long? = null,
+)
+
+data class MovieLibraryCountsRow(
+    val all: Int,
+    @ColumnInfo(name = "want_to_watch") val wantToWatch: Int,
+    val watched: Int,
+    val favorites: Int,
+)
+
+data class TvShowLibraryCountsRow(
+    val all: Int,
+    @ColumnInfo(name = "want_to_watch") val wantToWatch: Int,
+    val watching: Int,
+    val completed: Int,
+    val paused: Int,
+    val dropped: Int,
+    val favorites: Int,
 )
 
 /**
@@ -92,7 +110,7 @@ interface UserLibraryDao {
     fun observeTvShows(): Flow<List<UserTvShowEntity>>
 
     @Query(
-        """SELECT u.*, t.name, t.poster_path, t.first_air_date, t.tmdb_status FROM user_tv_show u
+        """SELECT u.*, t.name, t.poster_path, t.first_air_date, t.tmdb_status, NULL AS last_watched_at FROM user_tv_show u
         LEFT JOIN tmdb_tv_show t ON t.id = u.show_id
         ORDER BY u.updated_at DESC""",
     )
@@ -152,6 +170,82 @@ interface UserLibraryDao {
 
     @Query("DELETE FROM user_episode WHERE episode_id IN (:episodeIds)")
     suspend fun deleteWatchedEpisodes(episodeIds: List<Long>)
+
+    // ---- Biblioteca (D-050): filtro e ordenação no SQL
+
+    /**
+     * Filmes filtrados e ordenados no banco. `status` nulo = todos. Título ordena sem diferenciar
+     * caixa (acentos seguem a ordem binária do SQLite, limitação documentada). Sem cache, título/ano
+     * nulos vão para o fim.
+     */
+    @Query(
+        """SELECT u.*, m.title, m.poster_path, m.release_date FROM user_movie u
+        LEFT JOIN tmdb_movie m ON m.id = u.movie_id
+        WHERE (:status IS NULL OR u.status = :status) AND (:favoritesOnly = 0 OR u.is_favorite = 1)
+        ORDER BY
+            CASE WHEN :sort = 'RECENTLY_ADDED' THEN u.added_at END DESC,
+            CASE WHEN :sort IN ('TITLE_ASC', 'TITLE_DESC') THEN m.title IS NULL END,
+            CASE WHEN :sort = 'TITLE_ASC' THEN m.title END COLLATE NOCASE ASC,
+            CASE WHEN :sort = 'TITLE_DESC' THEN m.title END COLLATE NOCASE DESC,
+            CASE WHEN :sort = 'RELEASE_YEAR' THEN m.release_date IS NULL END,
+            CASE WHEN :sort = 'RELEASE_YEAR' THEN m.release_date END DESC,
+            CASE WHEN :sort = 'LAST_ACTIVITY' THEN u.updated_at END DESC,
+            CASE WHEN :sort = 'RATING' THEN u.rating IS NULL END,
+            CASE WHEN :sort = 'RATING' THEN u.rating END DESC,
+            u.updated_at DESC""",
+    )
+    fun observeMovieList(status: String?, favoritesOnly: Boolean, sort: String): Flow<List<UserMovieWithCache>>
+
+    /** Séries filtradas e ordenadas no banco; `last_watched_at` = último episódio marcado. */
+    @Query(
+        """SELECT u.*, t.name, t.poster_path, t.first_air_date, t.tmdb_status,
+            (SELECT MAX(ue.watched_at) FROM user_episode ue WHERE ue.show_id = u.show_id) AS last_watched_at
+        FROM user_tv_show u
+        LEFT JOIN tmdb_tv_show t ON t.id = u.show_id
+        WHERE (:status IS NULL OR u.status = :status) AND (:favoritesOnly = 0 OR u.is_favorite = 1)
+        ORDER BY
+            CASE WHEN :sort = 'RECENTLY_ADDED' THEN u.added_at END DESC,
+            CASE WHEN :sort IN ('TITLE_ASC', 'TITLE_DESC') THEN t.name IS NULL END,
+            CASE WHEN :sort = 'TITLE_ASC' THEN t.name END COLLATE NOCASE ASC,
+            CASE WHEN :sort = 'TITLE_DESC' THEN t.name END COLLATE NOCASE DESC,
+            CASE WHEN :sort = 'RELEASE_YEAR' THEN t.first_air_date IS NULL END,
+            CASE WHEN :sort = 'RELEASE_YEAR' THEN t.first_air_date END DESC,
+            CASE WHEN :sort = 'LAST_ACTIVITY' THEN u.updated_at END DESC,
+            CASE WHEN :sort = 'RATING' THEN u.rating IS NULL END,
+            CASE WHEN :sort = 'RATING' THEN u.rating END DESC,
+            CASE WHEN :sort = 'LAST_EPISODE' THEN last_watched_at IS NULL END,
+            CASE WHEN :sort = 'LAST_EPISODE' THEN last_watched_at END DESC,
+            u.updated_at DESC""",
+    )
+    fun observeTvShowList(status: String?, favoritesOnly: Boolean, sort: String): Flow<List<UserTvShowWithCache>>
+
+    @Query(
+        """SELECT COUNT(*) AS `all`,
+            COALESCE(SUM(status = 'WANT_TO_WATCH'), 0) AS want_to_watch,
+            COALESCE(SUM(status = 'WATCHED'), 0) AS watched,
+            COALESCE(SUM(is_favorite), 0) AS favorites
+        FROM user_movie""",
+    )
+    fun observeMovieLibraryCounts(): Flow<MovieLibraryCountsRow>
+
+    @Query(
+        """SELECT COUNT(*) AS `all`,
+            COALESCE(SUM(status = 'WANT_TO_WATCH'), 0) AS want_to_watch,
+            COALESCE(SUM(status = 'WATCHING'), 0) AS watching,
+            COALESCE(SUM(status = 'COMPLETED'), 0) AS completed,
+            COALESCE(SUM(status = 'PAUSED'), 0) AS paused,
+            COALESCE(SUM(status = 'DROPPED'), 0) AS dropped,
+            COALESCE(SUM(is_favorite), 0) AS favorites
+        FROM user_tv_show""",
+    )
+    fun observeTvShowLibraryCounts(): Flow<TvShowLibraryCountsRow>
+
+    /** Assistidos de todas as séries da biblioteca (progresso nos cards, D-050). */
+    @Query(
+        """SELECT e.* FROM user_episode e
+        JOIN user_tv_show u ON u.show_id = e.show_id""",
+    )
+    fun observeLibraryShowsWatchedEpisodes(): Flow<List<UserEpisodeEntity>>
 
     /** Assistidos de todas as séries `WATCHING` numa consulta só (Home, D-044). */
     @Query(

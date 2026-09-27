@@ -42,4 +42,6 @@ data class LibraryTvShowItem(
     val year: Int?,
     /** Status de produção no TMDB (`Ended`...), para progresso/conclusão. */
     val tmdbStatus: String? = null,
+    /** Último episódio marcado (lista da Biblioteca). */
+    val lastWatchedAt: Instant? = null,
 )

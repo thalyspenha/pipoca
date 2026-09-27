@@ -42,6 +42,10 @@ class FakeSeasonRepository : SeasonRepository {
 
     override fun observeWatchingShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>> = seasons
 
+    override fun observeLibraryShowsEpisodes(): Flow<List<Episode>> = episodes
+
+    override fun observeLibraryShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>> = seasons
+
     override suspend fun refreshSeason(showId: Long, seasonNumber: Int, force: Boolean): DataResult<Unit> {
         if (seasonNumber == failOn) return DataResult.Failure(DataError.Network)
         refreshed += seasonNumber

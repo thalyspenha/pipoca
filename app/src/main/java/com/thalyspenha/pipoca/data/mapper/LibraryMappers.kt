@@ -69,6 +69,7 @@ fun UserTvShowWithCache.toDomain() = LibraryTvShowItem(
     posterPath = posterPath,
     year = firstAirDate?.year,
     tmdbStatus = tmdbStatus,
+    lastWatchedAt = lastWatchedAt?.let(Instant::ofEpochMilli),
 )
 
 fun UserEpisodeEntity.toDomain() = WatchedEpisode(

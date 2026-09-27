@@ -3,6 +3,12 @@ package com.thalyspenha.pipoca.domain.usecase.library
 import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
+import com.thalyspenha.pipoca.domain.model.TvShowLibraryCounts
+import com.thalyspenha.pipoca.domain.model.MovieStatus
+import com.thalyspenha.pipoca.domain.model.MovieLibraryFilter
+import com.thalyspenha.pipoca.domain.model.MovieLibraryCounts
+import com.thalyspenha.pipoca.domain.model.LibrarySort
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
@@ -81,6 +87,41 @@ class FakeLibraryRepository : LibraryRepository {
 
     override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
         watchedEpisodes.map { all -> all.values.filter { it.showId == showId } }
+
+    /** Biblioteca: filtro como no banco; ordem fixa por atualização (ordenação SQL é testada no DAO). */
+    override fun observeMovieList(filter: MovieLibraryFilter, sort: LibrarySort): Flow<List<LibraryMovieItem>> =
+        observeMovieItems().map { list ->
+            list.filter {
+                (filter.status == null || it.movie.status == filter.status) && (!filter.favoritesOnly || it.movie.isFavorite)
+            }
+        }
+
+    override fun observeTvShowList(filter: TvShowLibraryFilter, sort: LibrarySort): Flow<List<LibraryTvShowItem>> =
+        observeTvShowItems().map { list ->
+            list.filter {
+                (filter.status == null || it.show.status == filter.status) && (!filter.favoritesOnly || it.show.isFavorite)
+            }
+        }
+
+    override fun observeMovieLibraryCounts(): Flow<MovieLibraryCounts> = movies.map { all ->
+        val list = all.values
+        MovieLibraryCounts(
+            list.size, list.count { it.status == MovieStatus.WANT_TO_WATCH },
+            list.count { it.status == MovieStatus.WATCHED }, list.count { it.isFavorite },
+        )
+    }
+
+    override fun observeTvShowLibraryCounts(): Flow<TvShowLibraryCounts> = tvShows.map { all ->
+        val list = all.values
+        fun c(status: TvShowStatus) = list.count { it.status == status }
+        TvShowLibraryCounts(
+            list.size, c(TvShowStatus.WANT_TO_WATCH), c(TvShowStatus.WATCHING), c(TvShowStatus.COMPLETED),
+            c(TvShowStatus.PAUSED), c(TvShowStatus.DROPPED), list.count { it.isFavorite },
+        )
+    }
+
+    override fun observeLibraryShowsWatchedEpisodes(): Flow<List<WatchedEpisode>> =
+        combine(watchedEpisodes, tvShows) { watched, shows -> watched.values.filter { it.showId in shows } }
 
     /** Histórico já pronto para os testes de tela; a geração é testada nos use cases e no DAO. */
     val history = MutableStateFlow<List<HistoryEntry>>(emptyList())

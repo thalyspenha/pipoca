@@ -9,6 +9,11 @@ import com.thalyspenha.pipoca.data.mapper.toEntity
 import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.LibrarySort
+import com.thalyspenha.pipoca.domain.model.MovieLibraryCounts
+import com.thalyspenha.pipoca.domain.model.MovieLibraryFilter
+import com.thalyspenha.pipoca.domain.model.TvShowLibraryCounts
+import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
@@ -65,6 +70,23 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
         dao.observeWatchedEpisodes(showId).map { list -> list.map { it.toDomain() } }
+
+    override fun observeMovieList(filter: MovieLibraryFilter, sort: LibrarySort): Flow<List<LibraryMovieItem>> =
+        dao.observeMovieList(filter.status?.name, filter.favoritesOnly, sort.name).map { list -> list.map { it.toDomain() } }
+
+    override fun observeTvShowList(filter: TvShowLibraryFilter, sort: LibrarySort): Flow<List<LibraryTvShowItem>> =
+        dao.observeTvShowList(filter.status?.name, filter.favoritesOnly, sort.name).map { list -> list.map { it.toDomain() } }
+
+    override fun observeMovieLibraryCounts(): Flow<MovieLibraryCounts> =
+        dao.observeMovieLibraryCounts().map { MovieLibraryCounts(it.all, it.wantToWatch, it.watched, it.favorites) }
+
+    override fun observeTvShowLibraryCounts(): Flow<TvShowLibraryCounts> =
+        dao.observeTvShowLibraryCounts().map {
+            TvShowLibraryCounts(it.all, it.wantToWatch, it.watching, it.completed, it.paused, it.dropped, it.favorites)
+        }
+
+    override fun observeLibraryShowsWatchedEpisodes(): Flow<List<WatchedEpisode>> =
+        dao.observeLibraryShowsWatchedEpisodes().map { list -> list.map { it.toDomain() } }
 
     override fun observeHistory(): Flow<List<HistoryEntry>> =
         dao.observeHistory().map { list -> list.map { it.toDomain() } }

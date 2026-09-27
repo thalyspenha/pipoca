@@ -42,6 +42,12 @@ class SeasonRepositoryImpl @Inject constructor(
             list.groupBy({ it.showId }, { it.toDomain() })
         }
 
+    override fun observeLibraryShowsEpisodes(): Flow<List<Episode>> =
+        episodeDao.observeLibraryShowsEpisodes().map { list -> list.map { it.toDomain() } }
+
+    override fun observeLibraryShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>> =
+        episodeDao.observeLibraryShowsSeasons().map { list -> list.groupBy({ it.showId }, { it.toDomain() }) }
+
     override suspend fun refreshSeason(showId: Long, seasonNumber: Int, force: Boolean): DataResult<Unit> {
         val now = clock.instant()
         var info = cacheDao.getTvShowCacheInfo(showId)
