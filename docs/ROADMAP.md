@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 9 em andamento:** parte 1 concluída (`StatsDao` com consultas agregadas, `Statistics`/`StatsCalculator`, `ObserveStatisticsUseCase`); 203 testes unitários e 29 instrumentados passando. Ainda sem tela. Próxima: "IMPLEMENTAR FASE 9 – PARTE 2" (tela).
+**Fase 9 concluída:** estatísticas locais (filmes, séries, episódios, tempo, gêneros, notas, coleção) por consultas agregadas no Room, tela com blocos e barras acessada pela aba "Mais"; 206 testes unitários e 29 instrumentados passando; testado no S25. Próxima: Fase 10 (aguardando permissão para ler `fase10.md`).
 
 ## Fases
 
@@ -100,14 +100,14 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Favoritos — tela com abas Filmes/Séries, remover favorito; aba "Mais" com entradas; "Ver todos" na Home.
   3. ✅ Histórico — consulta com cache (título, pôster, episódio), filtros Todos/Filmes/Séries, abrir conteúdo, testes de geração; ROADMAP.
 
-### 🚧 Fase 9 — Estatísticas (ver `fase9.md`)
+### ✅ Fase 9 — Estatísticas (ver `fase9.md`)
 - Só dados locais: filmes (assistidos, quero assistir, na coleção, favoritos), séries (total, em andamento, concluídas, quero ver), episódios (total, no mês, no ano), tempo (minutos, horas, dias equivalentes, com limitações documentadas), gêneros, notas pessoais, coleção por formato.
 - Consultas eficientes no Room, sem duplicar dados; testes dos cálculos; interface limpa.
 - Tempo: soma cada visualização do histórico (reassistir conta); filme = duração TMDB; episódio = duração do episódio ou média da série; sem duração → "N sem duração".
 - Gêneros: opção (a) — filmes assistidos e séries com ≥ 1 episódio visto ou concluídas, cada título uma vez por gênero (D-047). Barras em Compose, sem biblioteca nova.
 - **Executada em 2 partes** (D-047). Uma por vez, só com "IMPLEMENTAR FASE 9 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Consultas e cálculos — consultas agregadas (COUNT/GROUP BY), cálculo de tempo e distribuições no domain; testes.
-  2. ⏳ Tela — Estatísticas com seções e barras, entrada na aba "Mais"; docs (limitações em DATABASE.md).
+  2. ✅ Tela — Estatísticas com seções e barras, entrada na aba "Mais"; docs (limitações em DATABASE.md).
 
 ### ⏳ Fases 10–11
 Definidas nos arquivos `fase10.md` e `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

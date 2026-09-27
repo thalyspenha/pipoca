@@ -26,3 +26,9 @@ fun formatDate(date: LocalDate): String = DATE_FORMAT.format(date)
 /** Código do episódio: T2E5 (temporada 0 aparece como "Especial 5"). */
 fun episodeCode(seasonNumber: Int, episodeNumber: Int): String =
     if (seasonNumber == 0) "Especial $episodeNumber" else "T${seasonNumber}E$episodeNumber"
+
+/** Número com uma casa e vírgula: 2.345 → "2,3". */
+fun formatDecimal(value: Double): String = String.format(Locale.forLanguageTag("pt-BR"), "%.1f", value)
+
+/** Inteiro com separador de milhar pt-BR: 12345 → "12.345". */
+fun formatInt(value: Long): String = String.format(Locale.forLanguageTag("pt-BR"), "%,d", value)

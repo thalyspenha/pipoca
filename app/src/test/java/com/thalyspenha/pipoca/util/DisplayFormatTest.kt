@@ -18,4 +18,12 @@ class DisplayFormatTest {
         assertEquals("8,2", formatVote(8.237))
         assertEquals("10,0", formatVote(10.0))
     }
+
+    @Test
+    fun `decimal com virgula e inteiro com ponto de milhar`() {
+        assertEquals("2,3", formatDecimal(2.345))
+        assertEquals("0,0", formatDecimal(0.0))
+        assertEquals("12.345", formatInt(12_345))
+        assertEquals("7", formatInt(7))
+    }
 }

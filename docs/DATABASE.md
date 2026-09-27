@@ -190,3 +190,14 @@ Um título pode ter vários itens (ex.: 4K e DVD). Independente de `user_movie`/
 ## Enums
 
 Guardados como `String` (nome do enum, conversão nativa do Room), para não quebrar se a ordem mudar. `MovieStatus` e `TvShowStatus` ficam em `domain/model` (usados pela UI); `WatchMediaType` e `CreditMediaType` são da camada `data`.
+
+## Estatísticas: limitações (D-047, D-048, D-049)
+
+- **Tempo é aproximado.** Usa a duração do TMDB, não o tempo real de tela. Cada marcação conta uma visualização (reassistir filme soma de novo; episódio só uma vez, pois marcar de novo não duplica).
+- **Episódio sem duração** usa a média da série (`episode_run_time`); se nem isso existir, fica fora dos minutos.
+- **Sem cache do TMDB** (título nunca aberto ou cache apagado) não entra no tempo nem nos gêneros; a tela mostra quantas visualizações ficaram fora.
+- **Episódios no mês/ano** contam pela data em que foram marcados, no fuso do aparelho, não pela data de exibição.
+- **Gêneros** refletem os gêneros do TMDB no idioma pt-BR; um título conta uma vez em cada gênero dele (a soma de percentuais passa por arredondamento para baixo).
+- **Notas** juntam filmes e séries; itens sem nota não entram na média.
+- **Coleção** conta itens (um 4K e um DVD do mesmo filme são 2 itens); "Filmes na coleção" conta filmes distintos.
+

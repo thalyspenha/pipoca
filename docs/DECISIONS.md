@@ -319,3 +319,10 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Notas: filmes e séries juntos, sempre 1–10 com zeros; média calculada no domain. Coleção: itens por formato, sempre os 5.
 - `ObserveStatisticsUseCase` calcula início do mês/ano no fuso do aparelho (`ZoneId` injetado). `LocalDate.ofInstant` evitado (API 34; minSdk 26), apontado pelo lint.
 **Consequência:** a parte 2 só desenha `Statistics`.
+
+### D-049 — Tela de estatísticas
+**Decisão:**
+- `StatsRoute` empilhada, entrada "Estatísticas" na aba "Mais". Seções: Tempo assistido (horas, dias com uma casa, minutos; visualizações e quantas ficaram sem duração), Filmes, Séries, Episódios (blocos de número), Gêneros (barras horizontais, top 10 com contagem e %), Suas notas (média + colunas 1–10), Coleção (barras por formato; "Outro" só se houver) e card "Como calculamos" com as limitações.
+- Barras e colunas feitas com `Box` em Compose (sem biblioteca de gráficos). Números em pt-BR (`formatDecimal`, `formatInt`).
+- Atualiza sozinha via Flow do Room. Estados vazios por seção (sem gêneros, sem notas, coleção vazia).
+**Consequência:** Fase 9 concluída; limitações documentadas em DATABASE.md.
