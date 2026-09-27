@@ -265,3 +265,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - "Minha Coleção": toque no item abre a edição; a seta abre os detalhes do título.
 - `org.gradle.jvmargs` de 2 GB para 4 GB: hipótese para a falha intermitente do lint (D-041), que só acontecia quando o mesmo build compilava, testava e analisava tudo. Build limpo completo passou depois da mudança.
 **Consequência:** CRUD completo coberto por testes de use case, DAO (S25) e ViewModel do formulário.
+
+### D-043 — Fase 8 em 3 partes; Favoritos e Histórico na aba "Mais"
+**Contexto:** `fase8.md` pede Home como painel, tela de Favoritos e Histórico.
+**Decisão:**
+- Fase 8 em 3 partes (ver ROADMAP.md): (1) Home, (2) Favoritos, (3) Histórico.
+- "Continuar assistindo" = próximo episódio de cada série `WATCHING`, pela série vista mais recentemente; "Séries em andamento" = séries `WATCHING` com barra de progresso.
+- Progresso/próximo episódio de todas as séries a partir de uma consulta de episódios e uma de assistidos, sem consulta por série.
+- Favoritos e Histórico ficam na aba "Mais", que vira lista de entradas (opção A, escolha do usuário); a Home leva a eles por "Ver todos". Aba "Biblioteca" continua placeholder.
+**Consequência:** "Mais" recebe depois estatísticas e configurações.
