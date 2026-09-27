@@ -50,7 +50,10 @@ class SeasonRepositoryImpl @Inject constructor(
         return when (val result = remote.getSeasonDetails(showId, seasonNumber)) {
             is DataResult.Success -> {
                 val bundle = result.data.toCacheBundle(showId, fetchedAt = now.toEpochMilli())
-                episodeDao.saveSeason(bundle.season, bundle.episodes)
+                // O resumo vindo de tv/{id} manda: o endpoint da temporada pode trazer pôster nulo
+                // no idioma pedido. Só usa o da temporada se a série ainda não tiver essa temporada.
+                val season = cacheDao.getSeasons(showId).firstOrNull { it.id == bundle.season.id } ?: bundle.season
+                episodeDao.saveSeason(season, bundle.episodes)
                 DataResult.Success(Unit)
             }
             is DataResult.Failure -> result

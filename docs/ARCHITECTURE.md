@@ -61,7 +61,7 @@ app/src/main/java/com/thalyspenha/pipoca/
 │   ├── components/             # componentes reutilizáveis
 │   │   └── details/            # blocos das telas de detalhes (D-033)
 │   └── screens/
-│       └── <feature>/          # Screen + ViewModel + UiState juntos
+│       └── <feature>/          # Screen + ViewModel + UiState juntos (details/: movie, tv, season)
 ├── di/                         # módulos Hilt
 └── util/
 ```

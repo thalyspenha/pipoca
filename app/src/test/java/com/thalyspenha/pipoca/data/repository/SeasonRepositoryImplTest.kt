@@ -69,4 +69,14 @@ class SeasonRepositoryImplTest {
 
         assertEquals(listOf(1 to 1, 1 to 2, 1 to 3), repository.observeShowEpisodes(1396).first().map { it.seasonNumber to it.episodeNumber })
     }
+
+    @Test
+    fun `refresh da temporada nao sobrescreve o resumo vindo da serie`() = runBlocking {
+        tvShows.refreshTvShowDetails(1396)
+        val fromShow = cacheDao.getSeasons(1396).first { it.seasonNumber == 1 }
+
+        repository.refreshSeason(1396, 1)
+
+        assertEquals(fromShow, episodeDao.seasons[fromShow.id])
+    }
 }

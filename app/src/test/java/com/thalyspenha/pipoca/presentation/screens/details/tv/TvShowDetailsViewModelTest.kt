@@ -4,9 +4,16 @@ import androidx.lifecycle.SavedStateHandle
 import com.thalyspenha.pipoca.data.repository.MutableClock
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.DataResult
+import com.thalyspenha.pipoca.domain.model.Episode
+import com.thalyspenha.pipoca.domain.model.SeasonSummary
 import com.thalyspenha.pipoca.domain.model.TvShowDetails
 import com.thalyspenha.pipoca.domain.model.TvShowStatus
-import com.thalyspenha.pipoca.domain.repository.TvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.episodes.FakeSeasonRepository
+import com.thalyspenha.pipoca.domain.usecase.episodes.FakeTvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.episodes.MarkEpisodeWatchedUseCase
+import com.thalyspenha.pipoca.domain.usecase.episodes.ObserveShowProgressUseCase
+import com.thalyspenha.pipoca.domain.usecase.episodes.RefreshShowEpisodesUseCase
+import com.thalyspenha.pipoca.domain.usecase.episodes.SyncShowStatusUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.FakeLibraryRepository
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowFavoriteUseCase
@@ -14,8 +21,6 @@ import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowRatingUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowStatusUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -30,11 +35,13 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TvShowDetailsViewModelTest {
     private val dispatcher = StandardTestDispatcher()
     private val shows = FakeTvShowRepository()
+    private val seasons = FakeSeasonRepository()
     private val library = FakeLibraryRepository()
     private val clock = MutableClock()
 
@@ -48,15 +55,24 @@ class TvShowDetailsViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun TestScope.started(): TvShowDetailsViewModel = TvShowDetailsViewModel(
-        savedStateHandle = SavedStateHandle(mapOf("id" to SHOW_ID)),
-        tvShowRepository = shows,
-        library = library,
-        setStatus = SetTvShowStatusUseCase(library, clock),
-        removeFromLibrary = RemoveTvShowFromLibraryUseCase(library),
-        setFavorite = SetTvShowFavoriteUseCase(library, clock),
-        setRating = SetTvShowRatingUseCase(library, clock),
-    ).also { vm -> backgroundScope.launch { vm.uiState.collect {} } }
+    private fun TestScope.started(): TvShowDetailsViewModel {
+        val progress = ObserveShowProgressUseCase(shows, seasons, library, clock)
+        val setStatus = SetTvShowStatusUseCase(library, clock)
+        return TvShowDetailsViewModel(
+            savedStateHandle = SavedStateHandle(mapOf("id" to SHOW_ID)),
+            tvShowRepository = shows,
+            seasonRepository = seasons,
+            library = library,
+            observeProgress = progress,
+            refreshEpisodes = RefreshShowEpisodesUseCase(shows, seasons),
+            setStatus = setStatus,
+            removeFromLibrary = RemoveTvShowFromLibraryUseCase(library),
+            setFavorite = SetTvShowFavoriteUseCase(library, clock),
+            setRating = SetTvShowRatingUseCase(library, clock),
+            markEpisode = MarkEpisodeWatchedUseCase(library, SyncShowStatusUseCase(library, progress, setStatus), clock),
+            clock = clock,
+        ).also { vm -> backgroundScope.launch { vm.uiState.collect {} } }
+    }
 
     private fun TvShowDetailsViewModel.success() = uiState.value as TvShowDetailsUiState.Success
 
@@ -127,6 +143,63 @@ class TvShowDetailsViewModelTest {
     }
 
     @Test
+    fun `serie fora da biblioteca nao baixa temporadas`() = test {
+        shows.details.value = breakingBad()
+        started()
+        advanceUntilIdle()
+
+        assertEquals(emptyList<Int>(), seasons.refreshed)
+    }
+
+    @Test
+    fun `ao entrar na biblioteca baixa temporadas regulares e mostra progresso`() = test {
+        shows.details.value = breakingBad()
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onStatusClick(TvShowStatus.WATCHING)
+        seasons.episodes.value = listOf(ep(1, 1), ep(1, 2), ep(2, 1))
+        advanceUntilIdle()
+
+        assertEquals(listOf(1, 2), seasons.refreshed)
+        val progress = vm.success().progress!!
+        assertEquals(0, progress.watched)
+        assertEquals(3, progress.available)
+        assertTrue(progress.isComplete)
+        assertEquals(listOf(1, 2, 0), vm.success().seasons.map { it.seasonNumber })
+    }
+
+    @Test
+    fun `marcar proximo episodio atualiza progresso e temporada`() = test {
+        shows.details.value = breakingBad()
+        seasons.episodes.value = listOf(ep(1, 1), ep(1, 2), ep(2, 1))
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onMarkNextEpisode()
+        advanceUntilIdle()
+
+        assertEquals(1, vm.success().progress?.watched)
+        assertEquals(102L, vm.success().progress?.nextEpisode?.id)
+        assertEquals(TvShowStatus.WATCHING, vm.success().personal.status)
+        assertEquals(1, vm.success().seasons.first { it.seasonNumber == 1 }.watched)
+    }
+
+    @Test
+    fun `falha ao baixar temporadas aparece como erro nao bloqueante`() = test {
+        shows.details.value = breakingBad()
+        seasons.failOn = 2
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onStatusClick(TvShowStatus.WATCHING)
+        advanceUntilIdle()
+
+        assertEquals(DataError.Network, vm.success().refreshError)
+        assertFalse(vm.success().isLoadingEpisodes)
+    }
+
+    @Test
     fun `status de producao do TMDB em portugues`() {
         assertEquals("Finalizada", tmdbStatusLabel("Ended"))
         assertEquals("Em exibição", tmdbStatusLabel("Returning Series"))
@@ -136,20 +209,23 @@ class TvShowDetailsViewModelTest {
     private companion object {
         const val SHOW_ID = 1396L
 
+        fun ep(season: Int, number: Int) = Episode(
+            id = season * 100L + number, showId = SHOW_ID, seasonNumber = season, episodeNumber = number,
+            name = "S${season}E$number", overview = null, stillPath = null,
+            airDate = LocalDate.of(2010, 1, number), runtimeMinutes = 47,
+        )
+
+        fun summary(number: Int, count: Int) = SeasonSummary(
+            id = number.toLong(), seasonNumber = number, name = "Temporada $number", overview = null,
+            posterPath = null, airDate = null, episodeCount = count,
+        )
+
         fun breakingBad() = TvShowDetails(
             id = SHOW_ID, name = "Breaking Bad", originalName = "Breaking Bad", overview = null,
             posterPath = null, backdropPath = null, firstAirDate = null, tmdbStatus = "Ended",
-            numberOfSeasons = 5, numberOfEpisodes = 62, episodeRunTime = null, voteAverage = 8.9,
-            genres = emptyList(), creators = emptyList(), seasons = emptyList(), cast = emptyList(),
+            numberOfSeasons = 2, numberOfEpisodes = 3, episodeRunTime = null, voteAverage = 8.9,
+            genres = emptyList(), creators = emptyList(),
+            seasons = listOf(summary(0, 1), summary(1, 2), summary(2, 1)), cast = emptyList(),
         )
     }
-}
-
-private class FakeTvShowRepository : TvShowRepository {
-    val details = MutableStateFlow<TvShowDetails?>(null)
-    var onRefresh: suspend () -> DataResult<Unit> = { DataResult.Success(Unit) }
-
-    override fun observeTvShowDetails(id: Long): Flow<TvShowDetails?> = details
-
-    override suspend fun refreshTvShowDetails(id: Long, force: Boolean): DataResult<Unit> = onRefresh()
 }

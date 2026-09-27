@@ -88,7 +88,7 @@ A partir da versão 1 toda mudança de schema tem `Migration` explícita em `dat
 | runtime_minutes | Int? | 0 do TMDB vira nulo |
 | fetched_at | Long | controle de cache; validade da temporada = `MIN(fetched_at)` dos episódios |
 
-Índice único `(show_id, season_number, episode_number)`; índice em `season_id`. Gravação transacional (`TmdbEpisodeDao.saveSeason`): upsert da temporada (sem REPLACE, para não disparar CASCADE), episódios que sumiram saem antes do upsert.
+Índice único `(show_id, season_number, episode_number)`; índice em `season_id`. Gravação transacional (`TmdbEpisodeDao.saveSeason`): upsert da temporada (sem REPLACE, para não disparar CASCADE), episódios que sumiram saem antes do upsert. A linha de `tmdb_season` gravada é a que já veio de `tv/{id}` quando existe (o endpoint da temporada pode trazer pôster nulo em pt-BR, D-038).
 
 Estrutura do TMDB conferida (D-036): `tv/{id}.seasons` inclui a temporada 0 (especiais); `number_of_episodes` já exclui especiais (Breaking Bad: 62, com 9 especiais à parte). Episódios futuros podem vir sem `air_date`/`runtime`/`still_path`.
 

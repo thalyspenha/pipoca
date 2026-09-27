@@ -22,8 +22,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
 import com.thalyspenha.pipoca.presentation.screens.details.movie.MovieDetailsScreen
+import com.thalyspenha.pipoca.presentation.screens.details.season.SeasonScreen
 import com.thalyspenha.pipoca.presentation.screens.details.tv.TvShowDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.home.HomeScreen
 import com.thalyspenha.pipoca.presentation.screens.home.detailsRoute
@@ -86,8 +88,16 @@ fun PipocaApp() {
             composable<MovieDetailsRoute> {
                 MovieDetailsScreen(onBack = navController::navigateUp)
             }
+            composable<SeasonRoute> {
+                SeasonScreen(onBack = navController::navigateUp)
+            }
             composable<TvShowDetailsRoute> {
-                TvShowDetailsScreen(onBack = navController::navigateUp)
+                TvShowDetailsScreen(
+                    onBack = navController::navigateUp,
+                    onSeasonClick = { seasonNumber ->
+                        navController.navigate(SeasonRoute(it.toRoute<TvShowDetailsRoute>().id, seasonNumber))
+                    },
+                )
             }
         }
     }

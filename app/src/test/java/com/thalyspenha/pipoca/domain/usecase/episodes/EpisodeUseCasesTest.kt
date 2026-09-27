@@ -7,14 +7,9 @@ import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.SeasonSummary
 import com.thalyspenha.pipoca.domain.model.TvShowDetails
 import com.thalyspenha.pipoca.domain.model.TvShowStatus
-import com.thalyspenha.pipoca.domain.repository.SeasonRepository
-import com.thalyspenha.pipoca.domain.repository.TvShowRepository
 import com.thalyspenha.pipoca.domain.usecase.library.FakeLibraryRepository
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowStatusUseCase
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -242,28 +237,5 @@ class EpisodeUseCasesTest {
             numberOfEpisodes = null, episodeRunTime = null, voteAverage = null, genres = emptyList(),
             creators = emptyList(), seasons = seasons, cast = emptyList(),
         )
-    }
-}
-
-private class FakeTvShowRepository : TvShowRepository {
-    val details = MutableStateFlow<TvShowDetails?>(null)
-    override fun observeTvShowDetails(id: Long): Flow<TvShowDetails?> = details
-    override suspend fun refreshTvShowDetails(id: Long, force: Boolean): DataResult<Unit> = DataResult.Success(Unit)
-}
-
-private class FakeSeasonRepository : SeasonRepository {
-    val episodes = MutableStateFlow<List<Episode>>(emptyList())
-    val refreshed = mutableListOf<Int>()
-    var failOn: Int? = null
-
-    override fun observeSeasonEpisodes(showId: Long, seasonNumber: Int): Flow<List<Episode>> =
-        episodes.map { all -> all.filter { it.seasonNumber == seasonNumber } }
-
-    override fun observeShowEpisodes(showId: Long): Flow<List<Episode>> = episodes
-
-    override suspend fun refreshSeason(showId: Long, seasonNumber: Int, force: Boolean): DataResult<Unit> {
-        if (seasonNumber == failOn) return DataResult.Failure(DataError.Network)
-        refreshed += seasonNumber
-        return DataResult.Success(Unit)
     }
 }

@@ -12,3 +12,6 @@ import kotlinx.serialization.Serializable
 // Detalhes: empilhados sobre a aba atual; só o ID TMDB vai na rota.
 @Serializable data class MovieDetailsRoute(val id: Long)
 @Serializable data class TvShowDetailsRoute(val id: Long)
+
+// Temporada de uma série, empilhada sobre os detalhes.
+@Serializable data class SeasonRoute(val showId: Long, val seasonNumber: Int)

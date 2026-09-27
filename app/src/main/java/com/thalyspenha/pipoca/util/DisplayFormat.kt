@@ -1,5 +1,7 @@
 package com.thalyspenha.pipoca.util
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /** Duração em minutos como "2h 16min", "45min" ou "2h". */
@@ -15,3 +17,12 @@ fun formatRuntime(minutes: Int): String {
 
 /** Nota TMDB (0–10) com uma casa e vírgula: 8.237 → "8,2". */
 fun formatVote(vote: Double): String = String.format(Locale.forLanguageTag("pt-BR"), "%.1f", vote)
+
+private val DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+/** Data curta brasileira: 2008-01-20 → "20/01/2008". */
+fun formatDate(date: LocalDate): String = DATE_FORMAT.format(date)
+
+/** Código do episódio: T2E5 (temporada 0 aparece como "Especial 5"). */
+fun episodeCode(seasonNumber: Int, episodeNumber: Int): String =
+    if (seasonNumber == 0) "Especial $episodeNumber" else "T${seasonNumber}E$episodeNumber"

@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 6 em andamento:** partes 1 e 2 concluídas (episódios em cache, migração 2→3, `ShowProgressCalculator`, use cases de marcar/desmarcar com status automático); 143 testes unitários e 18 instrumentados passando. Ainda sem telas de temporadas/episódios. Próxima: "IMPLEMENTAR FASE 6 – PARTE 3" (telas).
+**Fase 6 concluída:** episódios em cache (migração 2→3), progresso "37 / 62 episódios" com percentual, próximo episódio, em dia/concluída automática (D-035), telas de temporadas e episódios com marcação individual e da temporada inteira; 154 testes unitários e 18 instrumentados passando; testado no S25. Próxima: Fase 7 (aguardando permissão para ler `fase7.md`).
 
 ## Fases
 
@@ -69,7 +69,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela do filme e componentes reutilizáveis — cabeçalho backdrop/poster, chips de gênero, faixa de elenco, seletor de status, favorito, avaliação 1–10.
   3. ✅ Série — ViewModel + tela reusando componentes, status assistindo/concluída; docs e ROADMAP.
 
-### 🚧 Fase 6 — Séries e episódios (ver `fase6.md`)
+### ✅ Fase 6 — Séries e episódios (ver `fase6.md`)
 - Entidades Season, Episode, UserEpisode; adaptar banco sem perder dados.
 - Listas de temporadas e episódios (imagem, título, número, sinopse, duração, data, assistido).
 - Marcar/desmarcar episódio e temporada inteira; ao marcar: salvar, registrar data, atualizar progresso e contagem.
@@ -79,7 +79,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - **Executada em 3 partes** (D-035). Uma por vez, só com "IMPLEMENTAR FASE 6 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Dados — endpoint/DTO de temporada, `tmdb_episode` + `user_episode`, migração 2→3, cache de episódios no repositório; testes de parsing, DAO e migração.
   2. ✅ Regras — cálculo puro de progresso, próximo episódio/temporada, conclusão; use cases de marcar/desmarcar episódio e temporada (com `watch_history`); testes de progresso.
-  3. ⏳ Telas — temporadas, episódios, navegação a partir dos detalhes da série; progresso real no lugar do "Em breve"; docs.
+  3. ✅ Telas — temporadas, episódios, navegação a partir dos detalhes da série; progresso real no lugar do "Em breve"; docs.
 
 ### ⏳ Fases 7–11
 Definidas nos arquivos `fase7.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

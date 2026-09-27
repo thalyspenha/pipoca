@@ -1,6 +1,7 @@
 package com.thalyspenha.pipoca.presentation.screens.details.tv
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +24,6 @@ import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import com.thalyspenha.pipoca.presentation.components.ErrorContent
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.details.CastRow
-import com.thalyspenha.pipoca.presentation.components.details.ComingSoonCard
 import com.thalyspenha.pipoca.presentation.components.details.DetailsHeader
 import com.thalyspenha.pipoca.presentation.components.details.DetailsScaffold
 import com.thalyspenha.pipoca.presentation.components.details.DetailsSection
@@ -39,7 +39,11 @@ import com.thalyspenha.pipoca.util.formatVote
 import java.time.LocalDate
 
 @Composable
-fun TvShowDetailsScreen(onBack: () -> Unit, viewModel: TvShowDetailsViewModel = hiltViewModel()) {
+fun TvShowDetailsScreen(
+    onBack: () -> Unit,
+    onSeasonClick: (seasonNumber: Int) -> Unit,
+    viewModel: TvShowDetailsViewModel = hiltViewModel(),
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     TvShowDetailsContent(
         state = state,
@@ -49,6 +53,9 @@ fun TvShowDetailsScreen(onBack: () -> Unit, viewModel: TvShowDetailsViewModel = 
         onStatusClick = viewModel::onStatusClick,
         onFavoriteClick = viewModel::onFavoriteClick,
         onRatingChange = viewModel::onRatingChange,
+        onMarkNextEpisode = viewModel::onMarkNextEpisode,
+        onLoadEpisodes = viewModel::loadEpisodes,
+        onSeasonClick = onSeasonClick,
     )
 }
 
@@ -61,6 +68,9 @@ private fun TvShowDetailsContent(
     onStatusClick: (TvShowStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
+    onMarkNextEpisode: () -> Unit,
+    onLoadEpisodes: () -> Unit,
+    onSeasonClick: (Int) -> Unit,
 ) {
     val success = state as? TvShowDetailsUiState.Success
     DetailsScaffold(
@@ -82,6 +92,9 @@ private fun TvShowDetailsContent(
                 onStatusClick = onStatusClick,
                 onFavoriteClick = onFavoriteClick,
                 onRatingChange = onRatingChange,
+                onMarkNextEpisode = onMarkNextEpisode,
+                onLoadEpisodes = onLoadEpisodes,
+                onSeasonClick = onSeasonClick,
                 modifier = modifier,
             )
         }
@@ -94,6 +107,9 @@ private fun TvShowDetailsBody(
     onStatusClick: (TvShowStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
+    onMarkNextEpisode: () -> Unit,
+    onLoadEpisodes: () -> Unit,
+    onSeasonClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val show = state.show
@@ -131,10 +147,22 @@ private fun TvShowDetailsBody(
         }
         item {
             DetailsSection("Progresso") {
-                ComingSoonCard(
-                    title = "Em breve",
-                    description = "Episódios assistidos e próximo episódio chegam na fase de episódios.",
+                ProgressCard(
+                    progress = state.progress,
+                    inLibrary = personal.inLibrary,
+                    isLoading = state.isLoadingEpisodes,
+                    onMarkNext = onMarkNextEpisode,
+                    onLoad = onLoadEpisodes,
                 )
+            }
+        }
+        if (state.seasons.isNotEmpty()) {
+            item {
+                DetailsSection("Temporadas") {
+                    Column {
+                        state.seasons.forEach { row -> SeasonItem(row, onClick = { onSeasonClick(row.seasonNumber) }) }
+                    }
+                }
             }
         }
         item {
@@ -210,6 +238,7 @@ private fun TvShowDetailsPreview() {
             ),
             onBack = {}, onRetry = {}, onDismissRefreshError = {},
             onStatusClick = {}, onFavoriteClick = {}, onRatingChange = {},
+            onMarkNextEpisode = {}, onLoadEpisodes = {}, onSeasonClick = {},
         )
     }
 }

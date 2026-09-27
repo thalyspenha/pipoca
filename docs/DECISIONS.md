@@ -226,3 +226,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `LibraryRepository` ganhou episódios assistidos: `markEpisodesWatched` (user_episode + evento `EPISODE` no histórico, transação) e `unmarkEpisodes` (apaga os dois). `removeTvShow` agora apaga também os assistidos e o histórico da série, como filmes (D-029).
 - Use cases em `domain/usecase/episodes`: `ObserveShowProgressUseCase`, `RefreshShowEpisodesUseCase` (série + todas as temporadas regulares; para na primeira falha), marcar/desmarcar episódio e temporada, e `SyncShowStatusUseCase` com as transições de D-035. Só episódio já exibido pode ser marcado; marcar de novo não duplica; marcar temporada mantém a data dos já marcados. `PAUSED`/`DROPPED` só mudam se a série ficar concluída.
 **Consequência:** a parte 3 só observa `ObserveShowProgressUseCase` e chama os use cases; progresso aparece como parcial até `RefreshShowEpisodesUseCase` baixar todas as temporadas.
+
+### D-038 — Telas de progresso, temporadas e episódios
+**Decisão:**
+- Detalhes da série: card de progresso ("N / M episódios", barra, percentual; "Próximo: T2E1" com botão "Assisti"; "Em dia · próximo em dd/mm/aaaa" ou "Série concluída") e lista de temporadas (regulares primeiro, especiais no fim, vazias fora) com "assistidos / exibidos" quando a temporada está em cache e ✓ quando completa.
+- Todas as temporadas só são baixadas quando a série está (ou entra) na biblioteca, uma vez por abertura da tela (`RefreshShowEpisodesUseCase`); fora da biblioteca o card orienta e oferece "Calcular progresso". Evita dezenas de chamadas para séries longas só por abrir detalhes. Falha vira aviso não bloqueante.
+- `SeasonRoute(showId, seasonNumber)` → `SeasonScreen`: imagem do episódio (16:9, inicial "T1E3" sem imagem), "N. Nome", data (dd/MM/aaaa) e duração, sinopse em 2 linhas (toque expande), checkbox; futuro/sem data mostra "Estreia …"/"Sem data" e não pode ser marcado. "Marcar todos"/"Desmarcar todos" no topo.
+- O endpoint da temporada pode trazer `poster_path` nulo em pt-BR: o refresh da temporada mantém o resumo já gravado a partir de `tv/{id}` e só grava episódios.
+- Fakes compartilhados de série/temporada em `test/.../domain/usecase/episodes/EpisodeFakes.kt`.
+**Consequência:** Home e Biblioteca podem mostrar progresso/próximo episódio reutilizando `ObserveShowProgressUseCase`.
