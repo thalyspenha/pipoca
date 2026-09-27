@@ -137,7 +137,7 @@ Data em que assistiu vem de `watch_history` (permite reassistir). Passar a `WATC
 | episode_number | Int | idem |
 | watched_at | Long | data de visualização (linha só existe se assistido) |
 
-Linha existe = assistido. Desmarcar = apagar linha.
+Linha existe = assistido. Desmarcar = apagar linha. Marcar grava também um evento `EPISODE` em `watch_history`; desmarcar apaga o evento; remover a série da biblioteca apaga os assistidos e o histórico dela (D-037). Só episódios já exibidos podem ser marcados (especiais inclusive).
 
 ### watch_history
 Log de eventos de visualização (base para Histórico e estatísticas por ano).
@@ -180,8 +180,8 @@ Um título pode ter vários itens (ex.: 4K e DVD).
 
 ## Cálculos (não armazenados)
 
-- **Progresso da série** = episódios assistidos / episódios lançados, excluindo temporada 0 (especiais). Episódio lançado = `air_date <= hoje`.
-- **Próximo episódio** = primeiro episódio lançado não assistido, em ordem (temporada, número).
+- **Progresso da série** (`ShowProgressCalculator`, D-037) = episódios assistidos **entre os disponíveis** / episódios disponíveis. Disponível = temporada ≠ 0 e `air_date <= hoje` (sem data = ainda não saiu). Percentual arredonda para baixo. Especiais assistidos e assistidos que sumiram do TMDB não contam. Progresso só é "completo" quando todas as temporadas regulares com episódios estão no cache; sem isso, nunca conclui.
+- **Próximo episódio** = primeiro disponível não assistido, em ordem (temporada, número), mesmo com posteriores assistidos. **Próxima temporada** = temporada dele. **Próximo a estrear** = primeiro regular não exibido (para "Em dia").
 - **Status automático** (D-035): `COMPLETED` automático quando todos os episódios lançados (sem temporada 0) estão assistidos **e** `tmdb_status` é `Ended`/`Canceled`; no ar, fica `WATCHING` ("Em dia"). Marcar episódio de série fora da biblioteca ou em `WANT_TO_WATCH` passa a `WATCHING`; desmarcar episódio de `COMPLETED` volta a `WATCHING`.
 - **Horas assistidas** = soma de `runtime_minutes` dos filmes assistidos (considerando reassistidos) + episódios assistidos (fallback `episode_run_time`).
 

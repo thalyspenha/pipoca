@@ -1,9 +1,11 @@
 package com.thalyspenha.pipoca.domain.usecase.library
 
+import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
+import com.thalyspenha.pipoca.domain.model.WatchedEpisode
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,5 +68,26 @@ class FakeLibraryRepository : LibraryRepository {
 
     override suspend fun removeTvShow(showId: Long) {
         tvShows.value -= showId
+        watchedEpisodes.value = watchedEpisodes.value.filterValues { it.showId != showId }
+        episodeWatches.keys.removeAll { key -> key !in watchedEpisodes.value }
+    }
+
+    /** Episódios assistidos por id; `episodeWatches` simula os eventos de histórico por episódio. */
+    val watchedEpisodes = MutableStateFlow<Map<Long, WatchedEpisode>>(emptyMap())
+    val episodeWatches = mutableMapOf<Long, Int>()
+
+    override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
+        watchedEpisodes.map { all -> all.values.filter { it.showId == showId } }
+
+    override suspend fun markEpisodesWatched(episodes: List<Episode>, watchedAt: Instant) {
+        watchedEpisodes.value += episodes.associate {
+            it.id to WatchedEpisode(it.id, it.showId, it.seasonNumber, it.episodeNumber, watchedAt)
+        }
+        episodes.forEach { episodeWatches[it.id] = (episodeWatches[it.id] ?: 0) + 1 }
+    }
+
+    override suspend fun unmarkEpisodes(episodeIds: List<Long>) {
+        watchedEpisodes.value -= episodeIds.toSet()
+        episodeIds.forEach { episodeWatches.remove(it) }
     }
 }

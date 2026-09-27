@@ -53,7 +53,8 @@ app/src/main/java/com/thalyspenha/pipoca/
 ├── domain/
 │   ├── model/                  # modelos puros Kotlin
 │   ├── repository/             # interfaces
-│   └── usecase/
+│   ├── progress/               # cálculo puro de progresso de séries (D-037)
+│   └── usecase/                # library/, episodes/
 ├── presentation/
 │   ├── navigation/
 │   ├── theme/

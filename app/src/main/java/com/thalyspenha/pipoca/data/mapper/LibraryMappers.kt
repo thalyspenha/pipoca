@@ -2,12 +2,14 @@ package com.thalyspenha.pipoca.data.mapper
 
 import com.thalyspenha.pipoca.data.local.dao.UserMovieWithCache
 import com.thalyspenha.pipoca.data.local.dao.UserTvShowWithCache
+import com.thalyspenha.pipoca.data.local.entity.UserEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
+import com.thalyspenha.pipoca.domain.model.WatchedEpisode
 import java.time.Instant
 
 fun UserMovieEntity.toDomain() = LibraryMovie(
@@ -62,4 +64,12 @@ fun UserTvShowWithCache.toDomain() = LibraryTvShowItem(
     name = name,
     posterPath = posterPath,
     year = firstAirDate?.year,
+)
+
+fun UserEpisodeEntity.toDomain() = WatchedEpisode(
+    episodeId = episodeId,
+    showId = showId,
+    seasonNumber = seasonNumber,
+    episodeNumber = episodeNumber,
+    watchedAt = Instant.ofEpochMilli(watchedAt),
 )

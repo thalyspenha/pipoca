@@ -119,4 +119,38 @@ interface UserLibraryDao {
 
     @Query("DELETE FROM user_episode WHERE episode_id IN (:episodeIds)")
     suspend fun deleteWatchedEpisodes(episodeIds: List<Long>)
+
+    @Insert
+    suspend fun insertWatches(events: List<WatchHistoryEntity>)
+
+    @Query("DELETE FROM watch_history WHERE episode_id IN (:episodeIds)")
+    suspend fun deleteEpisodeHistory(episodeIds: List<Long>)
+
+    @Query("DELETE FROM user_episode WHERE show_id = :showId")
+    suspend fun deleteShowWatchedEpisodes(showId: Long)
+
+    @Query("DELETE FROM watch_history WHERE show_id = :showId")
+    suspend fun deleteShowHistory(showId: Long)
+
+    /** Marca episódios e registra um evento de histórico para cada, juntos. */
+    @Transaction
+    suspend fun insertWatchedEpisodesWithHistory(episodes: List<UserEpisodeEntity>, events: List<WatchHistoryEntity>) {
+        upsertWatchedEpisodes(episodes)
+        insertWatches(events)
+    }
+
+    /** Desmarcar remove também o evento correspondente (DATABASE.md). */
+    @Transaction
+    suspend fun deleteWatchedEpisodesWithHistory(episodeIds: List<Long>) {
+        deleteWatchedEpisodes(episodeIds)
+        deleteEpisodeHistory(episodeIds)
+    }
+
+    /** Remove a série, os episódios assistidos e o histórico dela juntos (D-037, como filmes em D-029). */
+    @Transaction
+    suspend fun deleteTvShowWithEpisodes(showId: Long) {
+        deleteTvShow(showId)
+        deleteShowWatchedEpisodes(showId)
+        deleteShowHistory(showId)
+    }
 }

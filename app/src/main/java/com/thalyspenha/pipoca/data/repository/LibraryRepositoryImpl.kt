@@ -1,14 +1,17 @@
 package com.thalyspenha.pipoca.data.repository
 
 import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
+import com.thalyspenha.pipoca.data.local.entity.UserEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
 import com.thalyspenha.pipoca.data.local.entity.WatchMediaType
 import com.thalyspenha.pipoca.data.mapper.toDomain
 import com.thalyspenha.pipoca.data.mapper.toEntity
+import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
+import com.thalyspenha.pipoca.domain.model.WatchedEpisode
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -57,5 +60,30 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override suspend fun saveTvShow(show: LibraryTvShow) = dao.upsertTvShow(show.toEntity())
 
-    override suspend fun removeTvShow(showId: Long) = dao.deleteTvShow(showId)
+    override suspend fun removeTvShow(showId: Long) = dao.deleteTvShowWithEpisodes(showId)
+
+    override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
+        dao.observeWatchedEpisodes(showId).map { list -> list.map { it.toDomain() } }
+
+    override suspend fun markEpisodesWatched(episodes: List<Episode>, watchedAt: Instant) {
+        if (episodes.isEmpty()) return
+        val millis = watchedAt.toEpochMilli()
+        dao.insertWatchedEpisodesWithHistory(
+            episodes = episodes.map {
+                UserEpisodeEntity(it.id, it.showId, it.seasonNumber, it.episodeNumber, watchedAt = millis)
+            },
+            events = episodes.map {
+                WatchHistoryEntity(
+                    mediaType = WatchMediaType.EPISODE,
+                    showId = it.showId,
+                    episodeId = it.id,
+                    watchedAt = millis,
+                )
+            },
+        )
+    }
+
+    override suspend fun unmarkEpisodes(episodeIds: List<Long>) {
+        if (episodeIds.isNotEmpty()) dao.deleteWatchedEpisodesWithHistory(episodeIds)
+    }
 }

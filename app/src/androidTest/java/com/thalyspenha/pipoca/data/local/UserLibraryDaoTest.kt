@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
 import com.thalyspenha.pipoca.data.local.dao.MovieCacheBundle
 import com.thalyspenha.pipoca.data.local.entity.TmdbMovieEntity
+import com.thalyspenha.pipoca.data.local.entity.UserEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
 import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
@@ -125,5 +126,42 @@ class UserLibraryDaoTest {
         assertEquals("Matrix", rows[0].title)
         assertEquals(LocalDate.of(1999, 3, 31), rows[0].releaseDate)
         assertNull(rows[1].title)
+    }
+
+    private suspend fun historyCount(): Int =
+        db.query("SELECT COUNT(*) FROM watch_history", null).use { it.moveToFirst(); it.getInt(0) }
+
+    @Test
+    fun marcaEDesmarcaEpisodiosComHistorico() = runBlocking {
+        val episodes = listOf(UserEpisodeEntity(1, 1396, 1, 1, 100), UserEpisodeEntity(2, 1396, 1, 2, 100))
+        dao.insertWatchedEpisodesWithHistory(
+            episodes,
+            episodes.map { WatchHistoryEntity(mediaType = WatchMediaType.EPISODE, showId = 1396, episodeId = it.episodeId, watchedAt = 100) },
+        )
+        assertEquals(2, historyCount())
+
+        dao.deleteWatchedEpisodesWithHistory(listOf(1))
+
+        assertEquals(listOf(2L), dao.observeWatchedEpisodes(1396).first().map { it.episodeId })
+        assertEquals(1, historyCount())
+    }
+
+    @Test
+    fun removerSerieApagaEpisodiosEHistoricoDela() = runBlocking {
+        dao.upsertTvShow(UserTvShowEntity(showId = 1396, status = TvShowStatus.WATCHING, addedAt = 1, updatedAt = 1))
+        dao.insertWatchedEpisodesWithHistory(
+            listOf(UserEpisodeEntity(1, 1396, 1, 1, 100), UserEpisodeEntity(9, 7, 1, 1, 100)),
+            listOf(
+                WatchHistoryEntity(mediaType = WatchMediaType.EPISODE, showId = 1396, episodeId = 1, watchedAt = 100),
+                WatchHistoryEntity(mediaType = WatchMediaType.EPISODE, showId = 7, episodeId = 9, watchedAt = 100),
+            ),
+        )
+
+        dao.deleteTvShowWithEpisodes(1396)
+
+        assertNull(dao.getTvShow(1396))
+        assertEquals(emptyList<UserEpisodeEntity>(), dao.observeWatchedEpisodes(1396).first())
+        assertEquals(1, dao.observeWatchedEpisodes(7).first().size)
+        assertEquals(1, historyCount())
     }
 }

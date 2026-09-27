@@ -1,9 +1,11 @@
 package com.thalyspenha.pipoca.domain.repository
 
+import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
+import com.thalyspenha.pipoca.domain.model.WatchedEpisode
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 
@@ -42,5 +44,14 @@ interface LibraryRepository {
 
     suspend fun saveTvShow(show: LibraryTvShow)
 
+    /** Remove a série, os episódios assistidos e o histórico dela (D-037). */
     suspend fun removeTvShow(showId: Long)
+
+    fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>>
+
+    /** Marca como assistidos (data [watchedAt]) e registra no histórico, numa transação. */
+    suspend fun markEpisodesWatched(episodes: List<Episode>, watchedAt: Instant)
+
+    /** Desmarca e apaga os eventos de histórico desses episódios, numa transação. */
+    suspend fun unmarkEpisodes(episodeIds: List<Long>)
 }

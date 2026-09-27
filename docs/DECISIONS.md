@@ -219,3 +219,10 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `user_episode` conforme DATABASE.md, com `watched_at` não nulo (linha existe = assistido). Operações básicas em `UserLibraryDao`; regras (histórico, status automático) ficam para a parte 2.
 - `MIGRATION_2_3` explícita; `MigrationTest` limpa o arquivo antes de cada teste (testes compartilhavam o arquivo e falhavam conforme a ordem).
 **Consequência:** migração real 2→3 no S25 preservou a biblioteca. Especiais continuam no cache, mas as regras da parte 2 os excluem do progresso.
+
+### D-037 — Regras de progresso e marcação de episódios
+**Decisão:**
+- `ShowProgressCalculator` (domain, puro): disponível = temporada ≠ 0 e `air_date` ≤ hoje; assistidos contam só entre os disponíveis; próximo episódio = primeiro disponível não assistido; "próximo a estrear" para série em dia; `isComplete` = todas as temporadas regulares com episódios no cache. `isCompleted` = tudo assistido **e** `Ended`/`Canceled` (D-035); `isCaughtUp` = tudo assistido e série no ar. "Hoje" = `LocalDate.now(clock)` (relógio UTC injetado).
+- `LibraryRepository` ganhou episódios assistidos: `markEpisodesWatched` (user_episode + evento `EPISODE` no histórico, transação) e `unmarkEpisodes` (apaga os dois). `removeTvShow` agora apaga também os assistidos e o histórico da série, como filmes (D-029).
+- Use cases em `domain/usecase/episodes`: `ObserveShowProgressUseCase`, `RefreshShowEpisodesUseCase` (série + todas as temporadas regulares; para na primeira falha), marcar/desmarcar episódio e temporada, e `SyncShowStatusUseCase` com as transições de D-035. Só episódio já exibido pode ser marcado; marcar de novo não duplica; marcar temporada mantém a data dos já marcados. `PAUSED`/`DROPPED` só mudam se a série ficar concluída.
+**Consequência:** a parte 3 só observa `ObserveShowProgressUseCase` e chama os use cases; progresso aparece como parcial até `RefreshShowEpisodesUseCase` baixar todas as temporadas.

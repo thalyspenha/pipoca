@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 6 em andamento:** parte 1 concluída (episódios no cache, `user_episode`, migração 2→3 testada no S25 com dados reais, `SeasonRepository`); 115 testes unitários e 16 instrumentados passando. Próxima: "IMPLEMENTAR FASE 6 – PARTE 2" (regras e use cases).
+**Fase 6 em andamento:** partes 1 e 2 concluídas (episódios em cache, migração 2→3, `ShowProgressCalculator`, use cases de marcar/desmarcar com status automático); 143 testes unitários e 18 instrumentados passando. Ainda sem telas de temporadas/episódios. Próxima: "IMPLEMENTAR FASE 6 – PARTE 3" (telas).
 
 ## Fases
 
@@ -78,7 +78,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Série concluída: regra (a) — automática só se todos os episódios exibidos estiverem assistidos **e** o TMDB indicar fim (Ended/Canceled); se ainda no ar, fica Assistindo ("Em dia") (D-035).
 - **Executada em 3 partes** (D-035). Uma por vez, só com "IMPLEMENTAR FASE 6 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Dados — endpoint/DTO de temporada, `tmdb_episode` + `user_episode`, migração 2→3, cache de episódios no repositório; testes de parsing, DAO e migração.
-  2. ⏳ Regras — cálculo puro de progresso, próximo episódio/temporada, conclusão; use cases de marcar/desmarcar episódio e temporada (com `watch_history`); testes de progresso.
+  2. ✅ Regras — cálculo puro de progresso, próximo episódio/temporada, conclusão; use cases de marcar/desmarcar episódio e temporada (com `watch_history`); testes de progresso.
   3. ⏳ Telas — temporadas, episódios, navegação a partir dos detalhes da série; progresso real no lugar do "Em breve"; docs.
 
 ### ⏳ Fases 7–11
