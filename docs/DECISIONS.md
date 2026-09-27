@@ -173,3 +173,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Biblioteca vazia: mensagem + botão Buscar (abre a aba Busca) ou aviso de chave ausente. Toque no pôster abre a rota de detalhes.
 - `uiState` via `stateIn(WhileSubscribed(5s))`; `load()` saiu (não há o que recarregar: o Room reemite).
 **Consequência:** a Home só terá conteúdo quando existir UI para adicionar à biblioteca (tela de detalhes, fase futura).
+
+### D-031 — Fase 5 em 3 partes; coleção e progresso como placeholder
+**Contexto:** `fase5.md` pede, no filme, "coleção" e "Adicionar à coleção", e na série, "progresso"; ainda não existem `collection_item` nem episódios.
+**Decisão:** Fase 5 em 3 partes (ver ROADMAP.md): (1) ViewModel de detalhes do filme e testes, (2) tela do filme e componentes reutilizáveis, (3) série. Coleção e progresso aparecem como placeholder "em breve" (opção A, escolha do usuário); nada de `collection_item` nem migração nesta fase.
+**Consequência:** fases de coleção física e episódios trocam os placeholders pelo conteúdo real.
