@@ -201,3 +201,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `DetailsScaffold` (barra + snackbar de refresh) extraído e usado por filme e série. `DetailsSection` ganhou slot `action`: o favorito foi para o título da seção de biblioteca, liberando a largura para 3 status. Segmentos sem ✓ (o preenchimento indica a seleção).
 - `DetailsPlaceholderScreen` removido; rotas de detalhes usam as telas reais.
 **Consequência:** fase de episódios troca o card de progresso; nenhuma dependência nova.
+
+### D-035 — Fase 6 em 3 partes; regra de série concluída
+**Contexto:** `fase6.md` pede episódios, progresso e conclusão automática da série.
+**Decisão:**
+- Fase 6 em 3 partes (ver ROADMAP.md): (1) dados e migração 2→3, (2) regras e use cases, (3) telas.
+- Conclusão automática, opção (a) escolhida pelo usuário: vira `COMPLETED` quando todos os episódios exibidos (exceto temporada 0) estão assistidos **e** `tmdb_status` é `Ended` ou `Canceled`; série ainda no ar fica `WATCHING` e a UI mostra "Em dia".
+- Transições automáticas: marcar episódio de série fora da biblioteca ou em `WANT_TO_WATCH` passa para `WATCHING`; desmarcar episódio de série `COMPLETED` volta para `WATCHING`.
+- Estrutura do TMDB (`tv/{id}/season/{n}`) será conferida na parte 1 antes de fechar as regras.
+**Consequência:** substitui a regra provisória de DATABASE.md ("sugerir COMPLETED, não forçar").
