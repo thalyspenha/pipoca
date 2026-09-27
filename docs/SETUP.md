@@ -59,7 +59,7 @@ Ver `.env.example` e `docs/TMDB.md`.
 ```
 Deve terminar em `BUILD SUCCESSFUL` com todos os testes unitários passando.
 
-Problema conhecido (D-041): às vezes o lint falha com "Unexpected failure during lint analysis" no primeiro build depois de muitas mudanças. Rodar `./gradlew build` de novo; se persistir, é erro real.
+Problema conhecido (D-041, D-042): o lint falhava às vezes com "Unexpected failure during lint analysis" no primeiro build depois de muitas mudanças. A memória do Gradle subiu para 4 GB (`gradle.properties`); se ainda acontecer, rodar `./gradlew build` de novo e, persistindo, tratar como erro real.
 
 ## Rodar no aparelho
 

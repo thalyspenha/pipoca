@@ -1,5 +1,6 @@
 package com.thalyspenha.pipoca.presentation.screens.details.movie
 
+import com.thalyspenha.pipoca.domain.model.CollectionItem
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.MovieDetails
@@ -17,6 +18,8 @@ sealed interface MovieDetailsUiState {
         val personal: PersonalMovie,
         val isRefreshing: Boolean = false,
         val refreshError: DataError? = null,
+        /** Itens da coleção deste filme (independentes do status, D-039). */
+        val collection: List<CollectionItem> = emptyList(),
     ) : MovieDetailsUiState
 }
 

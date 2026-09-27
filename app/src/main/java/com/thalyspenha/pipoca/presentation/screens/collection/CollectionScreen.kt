@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
@@ -21,6 +22,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,6 +51,7 @@ import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
 @Composable
 fun CollectionScreen(
     onItemClick: (CollectionListItem) -> Unit,
+    onOpenDetails: (CollectionListItem) -> Unit,
     viewModel: CollectionViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -57,6 +60,7 @@ fun CollectionScreen(
         onFilterChange = viewModel::onFilterChange,
         onSortChange = viewModel::onSortChange,
         onItemClick = onItemClick,
+        onOpenDetails = onOpenDetails,
     )
 }
 
@@ -66,12 +70,13 @@ private fun CollectionContent(
     onFilterChange: (CollectionFilter) -> Unit,
     onSortChange: (CollectionSort) -> Unit,
     onItemClick: (CollectionListItem) -> Unit,
+    onOpenDetails: (CollectionListItem) -> Unit,
 ) {
     when {
         state.isLoading -> LoadingContent()
         state.isCollectionEmpty -> PlaceholderScreen(
             title = "Minha Coleção",
-            description = "Sua coleção está vazia. Adicione Blu-ray, 4K, DVD ou digital pelos detalhes de um filme ou série.",
+            description = "Sua coleção está vazia. Adicione Blu-ray, 4K, DVD ou digital na seção Coleção dos detalhes de um filme ou série.",
         )
         else -> Column(Modifier.fillMaxSize()) {
             Header(state, onSortChange)
@@ -84,7 +89,7 @@ private fun CollectionContent(
             } else {
                 LazyColumn(contentPadding = PaddingValues(bottom = 16.dp)) {
                     items(state.items, key = CollectionListItem::id) { item ->
-                        CollectionRow(item, onClick = { onItemClick(item) })
+                        CollectionRow(item, onClick = { onItemClick(item) }, onOpenDetails = { onOpenDetails(item) })
                         HorizontalDivider(Modifier.padding(start = 88.dp))
                     }
                 }
@@ -154,8 +159,9 @@ private fun FilterRow(selected: CollectionFilter, onFilterChange: (CollectionFil
     }
 }
 
+/** Toque edita o item (D-042); a seta abre os detalhes do título. */
 @Composable
-private fun CollectionRow(item: CollectionListItem, onClick: () -> Unit) {
+private fun CollectionRow(item: CollectionListItem, onClick: () -> Unit, onOpenDetails: () -> Unit) {
     val title = item.title ?: "Carregando…"
     Row(
         modifier = Modifier
@@ -181,6 +187,9 @@ private fun CollectionRow(item: CollectionListItem, onClick: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        IconButton(onClick = onOpenDetails) {
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Ver detalhes")
+        }
     }
 }
 
@@ -197,7 +206,7 @@ private fun CollectionPreview() {
                 totalCount = 2,
                 isLoading = false,
             ),
-            onFilterChange = {}, onSortChange = {}, onItemClick = {},
+            onFilterChange = {}, onSortChange = {}, onItemClick = {}, onOpenDetails = {},
         )
     }
 }
@@ -208,7 +217,7 @@ private fun CollectionEmptyPreview() {
     PipocaTheme {
         CollectionContent(
             state = CollectionUiState(isLoading = false),
-            onFilterChange = {}, onSortChange = {}, onItemClick = {},
+            onFilterChange = {}, onSortChange = {}, onItemClick = {}, onOpenDetails = {},
         )
     }
 }

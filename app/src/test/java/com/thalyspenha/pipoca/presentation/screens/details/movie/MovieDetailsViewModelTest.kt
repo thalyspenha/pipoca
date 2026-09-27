@@ -2,11 +2,16 @@ package com.thalyspenha.pipoca.presentation.screens.details.movie
 
 import androidx.lifecycle.SavedStateHandle
 import com.thalyspenha.pipoca.data.repository.MutableClock
+import com.thalyspenha.pipoca.domain.model.CollectionItemDraft
+import com.thalyspenha.pipoca.domain.model.CollectionMediaType
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.DataResult
+import com.thalyspenha.pipoca.domain.model.MediaFormat
 import com.thalyspenha.pipoca.domain.model.MovieDetails
 import com.thalyspenha.pipoca.domain.model.MovieStatus
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
+import com.thalyspenha.pipoca.domain.usecase.collection.AddCollectionItemUseCase
+import com.thalyspenha.pipoca.domain.usecase.collection.FakeCollectionRepository
 import com.thalyspenha.pipoca.domain.usecase.library.FakeLibraryRepository
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetMovieFavoriteUseCase
@@ -39,6 +44,7 @@ class MovieDetailsViewModelTest {
     private val movies = FakeMovieRepository()
     private val library = FakeLibraryRepository()
     private val clock = MutableClock()
+    private val collection = FakeCollectionRepository()
 
     @Before
     fun setUp() {
@@ -54,6 +60,7 @@ class MovieDetailsViewModelTest {
         savedStateHandle = SavedStateHandle(mapOf("id" to MOVIE_ID)),
         movieRepository = movies,
         library = library,
+        collection = collection,
         setStatus = SetMovieStatusUseCase(library, clock),
         removeFromLibrary = RemoveMovieFromLibraryUseCase(library),
         setFavorite = SetMovieFavoriteUseCase(library, clock),
@@ -210,6 +217,22 @@ class MovieDetailsViewModelTest {
         vm.onRatingChange(null)
         advanceUntilIdle()
         assertNull(vm.success().personal.rating)
+    }
+
+    @Test
+    fun `mostra itens da colecao do filme, independentes do status`() = test {
+        movies.details.value = matrix()
+        val add = AddCollectionItemUseCase(collection, clock)
+        add(CollectionItemDraft(MOVIE_ID, CollectionMediaType.MOVIE, MediaFormat.UHD_4K_BLURAY))
+        add(CollectionItemDraft(MOVIE_ID, CollectionMediaType.TV_SHOW, MediaFormat.DVD)) // outro tipo, não entra
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onStatusClick(MovieStatus.WANT_TO_WATCH)
+        advanceUntilIdle()
+
+        assertEquals(listOf(MediaFormat.UHD_4K_BLURAY), vm.success().collection.map { it.format })
+        assertEquals(MovieStatus.WANT_TO_WATCH, vm.success().personal.status)
     }
 
     private companion object {

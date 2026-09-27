@@ -3,9 +3,11 @@ package com.thalyspenha.pipoca.presentation.screens.details.movie
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thalyspenha.pipoca.domain.model.CollectionMediaType
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.DataResult
 import com.thalyspenha.pipoca.domain.model.MovieStatus
+import com.thalyspenha.pipoca.domain.repository.CollectionRepository
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCase
@@ -31,6 +33,7 @@ class MovieDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository,
     library: LibraryRepository,
+    collection: CollectionRepository,
     private val setStatus: SetMovieStatusUseCase,
     private val removeFromLibrary: RemoveMovieFromLibraryUseCase,
     private val setFavorite: SetMovieFavoriteUseCase,
@@ -49,13 +52,15 @@ class MovieDetailsViewModel @Inject constructor(
             movieRepository.observeMovieDetails(movieId),
             library.observeMovie(movieId),
             refreshState,
-        ) { movie, personal, refresh ->
+            collection.observeItemsFor(movieId, CollectionMediaType.MOVIE),
+        ) { movie, personal, refresh, items ->
             when {
                 movie != null -> MovieDetailsUiState.Success(
                     movie = movie,
                     personal = personal.toPersonalMovie(),
                     isRefreshing = refresh.isRefreshing,
                     refreshError = refresh.error,
+                    collection = items,
                 )
                 refresh.error != null -> MovieDetailsUiState.Error(refresh.error)
                 else -> MovieDetailsUiState.Loading

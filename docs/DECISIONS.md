@@ -257,3 +257,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Rótulos de formato/filtro/ordenação em `presentation/components/CollectionLabels.kt`.
 - Problema conhecido: o lint do AGP às vezes falha com "Unexpected failure during lint analysis" no primeiro `./gradlew build` depois de muitas mudanças e passa ao repetir, sem alteração de código (3 ocorrências, não reproduzido isoladamente). Ver SETUP.md.
 **Consequência:** a parte 3 adiciona o formulário e o acesso pelos detalhes; esta tela ganha edição por item.
+
+### D-042 — Formulário da coleção e acesso pelos detalhes
+**Decisão:**
+- Formulário em tela própria (`CollectionItemFormRoute(tmdbId, mediaType, itemId = 0)`; `mediaType` como nome do enum e `itemId` 0 = novo, para argumentos simples de rota). Campos: formato (chips), edição, região, quantidade (só dígitos, até 2), data de aquisição (`DatePicker` que só permite até hoje, com "Limpar") e observações. Erros aparecem só depois da primeira tentativa de salvar. Remover pede confirmação e lembra que status e favoritos não mudam. Item apagado em outro lugar fecha o formulário.
+- Detalhes de filme e série: seção "Coleção" lista os itens do título (toque edita) e oferece "Adicionar à coleção"/"Adicionar outro formato"; substitui o "Em breve" (D-031).
+- "Minha Coleção": toque no item abre a edição; a seta abre os detalhes do título.
+- `org.gradle.jvmargs` de 2 GB para 4 GB: hipótese para a falha intermitente do lint (D-041), que só acontecia quando o mesmo build compilava, testava e analisava tudo. Build limpo completo passou depois da mudança.
+**Consequência:** CRUD completo coberto por testes de use case, DAO (S25) e ViewModel do formulário.

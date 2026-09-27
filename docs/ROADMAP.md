@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 7 em andamento:** partes 1 e 2 concluídas (`collection_item`, migração 3→4, regras, tela "Minha Coleção" com filtros e ordenação); 173 testes unitários e 23 instrumentados passando. Ainda não há como adicionar itens pela UI. Próxima: "IMPLEMENTAR FASE 7 – PARTE 3" (formulário).
+**Fase 7 concluída:** coleção física/digital (`collection_item`, migração 3→4), tela "Minha Coleção" com filtros e ordenação, formulário de adicionar/editar/remover acessível pelos detalhes de filme e série e pela própria coleção, independente do status assistido; 182 testes unitários e 23 instrumentados passando; testado no S25. Próxima: Fase 8 (aguardando permissão para ler `fase8.md`).
 
 ## Fases
 
@@ -81,14 +81,14 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Regras — cálculo puro de progresso, próximo episódio/temporada, conclusão; use cases de marcar/desmarcar episódio e temporada (com `watch_history`); testes de progresso.
   3. ✅ Telas — temporadas, episódios, navegação a partir dos detalhes da série; progresso real no lugar do "Em breve"; docs.
 
-### 🚧 Fase 7 — Minha Coleção (ver `fase7.md`)
+### ✅ Fase 7 — Minha Coleção (ver `fase7.md`)
 - `CollectionItem`: tmdbId, mediaType, formato (4K UHD Blu-ray, Blu-ray, DVD, Digital, Outro), edição, região, quantidade, data de aquisição, observações; um título pode ter vários itens.
 - Adicionar filme/série, editar, remover. Tela "Minha Coleção" (pôster, título, formato, edição), filtros Todos/4K/Blu-ray/DVD/Digital, ordenação título/adicionado recentemente/data de aquisição.
 - Coleção independente de status assistido (ex.: 4K + Quero assistir, 4K + Assistido). Testar CRUD completo; build; docs.
 - **Executada em 3 partes** (D-039). Uma por vez, só com "IMPLEMENTAR FASE 7 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Dados e regras — `collection_item`, migração 3→4, consulta com título/pôster do cache, repositório e use cases (adicionar/editar/remover, validação), filtros e ordenação puros; testes de CRUD, DAO e migração.
   2. ✅ Tela "Minha Coleção" — aba Coleção com lista, filtros, ordenação e estado vazio.
-  3. ⏳ Formulário — adicionar/editar (formato, edição, região, quantidade, data, observações) e remover; acesso pelos detalhes de filme e série e pela tela da coleção; docs.
+  3. ✅ Formulário — adicionar/editar (formato, edição, região, quantidade, data, observações) e remover; acesso pelos detalhes de filme e série e pela tela da coleção; docs.
 
 ### ⏳ Fases 8–11
 Definidas nos arquivos `fase8.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

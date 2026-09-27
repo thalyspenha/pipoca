@@ -14,6 +14,7 @@ import com.thalyspenha.pipoca.domain.usecase.episodes.MarkEpisodeWatchedUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.ObserveShowProgressUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.RefreshShowEpisodesUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.SyncShowStatusUseCase
+import com.thalyspenha.pipoca.domain.usecase.collection.FakeCollectionRepository
 import com.thalyspenha.pipoca.domain.usecase.library.FakeLibraryRepository
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowFavoriteUseCase
@@ -63,6 +64,7 @@ class TvShowDetailsViewModelTest {
             tvShowRepository = shows,
             seasonRepository = seasons,
             library = library,
+            collection = FakeCollectionRepository(),
             observeProgress = progress,
             refreshEpisodes = RefreshShowEpisodesUseCase(shows, seasons),
             setStatus = setStatus,

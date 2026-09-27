@@ -1,5 +1,6 @@
 package com.thalyspenha.pipoca.presentation.screens.details.tv
 
+import com.thalyspenha.pipoca.domain.model.CollectionItem
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.TvShowDetails
@@ -20,6 +21,8 @@ sealed interface TvShowDetailsUiState {
         val seasons: List<SeasonRow> = emptyList(),
         /** Baixando as temporadas para o progresso (só séries na biblioteca, D-038). */
         val isLoadingEpisodes: Boolean = false,
+        /** Itens da coleção desta série (independentes do status, D-039). */
+        val collection: List<CollectionItem> = emptyList(),
     ) : TvShowDetailsUiState
 }
 

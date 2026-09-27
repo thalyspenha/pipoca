@@ -3,10 +3,12 @@ package com.thalyspenha.pipoca.presentation.screens.details.tv
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thalyspenha.pipoca.domain.model.CollectionMediaType
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.DataResult
 import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import com.thalyspenha.pipoca.domain.progress.ShowProgress
+import com.thalyspenha.pipoca.domain.repository.CollectionRepository
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import com.thalyspenha.pipoca.domain.repository.SeasonRepository
 import com.thalyspenha.pipoca.domain.repository.TvShowRepository
@@ -41,6 +43,7 @@ class TvShowDetailsViewModel @Inject constructor(
     private val tvShowRepository: TvShowRepository,
     seasonRepository: SeasonRepository,
     private val library: LibraryRepository,
+    collection: CollectionRepository,
     observeProgress: ObserveShowProgressUseCase,
     private val refreshEpisodes: RefreshShowEpisodesUseCase,
     private val setStatus: SetTvShowStatusUseCase,
@@ -90,7 +93,8 @@ class TvShowDetailsViewModel @Inject constructor(
             library.observeTvShow(showId),
             refreshState,
             episodesState,
-        ) { show, personal, refresh, episodes ->
+            collection.observeItemsFor(showId, CollectionMediaType.TV_SHOW),
+        ) { show, personal, refresh, episodes, items ->
             when {
                 show != null -> TvShowDetailsUiState.Success(
                     show = show,
@@ -100,6 +104,7 @@ class TvShowDetailsViewModel @Inject constructor(
                     progress = episodes.progress,
                     seasons = episodes.seasons,
                     isLoadingEpisodes = episodes.isLoading,
+                    collection = items,
                 )
                 refresh.error != null -> TvShowDetailsUiState.Error(refresh.error)
                 else -> TvShowDetailsUiState.Loading

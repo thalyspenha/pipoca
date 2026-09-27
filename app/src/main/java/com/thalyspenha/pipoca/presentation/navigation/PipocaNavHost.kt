@@ -23,7 +23,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.thalyspenha.pipoca.domain.model.CollectionMediaType
 import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
+import com.thalyspenha.pipoca.presentation.screens.collection.form.CollectionItemFormScreen
 import com.thalyspenha.pipoca.presentation.screens.collection.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.details.movie.MovieDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.details.season.SeasonScreen
@@ -85,20 +87,38 @@ fun PipocaApp() {
             }
             composable<LibraryRoute> { LibraryScreen() }
             composable<CollectionRoute> {
-                CollectionScreen(onItemClick = { item -> navController.navigate(item.detailsRoute()) })
+                CollectionScreen(
+                    onItemClick = { item ->
+                        navController.navigate(CollectionItemFormRoute(item.tmdbId, item.mediaType.name, item.id))
+                    },
+                    onOpenDetails = { item -> navController.navigate(item.detailsRoute()) },
+                )
+            }
+            composable<CollectionItemFormRoute> {
+                CollectionItemFormScreen(onDone = navController::navigateUp)
             }
             composable<MoreRoute> { MoreScreen() }
             composable<MovieDetailsRoute> {
-                MovieDetailsScreen(onBack = navController::navigateUp)
+                val id = it.toRoute<MovieDetailsRoute>().id
+                MovieDetailsScreen(
+                    onBack = navController::navigateUp,
+                    onAddToCollection = { navController.navigate(CollectionItemFormRoute(id, CollectionMediaType.MOVIE.name)) },
+                    onEditCollectionItem = { itemId ->
+                        navController.navigate(CollectionItemFormRoute(id, CollectionMediaType.MOVIE.name, itemId))
+                    },
+                )
             }
             composable<SeasonRoute> {
                 SeasonScreen(onBack = navController::navigateUp)
             }
             composable<TvShowDetailsRoute> {
+                val id = it.toRoute<TvShowDetailsRoute>().id
                 TvShowDetailsScreen(
                     onBack = navController::navigateUp,
-                    onSeasonClick = { seasonNumber ->
-                        navController.navigate(SeasonRoute(it.toRoute<TvShowDetailsRoute>().id, seasonNumber))
+                    onSeasonClick = { seasonNumber -> navController.navigate(SeasonRoute(id, seasonNumber)) },
+                    onAddToCollection = { navController.navigate(CollectionItemFormRoute(id, CollectionMediaType.TV_SHOW.name)) },
+                    onEditCollectionItem = { itemId ->
+                        navController.navigate(CollectionItemFormRoute(id, CollectionMediaType.TV_SHOW.name, itemId))
                     },
                 )
             }

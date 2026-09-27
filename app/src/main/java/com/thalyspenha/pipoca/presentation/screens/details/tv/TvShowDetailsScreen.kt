@@ -24,6 +24,7 @@ import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import com.thalyspenha.pipoca.presentation.components.ErrorContent
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.details.CastRow
+import com.thalyspenha.pipoca.presentation.components.details.CollectionSection
 import com.thalyspenha.pipoca.presentation.components.details.DetailsHeader
 import com.thalyspenha.pipoca.presentation.components.details.DetailsScaffold
 import com.thalyspenha.pipoca.presentation.components.details.DetailsSection
@@ -42,6 +43,8 @@ import java.time.LocalDate
 fun TvShowDetailsScreen(
     onBack: () -> Unit,
     onSeasonClick: (seasonNumber: Int) -> Unit,
+    onAddToCollection: () -> Unit,
+    onEditCollectionItem: (itemId: Long) -> Unit,
     viewModel: TvShowDetailsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,6 +59,8 @@ fun TvShowDetailsScreen(
         onMarkNextEpisode = viewModel::onMarkNextEpisode,
         onLoadEpisodes = viewModel::loadEpisodes,
         onSeasonClick = onSeasonClick,
+        onAddToCollection = onAddToCollection,
+        onEditCollectionItem = onEditCollectionItem,
     )
 }
 
@@ -71,6 +76,8 @@ private fun TvShowDetailsContent(
     onMarkNextEpisode: () -> Unit,
     onLoadEpisodes: () -> Unit,
     onSeasonClick: (Int) -> Unit,
+    onAddToCollection: () -> Unit,
+    onEditCollectionItem: (Long) -> Unit,
 ) {
     val success = state as? TvShowDetailsUiState.Success
     DetailsScaffold(
@@ -95,6 +102,8 @@ private fun TvShowDetailsContent(
                 onMarkNextEpisode = onMarkNextEpisode,
                 onLoadEpisodes = onLoadEpisodes,
                 onSeasonClick = onSeasonClick,
+                onAddToCollection = onAddToCollection,
+                onEditCollectionItem = onEditCollectionItem,
                 modifier = modifier,
             )
         }
@@ -110,6 +119,8 @@ private fun TvShowDetailsBody(
     onMarkNextEpisode: () -> Unit,
     onLoadEpisodes: () -> Unit,
     onSeasonClick: (Int) -> Unit,
+    onAddToCollection: () -> Unit,
+    onEditCollectionItem: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val show = state.show
@@ -190,6 +201,13 @@ private fun TvShowDetailsBody(
         if (show.cast.isNotEmpty()) {
             item { DetailsSection("Elenco") { CastRow(show.cast) } }
         }
+        item {
+            CollectionSection(
+                items = state.collection,
+                onAdd = onAddToCollection,
+                onItemClick = { onEditCollectionItem(it.id) },
+            )
+        }
         item { Spacer(Modifier.padding(bottom = 16.dp)) }
     }
 }
@@ -239,6 +257,7 @@ private fun TvShowDetailsPreview() {
             onBack = {}, onRetry = {}, onDismissRefreshError = {},
             onStatusClick = {}, onFavoriteClick = {}, onRatingChange = {},
             onMarkNextEpisode = {}, onLoadEpisodes = {}, onSeasonClick = {},
+            onAddToCollection = {}, onEditCollectionItem = {},
         )
     }
 }

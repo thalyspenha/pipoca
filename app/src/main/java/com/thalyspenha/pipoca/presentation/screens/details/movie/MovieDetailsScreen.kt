@@ -24,7 +24,7 @@ import com.thalyspenha.pipoca.domain.model.MovieStatus
 import com.thalyspenha.pipoca.presentation.components.ErrorContent
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.details.CastRow
-import com.thalyspenha.pipoca.presentation.components.details.ComingSoonCard
+import com.thalyspenha.pipoca.presentation.components.details.CollectionSection
 import com.thalyspenha.pipoca.presentation.components.details.DetailsHeader
 import com.thalyspenha.pipoca.presentation.components.details.DetailsScaffold
 import com.thalyspenha.pipoca.presentation.components.details.DetailsSection
@@ -41,7 +41,12 @@ import com.thalyspenha.pipoca.util.formatVote
 import java.time.LocalDate
 
 @Composable
-fun MovieDetailsScreen(onBack: () -> Unit, viewModel: MovieDetailsViewModel = hiltViewModel()) {
+fun MovieDetailsScreen(
+    onBack: () -> Unit,
+    onAddToCollection: () -> Unit,
+    onEditCollectionItem: (itemId: Long) -> Unit,
+    viewModel: MovieDetailsViewModel = hiltViewModel(),
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     MovieDetailsContent(
         state = state,
@@ -51,6 +56,8 @@ fun MovieDetailsScreen(onBack: () -> Unit, viewModel: MovieDetailsViewModel = hi
         onStatusClick = viewModel::onStatusClick,
         onFavoriteClick = viewModel::onFavoriteClick,
         onRatingChange = viewModel::onRatingChange,
+        onAddToCollection = onAddToCollection,
+        onEditCollectionItem = onEditCollectionItem,
     )
 }
 
@@ -63,6 +70,8 @@ private fun MovieDetailsContent(
     onStatusClick: (MovieStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
+    onAddToCollection: () -> Unit,
+    onEditCollectionItem: (Long) -> Unit,
 ) {
     val success = state as? MovieDetailsUiState.Success
     DetailsScaffold(
@@ -84,6 +93,8 @@ private fun MovieDetailsContent(
                 onStatusClick = onStatusClick,
                 onFavoriteClick = onFavoriteClick,
                 onRatingChange = onRatingChange,
+                onAddToCollection = onAddToCollection,
+                onEditCollectionItem = onEditCollectionItem,
                 modifier = modifier,
             )
         }
@@ -96,6 +107,8 @@ private fun MovieDetailsBody(
     onStatusClick: (MovieStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
+    onAddToCollection: () -> Unit,
+    onEditCollectionItem: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val movie = state.movie
@@ -158,12 +171,11 @@ private fun MovieDetailsBody(
             item { DetailsSection("Elenco") { CastRow(movie.cast) } }
         }
         item {
-            DetailsSection("Coleção") {
-                ComingSoonCard(
-                    title = "Em breve",
-                    description = "Registrar Blu-ray, 4K, DVD e digital chega na fase da coleção física.",
-                )
-            }
+            CollectionSection(
+                items = state.collection,
+                onAdd = onAddToCollection,
+                onItemClick = { onEditCollectionItem(it.id) },
+            )
         }
         item { Spacer(Modifier.padding(bottom = 16.dp)) }
     }
@@ -194,6 +206,7 @@ private fun MovieDetailsPreview() {
             ),
             onBack = {}, onRetry = {}, onDismissRefreshError = {},
             onStatusClick = {}, onFavoriteClick = {}, onRatingChange = {},
+            onAddToCollection = {}, onEditCollectionItem = {},
         )
     }
 }
@@ -206,6 +219,7 @@ private fun MovieDetailsErrorPreview() {
             state = MovieDetailsUiState.Error(DataError.Network),
             onBack = {}, onRetry = {}, onDismissRefreshError = {},
             onStatusClick = {}, onFavoriteClick = {}, onRatingChange = {},
+            onAddToCollection = {}, onEditCollectionItem = {},
         )
     }
 }
