@@ -299,3 +299,13 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Uma consulta (`observeHistory`) com LEFT JOIN no cache; temporada/número caem para `user_episode` sem cache; título ausente busca detalhes uma vez (só com token). Sem paginação por ora (escala pessoal).
 - Geração já existia e está coberta: filme ao passar a assistido (D-029), cada episódio ao ser marcado (D-037); desmarcar episódio apaga o evento; remover título da biblioteca apaga o histórico dele.
 **Consequência:** Fase 8 concluída; "Mais" pode receber estatísticas a partir do mesmo histórico.
+
+### D-047 — Fase 9 em 2 partes; critério de gêneros
+**Contexto:** `fase9.md` pede estatísticas locais com consultas eficientes e sem duplicar dados.
+**Decisão:**
+- Fase 9 em 2 partes (ver ROADMAP.md): (1) consultas e cálculos, (2) tela.
+- Contagens por `COUNT`/`GROUP BY` no Room; mês/ano pelo calendário atual no fuso do aparelho.
+- Tempo = soma por visualização em `watch_history` (reassistir conta); filme usa `runtime_minutes`; episódio usa o próprio ou `episode_run_time` da série; sem duração conta à parte; sem cache fica fora.
+- Gêneros, opção (a) escolhida pelo usuário: filmes `WATCHED` + séries com ≥ 1 episódio assistido ou `COMPLETED`, cada título uma vez por gênero.
+- Gráficos como barras em Compose, sem dependência nova.
+**Consequência:** limitações do cálculo documentadas em DATABASE.md na parte 2.
