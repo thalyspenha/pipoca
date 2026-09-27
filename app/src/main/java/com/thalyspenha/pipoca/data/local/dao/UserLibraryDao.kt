@@ -3,6 +3,7 @@ package com.thalyspenha.pipoca.data.local.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
@@ -32,6 +33,20 @@ interface UserLibraryDao {
 
     @Query("DELETE FROM user_movie WHERE movie_id = :movieId")
     suspend fun deleteMovie(movieId: Long)
+
+    /** Grava o filme e registra a visualização juntos. */
+    @Transaction
+    suspend fun upsertMovieWithWatch(movie: UserMovieEntity, event: WatchHistoryEntity) {
+        upsertMovie(movie)
+        insertWatch(event)
+    }
+
+    /** Remove o filme e todo o histórico dele juntos (D-029). */
+    @Transaction
+    suspend fun deleteMovieWithHistory(movieId: Long) {
+        deleteMovie(movieId)
+        deleteMovieHistory(movieId)
+    }
 
     // ---- Séries
 

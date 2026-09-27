@@ -1,8 +1,10 @@
 package com.thalyspenha.pipoca.di
 
+import com.thalyspenha.pipoca.data.repository.LibraryRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.MovieRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.SearchRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.TvShowRepositoryImpl
+import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.repository.SearchRepository
 import com.thalyspenha.pipoca.domain.repository.TvShowRepository
@@ -27,4 +29,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindTvShowRepository(impl: TvShowRepositoryImpl): TvShowRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLibraryRepository(impl: LibraryRepositoryImpl): LibraryRepository
 }

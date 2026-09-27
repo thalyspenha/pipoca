@@ -155,3 +155,13 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Fim da exceção de D-018: toda mudança de schema a partir da versão 1 tem `Migration` explícita (SQL copiado do schema exportado), registrada em `ALL_MIGRATIONS`; nunca `fallbackToDestructiveMigration`.
 - `room-testing` 2.8.5 (mesma versão do Room) em `androidTestImplementation` para `MigrationTestHelper`; schemas entram automaticamente nos assets do teste pelo plugin do Room.
 **Consequência:** testes de DAO e migração são instrumentados. Rodar com `./gradlew installDebug installDebugAndroidTest` + `adb shell am instrument -w com.thalyspenha.pipoca.test/androidx.test.runner.AndroidJUnitRunner`; evitar `connectedDebugAndroidTest`, que desinstala o app ao final e apaga os dados do aparelho.
+
+### D-029 — Repository e use cases da biblioteca
+**Decisão:**
+- `LibraryRepository` (domain) só persiste; `LibraryRepositoryImpl` mapeia entity ↔ `LibraryMovie`/`LibraryTvShow` (datas como `Instant`). Operações com mais de uma tabela são `@Transaction` no `UserLibraryDao`.
+- Use cases em `domain/usecase/library`, com `Clock` injetado: adicionar/remover, status, favorito e nota para filmes e séries.
+- Regras: adicionar item já existente não muda nada; favoritar ou dar nota a item fora da biblioteca adiciona-o como `WANT_TO_WATCH`; remover favorito/nota de item ausente não adiciona; nota fora de 1–10 lança `IllegalArgumentException` (UI só oferece 1–10); toda alteração atualiza `updatedAt`, marcar o status atual não altera nada.
+- Filme: passar a `WATCHED` registra evento em `watch_history` (reassistir soma eventos); voltar a `WANT_TO_WATCH` mantém o histórico; remover o filme da biblioteca apaga o histórico dele (remoção é intencional, e estatísticas não devem contar título removido).
+- Série: só status nesta fase; histórico de episódios fica para a fase de episódios.
+- "Nota pessoal" = `rating`; o campo `notes` (observações) ainda não tem operação.
+**Consequência:** a Home (parte 3) observa `LibraryRepository` diretamente para leitura (D-006) e usa os use cases para ações.

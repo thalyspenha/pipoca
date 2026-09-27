@@ -88,4 +88,17 @@ class UserLibraryDaoTest {
         assertEquals(emptyList<WatchHistoryEntity>(), dao.observeMovieHistory(603).first())
         assertEquals(1, dao.observeMovieHistory(1).first().size)
     }
+
+    @Test
+    fun gravaFilmeEVisualizacaoJuntosERemoveComHistorico() = runBlocking {
+        val watched = movie(603).copy(status = MovieStatus.WATCHED)
+        dao.upsertMovieWithWatch(watched, WatchHistoryEntity(mediaType = WatchMediaType.MOVIE, movieId = 603, watchedAt = 100))
+
+        assertEquals(watched, dao.getMovie(603))
+        assertEquals(1, dao.observeMovieHistory(603).first().size)
+
+        dao.deleteMovieWithHistory(603)
+        assertNull(dao.getMovie(603))
+        assertEquals(emptyList<WatchHistoryEntity>(), dao.observeMovieHistory(603).first())
+    }
 }

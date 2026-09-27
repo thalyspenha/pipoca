@@ -1,0 +1,53 @@
+package com.thalyspenha.pipoca.data.repository
+
+import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
+import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
+import com.thalyspenha.pipoca.data.local.entity.WatchMediaType
+import com.thalyspenha.pipoca.data.mapper.toDomain
+import com.thalyspenha.pipoca.data.mapper.toEntity
+import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.LibraryTvShow
+import com.thalyspenha.pipoca.domain.repository.LibraryRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.time.Instant
+import javax.inject.Inject
+
+class LibraryRepositoryImpl @Inject constructor(
+    private val dao: UserLibraryDao,
+) : LibraryRepository {
+
+    override fun observeMovies(): Flow<List<LibraryMovie>> =
+        dao.observeMovies().map { list -> list.map { it.toDomain() } }
+
+    override fun observeMovie(movieId: Long): Flow<LibraryMovie?> =
+        dao.observeMovie(movieId).map { it?.toDomain() }
+
+    override suspend fun getMovie(movieId: Long): LibraryMovie? = dao.getMovie(movieId)?.toDomain()
+
+    override suspend fun saveMovie(movie: LibraryMovie) = dao.upsertMovie(movie.toEntity())
+
+    override suspend fun saveMovieWatched(movie: LibraryMovie, watchedAt: Instant) =
+        dao.upsertMovieWithWatch(
+            movie = movie.toEntity(),
+            event = WatchHistoryEntity(
+                mediaType = WatchMediaType.MOVIE,
+                movieId = movie.movieId,
+                watchedAt = watchedAt.toEpochMilli(),
+            ),
+        )
+
+    override suspend fun removeMovie(movieId: Long) = dao.deleteMovieWithHistory(movieId)
+
+    override fun observeTvShows(): Flow<List<LibraryTvShow>> =
+        dao.observeTvShows().map { list -> list.map { it.toDomain() } }
+
+    override fun observeTvShow(showId: Long): Flow<LibraryTvShow?> =
+        dao.observeTvShow(showId).map { it?.toDomain() }
+
+    override suspend fun getTvShow(showId: Long): LibraryTvShow? = dao.getTvShow(showId)?.toDomain()
+
+    override suspend fun saveTvShow(show: LibraryTvShow) = dao.upsertTvShow(show.toEntity())
+
+    override suspend fun removeTvShow(showId: Long) = dao.deleteTvShow(showId)
+}

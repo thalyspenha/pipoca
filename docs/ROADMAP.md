@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 3 concluída.** Busca completa (filmes/séries) com navegação para detalhes placeholder; 63 testes unitários passando. Fase 4 em andamento: parte 1 concluída (tabelas pessoais, `UserLibraryDao`, migração 1→2). Próxima: "IMPLEMENTAR FASE 4 – PARTE 2" (Repository e Use Cases).
+**Fase 3 concluída.** Busca completa (filmes/séries) com navegação para detalhes placeholder; 63 testes unitários passando. Fase 4 em andamento: partes 1 e 2 concluídas (tabelas pessoais, migração 1→2, `LibraryRepository` e use cases da biblioteca); 85 testes unitários e 10 instrumentados passando. Próxima: "IMPLEMENTAR FASE 4 – PARTE 3" (Home com dados reais).
 
 ## Fases
 
@@ -56,7 +56,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Migrations corretas, sem apagar banco automaticamente; testes dos principais casos de uso; atualizar DATABASE.md e ROADMAP.md.
 - **Executada em 3 partes** (D-027). Uma por vez, só com "IMPLEMENTAR FASE 4 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Entidades, DAOs e migration — tabelas do usuário, migration para nova versão do banco sem destructive fallback, testes de DAO/migration, DATABASE.md.
-  2. ⏳ Repository e Use Cases — todas as operações listadas, com testes dos casos de uso.
+  2. ✅ Repository e Use Cases — todas as operações listadas, com testes dos casos de uso.
   3. ⏳ Home com dados reais — HomeViewModel lendo a biblioteca via Use Cases, estados vazio/lista, ROADMAP.
 
 ### ⏳ Fases 5–11

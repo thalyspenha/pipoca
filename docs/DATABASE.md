@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao`. `tmdb_episode`, `user_episode` e `collection_item` chegam nas fases seguintes. `AppDatabase` versão 2, schema em `app/schemas/`.
+Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). `tmdb_episode`, `user_episode` e `collection_item` chegam nas fases seguintes. `AppDatabase` versão 2, schema em `app/schemas/`.
 
 ## Migrações
 
@@ -112,7 +112,7 @@ Gravação é transacional (`saveMovie`/`saveTvShow`): upsert (não REPLACE, par
 | added_at | Long | |
 | updated_at | Long | |
 
-Data em que assistiu vem de `watch_history` (permite reassistir).
+Data em que assistiu vem de `watch_history` (permite reassistir). Passar a `WATCHED` grava filme + evento na mesma transação; voltar a `WANT_TO_WATCH` mantém o histórico; remover o filme apaga o histórico dele (D-029).
 
 ### user_tv_show
 | Coluna | Tipo | Nota |
