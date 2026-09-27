@@ -1,5 +1,6 @@
 package com.thalyspenha.pipoca.presentation.navigation
 
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -52,6 +53,8 @@ fun PipocaApp() {
                     NavigationBarItem(
                         selected = destination == selectedTab,
                         onClick = {
+                            // A aba pode reabrir direto numa tela empilhada (restoreState); marca já.
+                            lastTab = destination
                             navController.navigate(destination.route) {
                                 // Padrão de abas: uma pilha por aba, sem duplicar destinos.
                                 popUpTo(navController.graph.findStartDestination().id) {
@@ -71,7 +74,8 @@ fun PipocaApp() {
         NavHost(
             navController = navController,
             startDestination = HomeRoute,
-            modifier = Modifier.padding(innerPadding),
+            // Insets já aplicados aqui não são reaplicados pelos Scaffolds internos (detalhes).
+            modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding),
         ) {
             composable<HomeRoute> { HomeScreen() }
             composable<SearchRoute> {

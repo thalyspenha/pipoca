@@ -64,6 +64,6 @@ Ordem provável derivada do prompt mestre, apenas como referência:
 ## Pendências gerais
 
 - Token TMDB (Read Access Token v4): ✅ validado e configurado no Mac (2026-09-26). Em outra máquina, repetir no `local.properties` (ver SETUP.md).
-- Ainda não rodado no S25 nem em emulador; só build e testes unitários. Primeira validação visual pendente (Busca, pôsteres, navegação).
-- Testes instrumentados (`app/src/androidTest`, DAO com Room in-memory) compilam mas nunca rodaram: não há AVD nem aparelho conectado. Rodar com `./gradlew connectedDebugAndroidTest` quando o S25 estiver conectado.
+- ✅ Testado no S25 (Android 16) em 2026-09-26: 4 testes instrumentados do DAO passando (`./gradlew connectedDebugAndroidTest`); app instalado e validado manualmente (Home, Busca filmes/séries, pôsteres e fallback, debounce = 1 requisição por pesquisa, detalhes placeholder, voltar, troca de abas). Dois bugs de navegação achados e corrigidos (D-026).
+- Polimento visual (fase de UI): indicador da bottom bar e botão segmentado usam o `secondaryContainer` padrão (lilás), fora da paleta amarelo/vermelho do `PipocaTheme`.
 - ~~Verificar JDK/Android SDK~~ ✅ JDK 25 (JBR do Android Studio, `JAVA_HOME` no `~/.zshrc`), SDK em `~/Library/Android/sdk` (android-33…37.1). JDK 25 exige Gradle ≥ 9.1.

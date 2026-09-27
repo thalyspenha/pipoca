@@ -140,3 +140,4 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-026 — Rotas de detalhes e aba marcada
 **Decisão:** `MovieDetailsRoute(id)` e `TvShowDetailsRoute(id)` no mesmo `NavHost` (grafo plano), empilhadas sobre a aba atual. A bottom bar marca a aba da rota atual ou, em telas empilhadas, a última aba visitada. Telas de detalhes são placeholder com botão voltar (D-023). `SearchResultItem.detailsRoute()` escolhe a rota.
 **Consequência:** a tela real de detalhes só troca o conteúdo dessas rotas; outras abas (Biblioteca etc.) reutilizam as mesmas rotas.
+**Correções após teste no S25:** (1) `NavHost` usa `consumeWindowInsets(innerPadding)` — sem isso a `TopAppBar` dos detalhes aplicava o inset da status bar de novo (espaço extra no topo); (2) clicar numa aba marca essa aba na hora, porque o `restoreState` pode reabrir direto numa tela de detalhes (antes a bottom bar ficava marcando a aba anterior).
