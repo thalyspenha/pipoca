@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.thalyspenha.pipoca.data.local.migration.MIGRATION_1_2
 import com.thalyspenha.pipoca.data.local.migration.MIGRATION_2_3
+import com.thalyspenha.pipoca.data.local.migration.MIGRATION_3_4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -78,10 +79,31 @@ class MigrationTest {
     }
 
     @Test
-    fun migra1Para3EmSequencia() {
+    fun migra3Para4MantendoEpisodiosAssistidos() {
+        helper.createDatabase(3).use { connection ->
+            connection.execSQL(
+                "INSERT INTO user_episode (episode_id, show_id, season_number, episode_number, watched_at) " +
+                    "VALUES (62085, 1396, 1, 1, 100)",
+            )
+        }
+
+        helper.runMigrationsAndValidate(4, listOf(MIGRATION_3_4)).use { connection ->
+            connection.prepare("SELECT COUNT(*) FROM user_episode").use { statement ->
+                assertTrue(statement.step())
+                assertEquals(1L, statement.getLong(0))
+            }
+            connection.execSQL(
+                "INSERT INTO collection_item (media_type, tmdb_id, format, quantity, added_at, updated_at) " +
+                    "VALUES ('MOVIE', 603, 'UHD_4K_BLURAY', 1, 1, 1)",
+            )
+        }
+    }
+
+    @Test
+    fun migra1Para4EmSequencia() {
         helper.createDatabase(1).close()
 
-        helper.runMigrationsAndValidate(3, listOf(MIGRATION_1_2, MIGRATION_2_3)).close()
+        helper.runMigrationsAndValidate(4, listOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)).close()
     }
 
     private companion object {

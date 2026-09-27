@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`; `tmdb_episode` (Fase 6) por `TmdbEpisodeDao` via `SeasonRepository`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `user_episode` (Fase 6) também em `UserLibraryDao`. `collection_item` chega na fase da coleção. `AppDatabase` versão 3, schema em `app/schemas/`.
+Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`; `tmdb_episode` (Fase 6) por `TmdbEpisodeDao` via `SeasonRepository`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `user_episode` (Fase 6) também em `UserLibraryDao`. `collection_item` (Fase 7) por `CollectionDao` via `CollectionRepository`. `AppDatabase` versão 4, schema em `app/schemas/`.
 
 ## Migrações
 
@@ -11,6 +11,7 @@ A partir da versão 1 toda mudança de schema tem `Migration` explícita em `dat
 | 1 | Cache TMDB |
 | 2 | `user_movie`, `user_tv_show`, `watch_history` (+ índices) |
 | 3 | `tmdb_episode` (FK → `tmdb_season`, CASCADE), `user_episode` (+ índices) |
+| 4 | `collection_item` (+ índice `(media_type, tmdb_id)`) |
 
 ## Princípios
 
@@ -157,17 +158,17 @@ Log de eventos de visualização (base para Histórico e estatísticas por ano).
 | Coluna | Tipo | Nota |
 |---|---|---|
 | id | Long PK autoincrement | |
-| media_type | MediaType | `MOVIE`, `TV_SHOW` |
-| tmdb_id | Long | índice |
+| media_type | CollectionMediaType | `MOVIE`, `TV_SHOW` |
+| tmdb_id | Long | índice `(media_type, tmdb_id)` |
 | format | MediaFormat | `UHD_4K_BLURAY`, `BLURAY`, `DVD`, `DIGITAL`, `OTHER` |
 | edition | String? | ex.: "Steelbook" |
 | region | String? | ex.: "B", "A/B", "Free" |
-| quantity | Int | default 1 |
+| quantity | Int | 1–99 (validado no use case) |
 | notes | String? | |
-| acquired_at | LocalDate? | opcional |
+| acquired_at | LocalDate? | opcional; não pode ser futura |
 | added_at / updated_at | Long | |
 
-Um título pode ter vários itens (ex.: 4K e DVD).
+Um título pode ter vários itens (ex.: 4K e DVD). Independente de `user_movie`/`user_tv_show`: adicionar/editar/remover item não mexe em status, favorito ou histórico, e vice-versa (D-039, D-040). Lista da tela usa LEFT JOIN em `tmdb_movie` ou `tmdb_tv_show` conforme `media_type` (título/pôster nulos sem cache). Filtros (Todos/4K/Blu-ray/DVD/Digital; `OTHER` só em Todos) e ordenação (título pt-BR sem acento/caixa, adicionado recentemente, data de aquisição com sem-data no fim) em `filterAndSort`, no domain.
 
 ## Ajustes em relação ao prompt mestre
 

@@ -240,3 +240,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** `fase7.md` pede coleção física/digital com CRUD, tela com filtros e ordenação, independente do status assistido.
 **Decisão:** Fase 7 em 3 partes (ver ROADMAP.md): (1) dados e regras com migração 3→4, (2) tela "Minha Coleção", (3) formulário de adicionar/editar/remover e acesso pelos detalhes. Coleção em tabela própria (`collection_item`, sem FK para o cache, D-007), vários itens por título; não toca em `user_movie`/`user_tv_show`, o que garante a independência coleção × assistido.
 **Consequência:** os cards "Em breve" de coleção (D-031) são substituídos na parte 3.
+
+### D-040 — Coleção: dados, regras, filtros e ordenação
+**Decisão:**
+- `collection_item` conforme DATABASE.md, `MIGRATION_3_4` explícita; índice `(media_type, tmdb_id)`. Enums `MediaFormat` e `CollectionMediaType` no domain (a UI usa).
+- `CollectionDao` com LEFT JOIN em filme ou série conforme o tipo; `CollectionRepository` só persiste.
+- Use cases `Add`/`Update`/`RemoveCollectionItemUseCase` recebem `CollectionItemDraft`: quantidade 1–99, data de aquisição não futura (`IllegalArgumentException`; a UI valida antes), textos aparados e em branco → nulo. Editar não muda título nem tipo e mantém `addedAt`. Nenhum toca na biblioteca (independência coleção × assistido, testada nos dois sentidos).
+- `filterAndSort` puro no domain: título com `Collator` pt-BR (ignora acento e caixa), sem título no fim; adicionado recentemente; data de aquisição mais recente primeiro, sem data no fim; desempate por adicionado e id. Filtro `OTHER` só aparece em "Todos".
+**Consequência:** as partes 2 e 3 só montam telas sobre `CollectionRepository` e os use cases.

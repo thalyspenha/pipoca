@@ -55,4 +55,20 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
-val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
+/** Coleção física/digital `collection_item` (Fase 7, D-040). */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(connection: SQLiteConnection) {
+        connection.execSQL(
+            "CREATE TABLE IF NOT EXISTS `collection_item` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`media_type` TEXT NOT NULL, `tmdb_id` INTEGER NOT NULL, `format` TEXT NOT NULL, `edition` TEXT, " +
+                "`region` TEXT, `quantity` INTEGER NOT NULL, `notes` TEXT, `acquired_at` TEXT, " +
+                "`added_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL)",
+        )
+        connection.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_collection_item_media_type_tmdb_id` " +
+                "ON `collection_item` (`media_type`, `tmdb_id`)",
+        )
+    }
+}
+
+val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)

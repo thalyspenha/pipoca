@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 6 concluída:** episódios em cache (migração 2→3), progresso "37 / 62 episódios" com percentual, próximo episódio, em dia/concluída automática (D-035), telas de temporadas e episódios com marcação individual e da temporada inteira; 154 testes unitários e 18 instrumentados passando; testado no S25. Próxima: Fase 7 — Minha Coleção, dividida em 3 partes (D-039); aguardando "IMPLEMENTAR FASE 7 – PARTE 1".
+**Fase 7 em andamento:** parte 1 concluída (`collection_item`, migração 3→4 testada no S25, `CollectionRepository`, use cases com validação, filtros e ordenação); 166 testes unitários e 23 instrumentados passando. Ainda sem telas. Próxima: "IMPLEMENTAR FASE 7 – PARTE 2" (tela Minha Coleção).
 
 ## Fases
 
@@ -81,12 +81,12 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Regras — cálculo puro de progresso, próximo episódio/temporada, conclusão; use cases de marcar/desmarcar episódio e temporada (com `watch_history`); testes de progresso.
   3. ✅ Telas — temporadas, episódios, navegação a partir dos detalhes da série; progresso real no lugar do "Em breve"; docs.
 
-### ⏳ Fase 7 — Minha Coleção (ver `fase7.md`)
+### 🚧 Fase 7 — Minha Coleção (ver `fase7.md`)
 - `CollectionItem`: tmdbId, mediaType, formato (4K UHD Blu-ray, Blu-ray, DVD, Digital, Outro), edição, região, quantidade, data de aquisição, observações; um título pode ter vários itens.
 - Adicionar filme/série, editar, remover. Tela "Minha Coleção" (pôster, título, formato, edição), filtros Todos/4K/Blu-ray/DVD/Digital, ordenação título/adicionado recentemente/data de aquisição.
 - Coleção independente de status assistido (ex.: 4K + Quero assistir, 4K + Assistido). Testar CRUD completo; build; docs.
 - **Executada em 3 partes** (D-039). Uma por vez, só com "IMPLEMENTAR FASE 7 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ Dados e regras — `collection_item`, migração 3→4, consulta com título/pôster do cache, repositório e use cases (adicionar/editar/remover, validação), filtros e ordenação puros; testes de CRUD, DAO e migração.
+  1. ✅ Dados e regras — `collection_item`, migração 3→4, consulta com título/pôster do cache, repositório e use cases (adicionar/editar/remover, validação), filtros e ordenação puros; testes de CRUD, DAO e migração.
   2. ⏳ Tela "Minha Coleção" — aba Coleção com lista, filtros, ordenação e estado vazio.
   3. ⏳ Formulário — adicionar/editar (formato, edição, região, quantidade, data, observações) e remover; acesso pelos detalhes de filme e série e pela tela da coleção; docs.
 
