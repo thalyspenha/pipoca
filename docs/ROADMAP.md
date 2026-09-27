@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 3 concluída.** Busca completa (filmes/séries) com navegação para detalhes placeholder; 63 testes unitários passando. Fase 4 em andamento: partes 1 e 2 concluídas (tabelas pessoais, migração 1→2, `LibraryRepository` e use cases da biblioteca); 85 testes unitários e 10 instrumentados passando. Próxima: "IMPLEMENTAR FASE 4 – PARTE 3" (Home com dados reais).
+**Fase 4 concluída.** Biblioteca pessoal no Room (migração 1→2), repository e use cases, Home com dados reais; 92 testes unitários e 11 instrumentados passando. Ainda não há tela para adicionar itens à biblioteca (detalhes são placeholder), então a Home real mostra o estado vazio até a fase de detalhes. Próxima: Fase 5 (aguardando permissão para ler `fase5.md`).
 
 ## Fases
 
@@ -49,7 +49,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela de Busca — campo, alternância FILMES/SÉRIES, lista com poster (Coil), título, ano, tipo; loading, erro (chave ausente, sem conexão) e vazio.
   3. ✅ Navegação para detalhes — rotas `MovieDetailsRoute(id)`/`TvShowDetailsRoute(id)` com telas placeholder; docs e ROADMAP.
 
-### 🚧 Fase 4 — Biblioteca pessoal (ver `fase4.md`)
+### ✅ Fase 4 — Biblioteca pessoal (ver `fase4.md`)
 - Entidades Room separando dados do TMDB (`Movie`, `TvShow`) de dados do usuário (`UserMovie`, `UserTvShow`, `Favorite`, `WatchHistory`, `Rating`).
 - Operações: adicionar/remover filme e série; filme assistido/quero assistir; série quero assistir/assistindo/concluída; favoritar/remover favorito; adicionar/remover nota pessoal.
 - Repository e Use Cases; Home usando dados reais do banco.
@@ -57,7 +57,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - **Executada em 3 partes** (D-027). Uma por vez, só com "IMPLEMENTAR FASE 4 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Entidades, DAOs e migration — tabelas do usuário, migration para nova versão do banco sem destructive fallback, testes de DAO/migration, DATABASE.md.
   2. ✅ Repository e Use Cases — todas as operações listadas, com testes dos casos de uso.
-  3. ⏳ Home com dados reais — HomeViewModel lendo a biblioteca via Use Cases, estados vazio/lista, ROADMAP.
+  3. ✅ Home com dados reais — HomeViewModel lendo a biblioteca via Use Cases, estados vazio/lista, ROADMAP.
 
 ### ⏳ Fases 5–11
 Definidas nos arquivos `fase5.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

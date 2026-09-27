@@ -26,3 +26,18 @@ data class LibraryTvShow(
     val addedAt: Instant,
     val updatedAt: Instant,
 )
+
+/** Filme da biblioteca com dados do cache TMDB para exibir. `title` nulo = ainda sem cache. */
+data class LibraryMovieItem(
+    val movie: LibraryMovie,
+    val title: String?,
+    val posterPath: String?,
+    val year: Int?,
+)
+
+data class LibraryTvShowItem(
+    val show: LibraryTvShow,
+    val name: String?,
+    val posterPath: String?,
+    val year: Int?,
+)

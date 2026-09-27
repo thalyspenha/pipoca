@@ -1,7 +1,9 @@
 package com.thalyspenha.pipoca.domain.repository
 
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
+import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
 import kotlinx.coroutines.flow.Flow
 import java.time.Instant
 
@@ -14,6 +16,9 @@ interface LibraryRepository {
     fun observeMovies(): Flow<List<LibraryMovie>>
 
     fun observeMovie(movieId: Long): Flow<LibraryMovie?>
+
+    /** Filmes com título/poster do cache TMDB, mais recentes primeiro. Reemite quando o cache muda. */
+    fun observeMovieItems(): Flow<List<LibraryMovieItem>>
 
     suspend fun getMovie(movieId: Long): LibraryMovie?
 
@@ -29,6 +34,9 @@ interface LibraryRepository {
     fun observeTvShows(): Flow<List<LibraryTvShow>>
 
     fun observeTvShow(showId: Long): Flow<LibraryTvShow?>
+
+    /** Séries com nome/poster do cache TMDB, mais recentes primeiro. */
+    fun observeTvShowItems(): Flow<List<LibraryTvShowItem>>
 
     suspend fun getTvShow(showId: Long): LibraryTvShow?
 

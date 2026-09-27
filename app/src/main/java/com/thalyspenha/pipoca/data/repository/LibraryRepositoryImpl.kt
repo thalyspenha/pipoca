@@ -6,7 +6,9 @@ import com.thalyspenha.pipoca.data.local.entity.WatchMediaType
 import com.thalyspenha.pipoca.data.mapper.toDomain
 import com.thalyspenha.pipoca.data.mapper.toEntity
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
+import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -22,6 +24,9 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override fun observeMovie(movieId: Long): Flow<LibraryMovie?> =
         dao.observeMovie(movieId).map { it?.toDomain() }
+
+    override fun observeMovieItems(): Flow<List<LibraryMovieItem>> =
+        dao.observeMoviesWithCache().map { list -> list.map { it.toDomain() } }
 
     override suspend fun getMovie(movieId: Long): LibraryMovie? = dao.getMovie(movieId)?.toDomain()
 
@@ -44,6 +49,9 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override fun observeTvShow(showId: Long): Flow<LibraryTvShow?> =
         dao.observeTvShow(showId).map { it?.toDomain() }
+
+    override fun observeTvShowItems(): Flow<List<LibraryTvShowItem>> =
+        dao.observeTvShowsWithCache().map { list -> list.map { it.toDomain() } }
 
     override suspend fun getTvShow(showId: Long): LibraryTvShow? = dao.getTvShow(showId)?.toDomain()
 

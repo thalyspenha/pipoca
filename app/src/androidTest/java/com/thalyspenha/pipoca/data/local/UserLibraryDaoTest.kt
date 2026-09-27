@@ -4,6 +4,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
+import com.thalyspenha.pipoca.data.local.dao.MovieCacheBundle
+import com.thalyspenha.pipoca.data.local.entity.TmdbMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
 import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
@@ -18,6 +20,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.LocalDate
 
 @RunWith(AndroidJUnit4::class)
 class UserLibraryDaoTest {
@@ -100,5 +103,27 @@ class UserLibraryDaoTest {
         dao.deleteMovieWithHistory(603)
         assertNull(dao.getMovie(603))
         assertEquals(emptyList<WatchHistoryEntity>(), dao.observeMovieHistory(603).first())
+    }
+
+    @Test
+    fun filmesComCacheTrazemTituloEFilmesSemCacheVemNulos() = runBlocking {
+        dao.upsertMovie(movie(603, updatedAt = 2))
+        dao.upsertMovie(movie(1, updatedAt = 1))
+        db.tmdbCacheDao().saveMovie(
+            MovieCacheBundle(
+                TmdbMovieEntity(
+                    id = 603, title = "Matrix", originalTitle = "The Matrix", overview = null, posterPath = "/p.jpg",
+                    backdropPath = null, releaseDate = LocalDate.of(1999, 3, 31), runtimeMinutes = null,
+                    voteAverage = null, directors = emptyList(), fetchedAt = 1,
+                ),
+                genres = emptyList(), persons = emptyList(), credits = emptyList(),
+            ),
+        )
+
+        val rows = dao.observeMoviesWithCache().first()
+        assertEquals(listOf(603L, 1L), rows.map { it.movie.movieId })
+        assertEquals("Matrix", rows[0].title)
+        assertEquals(LocalDate.of(1999, 3, 31), rows[0].releaseDate)
+        assertNull(rows[1].title)
     }
 }

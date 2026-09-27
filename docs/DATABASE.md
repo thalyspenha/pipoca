@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). `tmdb_episode`, `user_episode` e `collection_item` chegam nas fases seguintes. `AppDatabase` versão 2, schema em `app/schemas/`.
+Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `tmdb_episode`, `user_episode` e `collection_item` chegam nas fases seguintes. `AppDatabase` versão 2, schema em `app/schemas/`.
 
 ## Migrações
 

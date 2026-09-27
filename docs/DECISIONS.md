@@ -165,3 +165,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Série: só status nesta fase; histórico de episódios fica para a fase de episódios.
 - "Nota pessoal" = `rating`; o campo `notes` (observações) ainda não tem operação.
 **Consequência:** a Home (parte 3) observa `LibraryRepository` diretamente para leitura (D-006) e usa os use cases para ações.
+
+### D-030 — Home com dados da biblioteca
+**Decisão:**
+- `HomeViewModel` observa `LibraryRepository.observeMovieItems()`/`observeTvShowItems()` (leitura direta, D-006) e monta `HomeContent` com função pura `buildHomeContent`: seções Assistindo (séries `WATCHING`), Quero assistir, Favoritos e Assistidos recentemente (filmes `WATCHED` + séries `COMPLETED`), mais recentes primeiro, até 20 por seção, e contadores.
+- Itens vêm do LEFT JOIN com o cache TMDB. Item sem cache (cache limpo) dispara `refreshMovieDetails`/`refreshTvShowDetails` uma vez por item (só com token); até lá mostra "Carregando…".
+- Biblioteca vazia: mensagem + botão Buscar (abre a aba Busca) ou aviso de chave ausente. Toque no pôster abre a rota de detalhes.
+- `uiState` via `stateIn(WhileSubscribed(5s))`; `load()` saiu (não há o que recarregar: o Room reemite).
+**Consequência:** a Home só terá conteúdo quando existir UI para adicionar à biblioteca (tela de detalhes, fase futura).

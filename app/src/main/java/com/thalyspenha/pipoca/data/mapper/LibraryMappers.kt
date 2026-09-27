@@ -1,9 +1,13 @@
 package com.thalyspenha.pipoca.data.mapper
 
+import com.thalyspenha.pipoca.data.local.dao.UserMovieWithCache
+import com.thalyspenha.pipoca.data.local.dao.UserTvShowWithCache
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
+import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
+import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
 import java.time.Instant
 
 fun UserMovieEntity.toDomain() = LibraryMovie(
@@ -44,4 +48,18 @@ fun LibraryTvShow.toEntity() = UserTvShowEntity(
     notes = notes,
     addedAt = addedAt.toEpochMilli(),
     updatedAt = updatedAt.toEpochMilli(),
+)
+
+fun UserMovieWithCache.toDomain() = LibraryMovieItem(
+    movie = movie.toDomain(),
+    title = title,
+    posterPath = posterPath,
+    year = releaseDate?.year,
+)
+
+fun UserTvShowWithCache.toDomain() = LibraryTvShowItem(
+    show = show.toDomain(),
+    name = name,
+    posterPath = posterPath,
+    year = firstAirDate?.year,
 )

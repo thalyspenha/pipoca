@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -26,6 +27,7 @@ import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
 import com.thalyspenha.pipoca.presentation.screens.details.MovieDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.details.TvShowDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.home.HomeScreen
+import com.thalyspenha.pipoca.presentation.screens.home.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.library.LibraryScreen
 import com.thalyspenha.pipoca.presentation.screens.more.MoreScreen
 import com.thalyspenha.pipoca.presentation.screens.search.SearchScreen
@@ -55,14 +57,7 @@ fun PipocaApp() {
                         onClick = {
                             // A aba pode reabrir direto numa tela empilhada (restoreState); marca já.
                             lastTab = destination
-                            navController.navigate(destination.route) {
-                                // Padrão de abas: uma pilha por aba, sem duplicar destinos.
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            navController.navigateToTab(destination)
                         },
                         icon = { Icon(destination.icon, contentDescription = null) },
                         label = { Text(destination.label) },
@@ -77,7 +72,12 @@ fun PipocaApp() {
             // Insets já aplicados aqui não são reaplicados pelos Scaffolds internos (detalhes).
             modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding),
         ) {
-            composable<HomeRoute> { HomeScreen() }
+            composable<HomeRoute> {
+                HomeScreen(
+                    onItemClick = { item -> navController.navigate(item.detailsRoute()) },
+                    onSearchClick = { navController.navigateToTab(TopLevelDestination.SEARCH) },
+                )
+            }
             composable<SearchRoute> {
                 SearchScreen(onResultClick = { item -> navController.navigate(item.detailsRoute()) })
             }
@@ -91,5 +91,16 @@ fun PipocaApp() {
                 TvShowDetailsScreen(id = entry.toRoute<TvShowDetailsRoute>().id, onBack = navController::navigateUp)
             }
         }
+    }
+}
+
+/** Padrão de abas: uma pilha por aba, sem duplicar destinos. */
+private fun NavController.navigateToTab(destination: TopLevelDestination) {
+    navigate(destination.route) {
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
