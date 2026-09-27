@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 9 concluída:** estatísticas locais (filmes, séries, episódios, tempo, gêneros, notas, coleção) por consultas agregadas no Room, tela com blocos e barras acessada pela aba "Mais"; 206 testes unitários e 29 instrumentados passando; testado no S25. Próxima: Fase 10 (aguardando permissão para ler `fase10.md`).
+**Fase 9 concluída:** estatísticas locais (filmes, séries, episódios, tempo, gêneros, notas, coleção) por consultas agregadas no Room, tela com blocos e barras acessada pela aba "Mais"; 206 testes unitários e 29 instrumentados passando; testado no S25. Próxima: Fase B — Biblioteca (`biblioteca.md`), dividida em 3 partes (D-050); aguardando "IMPLEMENTAR FASE B – PARTE 1". Fase 10 fica para depois (fase10.md lido; divisão proposta, decisões pendentes).
 
 ## Fases
 
@@ -109,8 +109,20 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   1. ✅ Consultas e cálculos — consultas agregadas (COUNT/GROUP BY), cálculo de tempo e distribuições no domain; testes.
   2. ✅ Tela — Estatísticas com seções e barras, entrada na aba "Mais"; docs (limitações em DATABASE.md).
 
-### ⏳ Fases 10–11
-Definidas nos arquivos `fase10.md` e `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.
+### ⏳ Fase B — Biblioteca (ver `biblioteca.md`)
+- Tela "Minha Biblioteca": FILMES | SÉRIES, filtros por status com contagens do banco, Grid (LazyVerticalGrid) e Lista com preferência salva, `MediaPosterCard` (pôster, título, ano, status, progresso da série, favorito), ordenação, pesquisa local, estados vazios, ações rápidas em menu, reativa via Flow. Independente da coleção.
+- Decisões (D-050): abas Início · Biblioteca · Busca · Coleção · Mais; status Pausada/Abandonada passam a ser selecionáveis nos detalhes da série; ordenação no SQL, exceto progresso (em memória sobre as consultas agregadas); pesquisa local em memória ignorando acento; preferência Grid/Lista em `SharedPreferences`.
+- **Executada em 3 partes** (D-050). Uma por vez, só com "IMPLEMENTAR FASE B – PARTE N"; cada parte compila e termina com sugestão de commit:
+  1. ⏳ Dados — consultas de lista/contagens/ordenação no Room, progresso de todas as séries da biblioteca, pesquisa e filtros; testes.
+  2. ⏳ Tela — Grid/Lista, `MediaPosterCard`, filtros com contagem, ordenação, pesquisa, estados vazios, nova ordem das abas, preferência salva.
+  3. ⏳ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
+
+### ⏳ Fase 10 — Polimento e release pessoal (ver `fase10.md`)
+- Lido. Divisão proposta (a confirmar ao retomar): (1) auditoria em `docs/AUDIT.md`, (2) correções, (3) Configurações (Sobre/TMDB, Tema, Limpar cache, banco, versão), (4) release (APK debug/release, RELEASE_NOTES.md).
+- Pendentes: tema em `SharedPreferences` (provável, alinhado a D-050), assinatura do APK release.
+
+### ⏳ Fase 11
+Definida em `fase11.md` (ainda não lido). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.
 
 Ordem provável derivada do prompt mestre, apenas como referência:
 - Biblioteca de filmes (status, favorito, nota, data).

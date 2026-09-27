@@ -15,8 +15,8 @@ Máquina nova ou build falhando por ambiente: ver `docs/SETUP.md`.
 ## Regras
 
 - Desenvolvimento por fases. Só implemente uma fase quando o usuário disser "IMPLEMENTAR FASE X", e apenas ela.
-- Ir por partes. Fase 1 em 4 partes (D-014), Fase 2 em 3 partes (D-019), Fase 3 em 3 partes (D-023), Fase 4 em 3 partes (D-027), Fase 5 em 3 partes (D-031), Fase 6 em 3 partes (D-035), Fase 7 em 3 partes (D-039), Fase 8 em 3 partes (D-043), Fase 9 em 2 partes (D-047): uma por vez, parando ao fim de cada. Antes de começar uma fase nova, perguntar se o usuário quer dividi-la em partes; se sim, registrar a divisão no ROADMAP e fazer só a parte pedida ("PARTE N").
-- Não leia `faseN.md` sem permissão do usuário (lidos até agora: `fase1.md`, `fase2.md`, `fase3.md`, `fase4.md`, `fase5.md`, `fase6.md`, `fase7.md`, `fase8.md`, `fase9.md`).
+- Ir por partes. Fase 1 em 4 partes (D-014), Fase 2 em 3 partes (D-019), Fase 3 em 3 partes (D-023), Fase 4 em 3 partes (D-027), Fase 5 em 3 partes (D-031), Fase 6 em 3 partes (D-035), Fase 7 em 3 partes (D-039), Fase 8 em 3 partes (D-043), Fase 9 em 2 partes (D-047), Fase B — Biblioteca em 3 partes (D-050): uma por vez, parando ao fim de cada. Antes de começar uma fase nova, perguntar se o usuário quer dividi-la em partes; se sim, registrar a divisão no ROADMAP e fazer só a parte pedida ("PARTE N").
+- Não leia `faseN.md` (nem outros arquivos de instruções como `biblioteca.md`) sem permissão do usuário (lidos até agora: `fase1.md`, `fase2.md`, `fase3.md`, `fase4.md`, `fase5.md`, `fase6.md`, `fase7.md`, `fase8.md`, `fase9.md`, `fase10.md`, `biblioteca.md`).
 - Nunca commitar sem pedido. Ao fim de cada parte/fase, sugerir mensagem de commit e parar.
 - Quando o usuário pedir commit: antes, conferir se docs (`ROADMAP.md`, `DECISIONS.md`, docs afetados) e este arquivo estão atualizados; depois commit + push para `main`.
 - Decisão arquitetural relevante vai para `docs/DECISIONS.md`; sempre atualizar `docs/ROADMAP.md`.

@@ -326,3 +326,15 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Barras e colunas feitas com `Box` em Compose (sem biblioteca de gráficos). Números em pt-BR (`formatDecimal`, `formatInt`).
 - Atualiza sozinha via Flow do Room. Estados vazios por seção (sem gêneros, sem notas, coleção vazia).
 **Consequência:** Fase 9 concluída; limitações documentadas em DATABASE.md.
+
+### D-050 — Fase B (Biblioteca) em 3 partes, antes da Fase 10
+**Contexto:** o usuário criou `biblioteca.md` com a tela Biblioteca (aba placeholder desde a Fase 1) e pediu para fazê-la antes de retomar a Fase 10.
+**Decisão:**
+- Fase extra "Fase B — Biblioteca", em 3 partes (ver ROADMAP.md): (1) dados, (2) tela, (3) complementos.
+- Abas reordenadas: Início · Biblioteca · Busca · Coleção · Mais ("Mais" mantém Favoritos, Histórico, Estatísticas e receberá Configurações).
+- Pausada/Abandonada passam a ser escolhíveis nos detalhes da série (menu "Mais status"), para os filtros não ficarem sempre vazios (ajusta D-034).
+- Progresso nos cards de todas as séries: consultas agregadas estendidas a toda a biblioteca (número fixo de consultas).
+- Ordenação no Room (`ORDER BY`), exceto por progresso, feita em memória sobre os dados agregados. Pesquisa local em memória ignorando acento e caixa (mesmo critério de D-040).
+- Preferência Grid/Lista em `SharedPreferences` (sem dependência nova); mesma solução servirá ao tema da Fase 10.
+- Ações rápidas (assistido, favorito, remover) em menu de toque longo; status com ícones Material, não emoji.
+**Consequência:** Fase 10 retomada depois, com a divisão já proposta.
