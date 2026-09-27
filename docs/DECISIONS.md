@@ -292,3 +292,10 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Home: seções ganharam "Ver todos" opcional; Favoritos usa.
 - Lint: a falha intermitente voltou com 4 GB, então a hipótese de memória (D-042) não se confirmou; 4 GB ficam (não atrapalham). Tentativas de reproduzir isoladamente não falharam. Instrução segue no SETUP.md: repetir o build.
 **Consequência:** Histórico reusa a aba "Mais" e o padrão de rota empilhada.
+
+### D-046 — Histórico
+**Decisão:**
+- `HistoryRoute` empilhada, acessada pela aba "Mais". Lista agrupada por dia no fuso do aparelho ("Hoje", "Ontem", dd/mm/aaaa), mais recente primeiro; linha com pôster (do filme ou da série), título, "T1E7 · Nome" para episódio e "Filme/Episódio · às HH:mm". Filtros Todos / Filmes / Séries (`SavedStateHandle`). Toque abre os detalhes do filme ou da série.
+- Uma consulta (`observeHistory`) com LEFT JOIN no cache; temporada/número caem para `user_episode` sem cache; título ausente busca detalhes uma vez (só com token). Sem paginação por ora (escala pessoal).
+- Geração já existia e está coberta: filme ao passar a assistido (D-029), cada episódio ao ser marcado (D-037); desmarcar episódio apaga o evento; remover título da biblioteca apaga o histórico dele.
+**Consequência:** Fase 8 concluída; "Mais" pode receber estatísticas a partir do mesmo histórico.

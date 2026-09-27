@@ -1,6 +1,7 @@
 package com.thalyspenha.pipoca.domain.repository
 
 import com.thalyspenha.pipoca.domain.model.Episode
+import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
@@ -48,6 +49,9 @@ interface LibraryRepository {
     suspend fun removeTvShow(showId: Long)
 
     fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>>
+
+    /** Histórico de visualizações, mais recente primeiro (D-046). */
+    fun observeHistory(): Flow<List<HistoryEntry>>
 
     /** Assistidos de todas as séries `WATCHING`, numa consulta (D-044). */
     fun observeWatchingShowsWatchedEpisodes(): Flow<List<WatchedEpisode>>

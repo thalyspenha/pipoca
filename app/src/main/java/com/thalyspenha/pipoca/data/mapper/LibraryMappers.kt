@@ -1,6 +1,10 @@
 package com.thalyspenha.pipoca.data.mapper
 
 import com.thalyspenha.pipoca.data.local.dao.UserMovieWithCache
+import com.thalyspenha.pipoca.data.local.dao.WatchHistoryWithCache
+import com.thalyspenha.pipoca.data.local.entity.WatchMediaType
+import com.thalyspenha.pipoca.domain.model.HistoryEntry
+import com.thalyspenha.pipoca.domain.model.HistoryType
 import com.thalyspenha.pipoca.data.local.dao.UserTvShowWithCache
 import com.thalyspenha.pipoca.data.local.entity.UserEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
@@ -74,3 +78,25 @@ fun UserEpisodeEntity.toDomain() = WatchedEpisode(
     episodeNumber = episodeNumber,
     watchedAt = Instant.ofEpochMilli(watchedAt),
 )
+
+fun WatchHistoryWithCache.toDomain(): HistoryEntry = when (event.mediaType) {
+    WatchMediaType.MOVIE -> HistoryEntry(
+        id = event.id,
+        type = HistoryType.MOVIE,
+        tmdbId = checkNotNull(event.movieId),
+        title = movieTitle,
+        posterPath = posterPath,
+        watchedAt = Instant.ofEpochMilli(event.watchedAt),
+    )
+    WatchMediaType.EPISODE -> HistoryEntry(
+        id = event.id,
+        type = HistoryType.EPISODE,
+        tmdbId = checkNotNull(event.showId),
+        title = showName,
+        posterPath = posterPath,
+        episodeName = episodeName,
+        seasonNumber = seasonNumber,
+        episodeNumber = episodeNumber,
+        watchedAt = Instant.ofEpochMilli(event.watchedAt),
+    )
+}

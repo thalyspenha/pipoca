@@ -164,4 +164,32 @@ class UserLibraryDaoTest {
         assertEquals(1, dao.observeWatchedEpisodes(7).first().size)
         assertEquals(1, historyCount())
     }
+
+    @Test
+    fun historicoTrazFilmeEEpisodioComCacheOuFallbackMaisRecentePrimeiro() = runBlocking {
+        db.tmdbCacheDao().saveMovie(
+            MovieCacheBundle(
+                TmdbMovieEntity(
+                    id = 603, title = "Matrix", originalTitle = "The Matrix", overview = null, posterPath = "/m.jpg",
+                    backdropPath = null, releaseDate = null, runtimeMinutes = null, voteAverage = null,
+                    directors = emptyList(), fetchedAt = 1,
+                ),
+                genres = emptyList(), persons = emptyList(), credits = emptyList(),
+            ),
+        )
+        dao.upsertMovieWithWatch(movie(603).copy(status = MovieStatus.WATCHED), WatchHistoryEntity(mediaType = WatchMediaType.MOVIE, movieId = 603, watchedAt = 100))
+        // Episódio sem cache: temporada/número vêm de user_episode.
+        dao.insertWatchedEpisodesWithHistory(
+            listOf(UserEpisodeEntity(62085, 1396, 1, 1, 200)),
+            listOf(WatchHistoryEntity(mediaType = WatchMediaType.EPISODE, showId = 1396, episodeId = 62085, watchedAt = 200)),
+        )
+
+        val rows = dao.observeHistory().first()
+        assertEquals(listOf(WatchMediaType.EPISODE, WatchMediaType.MOVIE), rows.map { it.event.mediaType })
+        assertNull(rows[0].showName)
+        assertEquals(1, rows[0].seasonNumber)
+        assertEquals(1, rows[0].episodeNumber)
+        assertEquals("Matrix", rows[1].movieTitle)
+        assertEquals("/m.jpg", rows[1].posterPath)
+    }
 }

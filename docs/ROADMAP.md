@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 8 em andamento:** partes 1 e 2 concluídas (Home como painel com consultas agregadas; tela Favoritos com abas, remover e desfazer; aba "Mais" com entradas); 189 testes unitários e 24 instrumentados passando; testado no S25. Próxima: "IMPLEMENTAR FASE 8 – PARTE 3" (Histórico).
+**Fase 8 concluída:** Home como painel (seis seções, consultas agregadas, atualização via Flow), tela Favoritos (abas, remover com desfazer), Histórico (por dia, filtros Todos/Filmes/Séries, abrir conteúdo), aba "Mais" com entradas; 194 testes unitários e 25 instrumentados passando; testado no S25. Próxima: Fase 9 (aguardando permissão para ler `fase9.md`).
 
 ## Fases
 
@@ -90,7 +90,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela "Minha Coleção" — aba Coleção com lista, filtros, ordenação e estado vazio.
   3. ✅ Formulário — adicionar/editar (formato, edição, região, quantidade, data, observações) e remover; acesso pelos detalhes de filme e série e pela tela da coleção; docs.
 
-### 🚧 Fase 8 — Home e organização (ver `fase8.md`)
+### ✅ Fase 8 — Home e organização (ver `fase8.md`)
 - Home como painel: Continuar assistindo, Séries em andamento, Quero assistir, Assistidos recentemente, Favoritos, Adicionados recentemente à coleção; sem consultas excessivas; atualização automática via Flow.
 - Tela Favoritos (filmes e séries, remover favorito).
 - Histórico: título, episódio, data, pôster; mais recente primeiro; abrir o conteúdo; filtros básicos. Filme assistido e cada episódio geram histórico.
@@ -98,7 +98,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - **Executada em 3 partes** (D-043). Uma por vez, só com "IMPLEMENTAR FASE 8 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Home — consultas agregadas (progresso/próximo episódio de todas as séries em uma consulta de episódios + uma de assistidos), seis seções, ViewModel e testes.
   2. ✅ Favoritos — tela com abas Filmes/Séries, remover favorito; aba "Mais" com entradas; "Ver todos" na Home.
-  3. ⏳ Histórico — consulta com cache (título, pôster, episódio), filtros Todos/Filmes/Séries, abrir conteúdo, testes de geração; ROADMAP.
+  3. ✅ Histórico — consulta com cache (título, pôster, episódio), filtros Todos/Filmes/Séries, abrir conteúdo, testes de geração; ROADMAP.
 
 ### ⏳ Fases 9–11
 Definidas nos arquivos `fase9.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

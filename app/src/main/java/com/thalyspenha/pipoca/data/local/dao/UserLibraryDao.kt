@@ -22,6 +22,17 @@ data class UserMovieWithCache(
     @ColumnInfo(name = "release_date") val releaseDate: LocalDate?,
 )
 
+/** Evento do histórico com o que o cache tiver (título/pôster/episódio); nulos sem cache (D-046). */
+data class WatchHistoryWithCache(
+    @Embedded val event: WatchHistoryEntity,
+    @ColumnInfo(name = "movie_title") val movieTitle: String?,
+    @ColumnInfo(name = "show_name") val showName: String?,
+    @ColumnInfo(name = "poster_path") val posterPath: String?,
+    @ColumnInfo(name = "episode_name") val episodeName: String?,
+    @ColumnInfo(name = "ep_season_number") val seasonNumber: Int?,
+    @ColumnInfo(name = "ep_episode_number") val episodeNumber: Int?,
+)
+
 data class UserTvShowWithCache(
     @Embedded val show: UserTvShowEntity,
     val name: String?,
@@ -106,6 +117,27 @@ interface UserLibraryDao {
 
     @Query("SELECT * FROM watch_history WHERE movie_id = :movieId ORDER BY watched_at DESC")
     fun observeMovieHistory(movieId: Long): Flow<List<WatchHistoryEntity>>
+
+    /**
+     * Histórico completo, mais recente primeiro. Temporada/número do episódio vêm do cache ou,
+     * sem cache, de `user_episode` (redundância de propósito, DATABASE.md).
+     */
+    @Query(
+        """SELECT h.*,
+            m.title AS movie_title,
+            t.name AS show_name,
+            COALESCE(m.poster_path, t.poster_path) AS poster_path,
+            e.name AS episode_name,
+            COALESCE(e.season_number, ue.season_number) AS ep_season_number,
+            COALESCE(e.episode_number, ue.episode_number) AS ep_episode_number
+        FROM watch_history h
+        LEFT JOIN tmdb_movie m ON h.media_type = 'MOVIE' AND m.id = h.movie_id
+        LEFT JOIN tmdb_tv_show t ON h.media_type = 'EPISODE' AND t.id = h.show_id
+        LEFT JOIN tmdb_episode e ON e.id = h.episode_id
+        LEFT JOIN user_episode ue ON ue.episode_id = h.episode_id
+        ORDER BY h.watched_at DESC, h.id DESC""",
+    )
+    fun observeHistory(): Flow<List<WatchHistoryWithCache>>
 
     @Query("DELETE FROM watch_history WHERE movie_id = :movieId")
     suspend fun deleteMovieHistory(movieId: Long)

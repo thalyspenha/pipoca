@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -19,9 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
 
-/** Aba "Mais": entradas para telas de organização (D-043). Histórico, estatísticas e configurações entram depois. */
+/** Aba "Mais": entradas para telas de organização (D-043). Estatísticas e configurações entram depois. */
 @Composable
-fun MoreScreen(onFavoritesClick: () -> Unit) {
+fun MoreScreen(onFavoritesClick: () -> Unit, onHistoryClick: () -> Unit) {
     Column(Modifier.fillMaxSize()) {
         Text(
             "Mais",
@@ -29,6 +30,8 @@ fun MoreScreen(onFavoritesClick: () -> Unit) {
             modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
         )
         MoreEntry(Icons.Filled.Favorite, "Favoritos", "Filmes e séries favoritos", onFavoritesClick)
+        HorizontalDivider()
+        MoreEntry(Icons.Filled.DateRange, "Histórico", "Tudo que você assistiu, por data", onHistoryClick)
         HorizontalDivider()
     }
 }
@@ -47,5 +50,5 @@ private fun MoreEntry(icon: ImageVector, title: String, subtitle: String, onClic
 @Preview(showBackground = true)
 @Composable
 private fun MorePreview() {
-    PipocaTheme { MoreScreen(onFavoritesClick = {}) }
+    PipocaTheme { MoreScreen(onFavoritesClick = {}, onHistoryClick = {}) }
 }

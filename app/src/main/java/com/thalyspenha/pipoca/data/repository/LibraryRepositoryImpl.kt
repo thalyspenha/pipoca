@@ -7,6 +7,7 @@ import com.thalyspenha.pipoca.data.local.entity.WatchMediaType
 import com.thalyspenha.pipoca.data.mapper.toDomain
 import com.thalyspenha.pipoca.data.mapper.toEntity
 import com.thalyspenha.pipoca.domain.model.Episode
+import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
@@ -64,6 +65,9 @@ class LibraryRepositoryImpl @Inject constructor(
 
     override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
         dao.observeWatchedEpisodes(showId).map { list -> list.map { it.toDomain() } }
+
+    override fun observeHistory(): Flow<List<HistoryEntry>> =
+        dao.observeHistory().map { list -> list.map { it.toDomain() } }
 
     override fun observeWatchingShowsWatchedEpisodes(): Flow<List<WatchedEpisode>> =
         dao.observeWatchingShowsWatchedEpisodes().map { list -> list.map { it.toDomain() } }

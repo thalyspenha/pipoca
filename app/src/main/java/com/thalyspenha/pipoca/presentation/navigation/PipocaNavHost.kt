@@ -24,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.thalyspenha.pipoca.domain.model.CollectionMediaType
+import com.thalyspenha.pipoca.domain.model.HistoryType
 import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
 import com.thalyspenha.pipoca.presentation.screens.collection.form.CollectionItemFormScreen
 import com.thalyspenha.pipoca.presentation.screens.collection.detailsRoute
@@ -32,6 +33,7 @@ import com.thalyspenha.pipoca.presentation.screens.details.season.SeasonScreen
 import com.thalyspenha.pipoca.presentation.screens.details.tv.TvShowDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.favorites.FavoritesScreen
 import com.thalyspenha.pipoca.presentation.screens.favorites.FavoritesTab
+import com.thalyspenha.pipoca.presentation.screens.history.HistoryScreen
 import com.thalyspenha.pipoca.presentation.screens.home.HomeScreen
 import com.thalyspenha.pipoca.presentation.screens.home.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.library.LibraryScreen
@@ -102,7 +104,20 @@ fun PipocaApp() {
                 CollectionItemFormScreen(onDone = navController::navigateUp)
             }
             composable<MoreRoute> {
-                MoreScreen(onFavoritesClick = { navController.navigate(FavoritesRoute) })
+                MoreScreen(
+                    onFavoritesClick = { navController.navigate(FavoritesRoute) },
+                    onHistoryClick = { navController.navigate(HistoryRoute) },
+                )
+            }
+            composable<HistoryRoute> {
+                HistoryScreen(
+                    onBack = navController::navigateUp,
+                    onEntryClick = { entry ->
+                        navController.navigate(
+                            if (entry.type == HistoryType.MOVIE) MovieDetailsRoute(entry.tmdbId) else TvShowDetailsRoute(entry.tmdbId),
+                        )
+                    },
+                )
             }
             composable<FavoritesRoute> {
                 FavoritesScreen(

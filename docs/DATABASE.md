@@ -152,7 +152,7 @@ Log de eventos de visualização (base para Histórico e estatísticas por ano).
 | episode_id | Long? | |
 | watched_at | Long | |
 
-Índices em `watched_at`, `movie_id`, `show_id`. Desmarcar episódio remove o evento correspondente.
+Índices em `watched_at`, `movie_id`, `show_id`. Desmarcar episódio remove o evento correspondente. Tela Histórico (D-046): `UserLibraryDao.observeHistory` junta o evento com `tmdb_movie`/`tmdb_tv_show`/`tmdb_episode` e, para temporada/número sem cache, `user_episode`; ordem `watched_at` e `id` decrescentes.
 
 ### collection_item
 | Coluna | Tipo | Nota |

@@ -24,3 +24,4 @@ import kotlinx.serialization.Serializable
 
 // Telas acessadas pela aba "Mais" e pela Home (D-043).
 @Serializable data object FavoritesRoute
+@Serializable data object HistoryRoute

@@ -1,6 +1,7 @@
 package com.thalyspenha.pipoca.domain.usecase.library
 
 import com.thalyspenha.pipoca.domain.model.Episode
+import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
@@ -80,6 +81,11 @@ class FakeLibraryRepository : LibraryRepository {
 
     override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
         watchedEpisodes.map { all -> all.values.filter { it.showId == showId } }
+
+    /** Histórico já pronto para os testes de tela; a geração é testada nos use cases e no DAO. */
+    val history = MutableStateFlow<List<HistoryEntry>>(emptyList())
+
+    override fun observeHistory(): Flow<List<HistoryEntry>> = history
 
     /** Status das séries vem de `tvShows`; só as `WATCHING` entram. */
     override fun observeWatchingShowsWatchedEpisodes(): Flow<List<WatchedEpisode>> =
