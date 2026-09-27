@@ -8,6 +8,7 @@ import com.thalyspenha.pipoca.data.mapper.toDomain
 import com.thalyspenha.pipoca.data.remote.TmdbRemoteDataSource
 import com.thalyspenha.pipoca.domain.model.DataResult
 import com.thalyspenha.pipoca.domain.model.Episode
+import com.thalyspenha.pipoca.domain.model.SeasonSummary
 import com.thalyspenha.pipoca.domain.repository.SeasonRepository
 import com.thalyspenha.pipoca.domain.repository.TvShowRepository
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,14 @@ class SeasonRepositoryImpl @Inject constructor(
 
     override fun observeShowEpisodes(showId: Long): Flow<List<Episode>> =
         episodeDao.observeShowEpisodes(showId).map { list -> list.map { it.toDomain() } }
+
+    override fun observeWatchingShowsEpisodes(): Flow<List<Episode>> =
+        episodeDao.observeWatchingShowsEpisodes().map { list -> list.map { it.toDomain() } }
+
+    override fun observeWatchingShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>> =
+        episodeDao.observeWatchingShowsSeasons().map { list ->
+            list.groupBy({ it.showId }, { it.toDomain() })
+        }
 
     override suspend fun refreshSeason(showId: Long, seasonNumber: Int, force: Boolean): DataResult<Unit> {
         val now = clock.instant()

@@ -27,6 +27,7 @@ data class UserTvShowWithCache(
     val name: String?,
     @ColumnInfo(name = "poster_path") val posterPath: String?,
     @ColumnInfo(name = "first_air_date") val firstAirDate: LocalDate?,
+    @ColumnInfo(name = "tmdb_status") val tmdbStatus: String?,
 )
 
 /**
@@ -80,7 +81,7 @@ interface UserLibraryDao {
     fun observeTvShows(): Flow<List<UserTvShowEntity>>
 
     @Query(
-        """SELECT u.*, t.name, t.poster_path, t.first_air_date FROM user_tv_show u
+        """SELECT u.*, t.name, t.poster_path, t.first_air_date, t.tmdb_status FROM user_tv_show u
         LEFT JOIN tmdb_tv_show t ON t.id = u.show_id
         ORDER BY u.updated_at DESC""",
     )
@@ -119,6 +120,14 @@ interface UserLibraryDao {
 
     @Query("DELETE FROM user_episode WHERE episode_id IN (:episodeIds)")
     suspend fun deleteWatchedEpisodes(episodeIds: List<Long>)
+
+    /** Assistidos de todas as séries `WATCHING` numa consulta só (Home, D-044). */
+    @Query(
+        """SELECT e.* FROM user_episode e
+        JOIN user_tv_show u ON u.show_id = e.show_id
+        WHERE u.status = 'WATCHING'""",
+    )
+    fun observeWatchingShowsWatchedEpisodes(): Flow<List<UserEpisodeEntity>>
 
     @Insert
     suspend fun insertWatches(events: List<WatchHistoryEntity>)

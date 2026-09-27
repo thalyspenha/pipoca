@@ -3,6 +3,7 @@ package com.thalyspenha.pipoca.domain.usecase.episodes
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.DataResult
 import com.thalyspenha.pipoca.domain.model.Episode
+import com.thalyspenha.pipoca.domain.model.SeasonSummary
 import com.thalyspenha.pipoca.domain.model.TvShowDetails
 import com.thalyspenha.pipoca.domain.repository.SeasonRepository
 import com.thalyspenha.pipoca.domain.repository.TvShowRepository
@@ -29,6 +30,17 @@ class FakeSeasonRepository : SeasonRepository {
         episodes.map { all -> all.filter { it.seasonNumber == seasonNumber } }
 
     override fun observeShowEpisodes(showId: Long): Flow<List<Episode>> = episodes
+
+    /** Filtro por status fica a cargo do teste (todas as séries do fake contam como assistindo). */
+    val seasons = MutableStateFlow<Map<Long, List<SeasonSummary>>>(emptyMap())
+    var watchingEpisodesQueries = 0
+
+    override fun observeWatchingShowsEpisodes(): Flow<List<Episode>> {
+        watchingEpisodesQueries++
+        return episodes
+    }
+
+    override fun observeWatchingShowsSeasons(): Flow<Map<Long, List<SeasonSummary>>> = seasons
 
     override suspend fun refreshSeason(showId: Long, seasonNumber: Int, force: Boolean): DataResult<Unit> {
         if (seasonNumber == failOn) return DataResult.Failure(DataError.Network)

@@ -49,6 +49,9 @@ interface LibraryRepository {
 
     fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>>
 
+    /** Assistidos de todas as séries `WATCHING`, numa consulta (D-044). */
+    fun observeWatchingShowsWatchedEpisodes(): Flow<List<WatchedEpisode>>
+
     /** Marca como assistidos (data [watchedAt]) e registra no histórico, numa transação. */
     suspend fun markEpisodesWatched(episodes: List<Episode>, watchedAt: Instant)
 

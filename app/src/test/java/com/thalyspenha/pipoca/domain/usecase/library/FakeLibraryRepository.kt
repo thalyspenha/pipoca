@@ -5,6 +5,7 @@ import com.thalyspenha.pipoca.domain.model.LibraryMovie
 import com.thalyspenha.pipoca.domain.model.LibraryMovieItem
 import com.thalyspenha.pipoca.domain.model.LibraryTvShow
 import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
+import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import com.thalyspenha.pipoca.domain.model.WatchedEpisode
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,7 @@ class FakeLibraryRepository : LibraryRepository {
     val movieWatches = mutableMapOf<Long, MutableList<Instant>>()
     val movieTitles = MutableStateFlow<Map<Long, String>>(emptyMap())
     val tvShowNames = MutableStateFlow<Map<Long, String>>(emptyMap())
+    val tvShowStatuses = mutableMapOf<Long, String>()
 
     override fun observeMovieItems(): Flow<List<LibraryMovieItem>> =
         combine(observeMovies(), movieTitles) { list, titles ->
@@ -31,7 +33,7 @@ class FakeLibraryRepository : LibraryRepository {
 
     override fun observeTvShowItems(): Flow<List<LibraryTvShowItem>> =
         combine(observeTvShows(), tvShowNames) { list, names ->
-            list.map { LibraryTvShowItem(it, names[it.showId], posterPath = null, year = null) }
+            list.map { LibraryTvShowItem(it, names[it.showId], posterPath = null, year = null, tmdbStatus = tvShowStatuses[it.showId]) }
         }
 
     override fun observeMovies(): Flow<List<LibraryMovie>> =
@@ -78,6 +80,12 @@ class FakeLibraryRepository : LibraryRepository {
 
     override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
         watchedEpisodes.map { all -> all.values.filter { it.showId == showId } }
+
+    /** Status das séries vem de `tvShows`; só as `WATCHING` entram. */
+    override fun observeWatchingShowsWatchedEpisodes(): Flow<List<WatchedEpisode>> =
+        combine(watchedEpisodes, tvShows) { watched, shows ->
+            watched.values.filter { shows[it.showId]?.status == TvShowStatus.WATCHING }
+        }
 
     override suspend fun markEpisodesWatched(episodes: List<Episode>, watchedAt: Instant) {
         watchedEpisodes.value += episodes.associate {

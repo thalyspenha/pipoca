@@ -79,6 +79,7 @@ fun PipocaApp() {
             composable<HomeRoute> {
                 HomeScreen(
                     onItemClick = { item -> navController.navigate(item.detailsRoute()) },
+                    onShowClick = { showId -> navController.navigate(TvShowDetailsRoute(showId)) },
                     onSearchClick = { navController.navigateToTab(TopLevelDestination.SEARCH) },
                 )
             }

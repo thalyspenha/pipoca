@@ -1,6 +1,16 @@
 package com.thalyspenha.pipoca.presentation.screens.home
 
 import androidx.compose.foundation.clickable
+import com.thalyspenha.pipoca.util.episodeCode
+import com.thalyspenha.pipoca.util.TmdbImageUrl
+import coil3.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thalyspenha.pipoca.domain.model.Episode
 import com.thalyspenha.pipoca.presentation.components.PosterImage
 import com.thalyspenha.pipoca.presentation.components.UiStateContent
 import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
@@ -35,12 +46,19 @@ import java.time.Instant
 @Composable
 fun HomeScreen(
     onItemClick: (HomeItem) -> Unit,
+    onShowClick: (showId: Long) -> Unit,
     onSearchClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     UiStateContent(state = state) { content ->
-        HomeContentView(content, onItemClick = onItemClick, onSearchClick = onSearchClick)
+        HomeContentView(
+            content,
+            onItemClick = onItemClick,
+            onShowClick = onShowClick,
+            onMarkWatched = viewModel::onMarkWatched,
+            onSearchClick = onSearchClick,
+        )
     }
 }
 
@@ -48,6 +66,8 @@ fun HomeScreen(
 private fun HomeContentView(
     content: HomeContent,
     onItemClick: (HomeItem) -> Unit,
+    onShowClick: (Long) -> Unit,
+    onMarkWatched: (Episode) -> Unit,
     onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -73,10 +93,12 @@ private fun HomeContentView(
         if (!content.tmdbConfigured) {
             item { MissingApiKeyCard(Modifier.padding(horizontal = 16.dp)) }
         }
-        section("Assistindo", content.watching, onItemClick)
+        continueWatchingSection(content.continueWatching, onShowClick, onMarkWatched)
+        inProgressSection(content.inProgress, onShowClick)
         section("Quero assistir", content.wantToWatch, onItemClick)
-        section("Favoritos", content.favorites, onItemClick)
         section("Assistidos recentemente", content.recentlyWatched, onItemClick)
+        section("Favoritos", content.favorites, onItemClick)
+        section("Adicionados recentemente à coleção", content.recentCollection, onItemClick)
     }
 }
 
@@ -167,7 +189,7 @@ private fun plural(count: Int, one: String, many: String) = "$count ${if (count 
 @Preview(showBackground = true)
 @Composable
 private fun HomeEmptyPreview() {
-    PipocaTheme { HomeContentView(HomeContent(tmdbConfigured = true), onItemClick = {}, onSearchClick = {}) }
+    PipocaTheme { HomeContentView(HomeContent(tmdbConfigured = true), onItemClick = {}, onShowClick = {}, onMarkWatched = {}, onSearchClick = {}) }
 }
 
 @Preview(showBackground = true)
@@ -182,12 +204,107 @@ private fun HomeContentPreview() {
         HomeContentView(
             HomeContent(
                 tmdbConfigured = true,
-                watching = items.take(1),
+                continueWatching = listOf(
+                    ContinueWatchingItem(
+                        1396, "Breaking Bad", null,
+                        Episode(62161, 1396, 2, 1, "Seven Thirty-Seven", null, null, null, 47),
+                    ),
+                ),
+                inProgress = listOf(InProgressItem(1396, "Breaking Bad", null, 7, 62, 11, isCaughtUp = false, isComplete = true)),
                 wantToWatch = items,
                 stats = HomeStats(moviesWatched = 1, showsCompleted = 0, total = 3),
             ),
             onItemClick = {},
+            onShowClick = {},
+            onMarkWatched = {},
             onSearchClick = {},
+        )
+    }
+}
+
+private fun LazyListScope.continueWatchingSection(
+    items: List<ContinueWatchingItem>,
+    onShowClick: (Long) -> Unit,
+    onMarkWatched: (Episode) -> Unit,
+) {
+    if (items.isEmpty()) return
+    item(key = "continue") {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Continuar assistindo", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 16.dp))
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(items, key = { it.showId }) { item ->
+                    ContinueWatchingCard(item, onClick = { onShowClick(item.showId) }, onMarkWatched = { onMarkWatched(item.episode) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContinueWatchingCard(item: ContinueWatchingItem, onClick: () -> Unit, onMarkWatched: () -> Unit) {
+    val episode = item.episode
+    Card(modifier = Modifier.width(280.dp).clickable(onClick = onClick)) {
+        Box(
+            modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f).background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(episodeCode(episode.seasonNumber, episode.episodeNumber), style = MaterialTheme.typography.titleMedium)
+            TmdbImageUrl.build(episode.stillPath, TmdbImageUrl.STILL)?.let { url ->
+                AsyncImage(model = url, contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.matchParentSize())
+            }
+        }
+        Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(item.showName ?: "Carregando…", style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    "${episodeCode(episode.seasonNumber, episode.episodeNumber)} · ${episode.name}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            FilledTonalButton(onClick = onMarkWatched) { Text("Assisti") }
+        }
+    }
+}
+
+private fun LazyListScope.inProgressSection(items: List<InProgressItem>, onShowClick: (Long) -> Unit) {
+    if (items.isEmpty()) return
+    item(key = "in-progress") {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Séries em andamento", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 16.dp))
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(items, key = { it.showId }) { item -> InProgressCard(item, onClick = { onShowClick(item.showId) }) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InProgressCard(item: InProgressItem, onClick: () -> Unit) {
+    val title = item.name ?: "Carregando…"
+    Column(
+        modifier = Modifier.width(112.dp).clickable(onClick = onClick),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        PosterImage(posterPath = item.posterPath, title = title, modifier = Modifier.fillMaxWidth())
+        Text(title, style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        LinearProgressIndicator(progress = { item.percent / 100f }, modifier = Modifier.fillMaxWidth())
+        Text(
+            when {
+                item.isCaughtUp -> "Em dia"
+                item.available == 0 -> "Sem episódios"
+                else -> "${item.watched} / ${item.available}" + if (item.isComplete) "" else "…"
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

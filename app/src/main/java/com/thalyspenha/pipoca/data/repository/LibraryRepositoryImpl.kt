@@ -65,6 +65,9 @@ class LibraryRepositoryImpl @Inject constructor(
     override fun observeWatchedEpisodes(showId: Long): Flow<List<WatchedEpisode>> =
         dao.observeWatchedEpisodes(showId).map { list -> list.map { it.toDomain() } }
 
+    override fun observeWatchingShowsWatchedEpisodes(): Flow<List<WatchedEpisode>> =
+        dao.observeWatchingShowsWatchedEpisodes().map { list -> list.map { it.toDomain() } }
+
     override suspend fun markEpisodesWatched(episodes: List<Episode>, watchedAt: Instant) {
         if (episodes.isEmpty()) return
         val millis = watchedAt.toEpochMilli()

@@ -19,6 +19,23 @@ interface TmdbEpisodeDao {
     @Query("SELECT * FROM tmdb_episode WHERE show_id = :showId ORDER BY season_number, episode_number")
     fun observeShowEpisodes(showId: Long): Flow<List<TmdbEpisodeEntity>>
 
+    /** Episódios em cache de todas as séries `WATCHING` numa consulta só (Home, D-044). */
+    @Query(
+        """SELECT e.* FROM tmdb_episode e
+        JOIN user_tv_show u ON u.show_id = e.show_id
+        WHERE u.status = 'WATCHING'
+        ORDER BY e.show_id, e.season_number, e.episode_number""",
+    )
+    fun observeWatchingShowsEpisodes(): Flow<List<TmdbEpisodeEntity>>
+
+    /** Temporadas das séries `WATCHING` (para saber se o cache de episódios está completo). */
+    @Query(
+        """SELECT s.* FROM tmdb_season s
+        JOIN user_tv_show u ON u.show_id = s.show_id
+        WHERE u.status = 'WATCHING'""",
+    )
+    fun observeWatchingShowsSeasons(): Flow<List<TmdbSeasonEntity>>
+
     /** Busca mais antiga da temporada; nulo = temporada sem episódios em cache. */
     @Query("SELECT MIN(fetched_at) FROM tmdb_episode WHERE show_id = :showId AND season_number = :seasonNumber")
     suspend fun getSeasonEpisodesFetchedAt(showId: Long, seasonNumber: Int): Long?

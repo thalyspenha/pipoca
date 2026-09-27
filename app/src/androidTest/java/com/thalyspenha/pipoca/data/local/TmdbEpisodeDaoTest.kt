@@ -9,6 +9,8 @@ import com.thalyspenha.pipoca.data.local.entity.TmdbEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbSeasonEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbTvShowEntity
 import com.thalyspenha.pipoca.data.local.entity.UserEpisodeEntity
+import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
+import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -104,5 +106,21 @@ class TmdbEpisodeDaoTest {
         library.deleteWatchedEpisodes(listOf(1))
 
         assertEquals(listOf(2L), library.observeWatchedEpisodes(1396).first().map { it.episodeId })
+    }
+
+    @Test
+    fun consultasAgregadasSoTrazemSeriesAssistindo() = runBlocking {
+        dao.saveSeason(season(), listOf(episode(1, 1), episode(2, 2)))
+        val library = db.userLibraryDao()
+        library.upsertWatchedEpisodes(listOf(UserEpisodeEntity(1, 1396, 1, 1, watchedAt = 100)))
+
+        library.upsertTvShow(UserTvShowEntity(1396, TvShowStatus.WANT_TO_WATCH, addedAt = 1, updatedAt = 1))
+        assertEquals(emptyList<TmdbEpisodeEntity>(), dao.observeWatchingShowsEpisodes().first())
+        assertEquals(emptyList<UserEpisodeEntity>(), library.observeWatchingShowsWatchedEpisodes().first())
+
+        library.upsertTvShow(UserTvShowEntity(1396, TvShowStatus.WATCHING, addedAt = 1, updatedAt = 2))
+        assertEquals(listOf(1L, 2L), dao.observeWatchingShowsEpisodes().first().map { it.id })
+        assertEquals(listOf(3572L), dao.observeWatchingShowsSeasons().first().map { it.id })
+        assertEquals(listOf(1L), library.observeWatchingShowsWatchedEpisodes().first().map { it.episodeId })
     }
 }

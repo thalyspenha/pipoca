@@ -125,7 +125,7 @@ private fun SeasonSummary.toEntity(showId: Long, fetchedAt: Long) = TmdbSeasonEn
     fetchedAt = fetchedAt,
 )
 
-private fun TmdbSeasonEntity.toDomain() = SeasonSummary(
+internal fun TmdbSeasonEntity.toDomain() = SeasonSummary(
     id = id,
     seasonNumber = seasonNumber,
     name = name,

@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 7 concluída:** coleção física/digital (`collection_item`, migração 3→4), tela "Minha Coleção" com filtros e ordenação, formulário de adicionar/editar/remover acessível pelos detalhes de filme e série e pela própria coleção, independente do status assistido; 182 testes unitários e 23 instrumentados passando; testado no S25. Próxima: Fase 8 — Home e organização, dividida em 3 partes (D-043); aguardando "IMPLEMENTAR FASE 8 – PARTE 1".
+**Fase 8 em andamento:** parte 1 concluída (Home como painel: Continuar assistindo, Séries em andamento, Quero assistir, Assistidos recentemente, Favoritos, Adicionados recentemente à coleção; consultas agregadas); 185 testes unitários e 24 instrumentados passando; testado no S25. Próxima: "IMPLEMENTAR FASE 8 – PARTE 2" (Favoritos).
 
 ## Fases
 
@@ -90,13 +90,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela "Minha Coleção" — aba Coleção com lista, filtros, ordenação e estado vazio.
   3. ✅ Formulário — adicionar/editar (formato, edição, região, quantidade, data, observações) e remover; acesso pelos detalhes de filme e série e pela tela da coleção; docs.
 
-### ⏳ Fase 8 — Home e organização (ver `fase8.md`)
+### 🚧 Fase 8 — Home e organização (ver `fase8.md`)
 - Home como painel: Continuar assistindo, Séries em andamento, Quero assistir, Assistidos recentemente, Favoritos, Adicionados recentemente à coleção; sem consultas excessivas; atualização automática via Flow.
 - Tela Favoritos (filmes e séries, remover favorito).
 - Histórico: título, episódio, data, pôster; mais recente primeiro; abrir o conteúdo; filtros básicos. Filme assistido e cada episódio geram histórico.
 - Favoritos e Histórico acessados pela aba "Mais" (lista de entradas) e por "Ver todos" na Home (opção A, D-043).
 - **Executada em 3 partes** (D-043). Uma por vez, só com "IMPLEMENTAR FASE 8 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ Home — consultas agregadas (progresso/próximo episódio de todas as séries em uma consulta de episódios + uma de assistidos), seis seções, ViewModel e testes.
+  1. ✅ Home — consultas agregadas (progresso/próximo episódio de todas as séries em uma consulta de episódios + uma de assistidos), seis seções, ViewModel e testes.
   2. ⏳ Favoritos — tela com abas Filmes/Séries, remover favorito; aba "Mais" com entradas; "Ver todos" na Home.
   3. ⏳ Histórico — consulta com cache (título, pôster, episódio), filtros Todos/Filmes/Séries, abrir conteúdo, testes de geração; ROADMAP.
 

@@ -40,4 +40,6 @@ data class LibraryTvShowItem(
     val name: String?,
     val posterPath: String?,
     val year: Int?,
+    /** Status de produção no TMDB (`Ended`...), para progresso/conclusão. */
+    val tmdbStatus: String? = null,
 )

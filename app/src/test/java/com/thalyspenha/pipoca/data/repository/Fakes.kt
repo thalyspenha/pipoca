@@ -84,6 +84,10 @@ class FakeTmdbEpisodeDao : TmdbEpisodeDao {
             all.values.filter { it.showId == showId }.sortedWith(compareBy({ it.seasonNumber }, { it.episodeNumber }))
         }
 
+    override fun observeWatchingShowsEpisodes(): Flow<List<TmdbEpisodeEntity>> = episodes.map { it.values.toList() }
+
+    override fun observeWatchingShowsSeasons(): Flow<List<TmdbSeasonEntity>> = MutableStateFlow(seasons.values.toList())
+
     override suspend fun getSeasonEpisodesFetchedAt(showId: Long, seasonNumber: Int): Long? =
         episodes.value.values.filter { it.showId == showId && it.seasonNumber == seasonNumber }.minOfOrNull { it.fetchedAt }
 

@@ -274,3 +274,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Progresso/próximo episódio de todas as séries a partir de uma consulta de episódios e uma de assistidos, sem consulta por série.
 - Favoritos e Histórico ficam na aba "Mais", que vira lista de entradas (opção A, escolha do usuário); a Home leva a eles por "Ver todos". Aba "Biblioteca" continua placeholder.
 **Consequência:** "Mais" recebe depois estatísticas e configurações.
+
+### D-044 — Home como painel e consultas agregadas
+**Decisão:**
+- Seções na ordem de `fase8.md`: Continuar assistindo (cartão 16:9 com imagem do próximo episódio, "T2E1 · Nome" e botão "Assisti"), Séries em andamento (pôster, barra, "7 / 62", "Em dia"; "…" quando faltam temporadas no cache), Quero assistir, Assistidos recentemente, Favoritos, Adicionados recentemente à coleção (um cartão por título). Toque em série de Continuar/Andamento abre os detalhes. A antiga seção "Assistindo" foi substituída.
+- `ObserveWatchingShowsUseCase`: quatro consultas fixas com JOIN em `user_tv_show.status = 'WATCHING'` (séries com cache, episódios, temporadas, assistidos), agrupadas em memória e passadas ao `ShowProgressCalculator`. Nenhuma consulta por série; número de consultas não cresce com a biblioteca. `LibraryTvShowItem` ganhou `tmdbStatus` (vem no mesmo JOIN).
+- Ordem de Continuar assistindo: último episódio assistido mais recente primeiro; séries sem nada assistido no fim.
+- `HomeViewModel` combina biblioteca, séries assistindo e coleção via Flow: qualquer marcação em outras telas atualiza a Home. Com token, busca uma vez o que falta (detalhes sem título, inclusive da coleção; temporadas de séries assistindo com progresso incompleto).
+- A Home só fica "vazia" sem biblioteca **e** sem coleção.
+**Consequência:** Favoritos e Histórico (partes 2 e 3) ganham "Ver todos" nas seções correspondentes.
