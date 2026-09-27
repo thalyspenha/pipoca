@@ -118,8 +118,7 @@ Cada entidade de cache TMDB tem `fetchedAt` (epoch millis). Política stale-whil
 | Filme (detalhes, elenco) | 7 dias |
 | Série em produção (detalhes) | 1 dia |
 | Série encerrada/cancelada | 30 dias |
-| Temporada/episódios em exibição | 1 dia |
-| Temporada antiga | 30 dias |
+| Temporada/episódios | mesma validade da série: 1 dia em produção, 30 dias encerrada (D-036) |
 | Gêneros | 30 dias |
 | Busca | não persiste; debounce 400 ms + cancelamento da busca anterior |
 

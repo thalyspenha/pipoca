@@ -3,6 +3,7 @@ package com.thalyspenha.pipoca.data.remote
 import com.thalyspenha.pipoca.data.remote.dto.MovieDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.MovieSummaryDto
 import com.thalyspenha.pipoca.data.remote.dto.PagedResponseDto
+import com.thalyspenha.pipoca.data.remote.dto.SeasonDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.TvShowDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.TvShowSummaryDto
 import com.thalyspenha.pipoca.domain.model.DataError
@@ -35,6 +36,9 @@ class TmdbRemoteDataSource @Inject constructor(
 
     suspend fun getTvShowDetails(id: Long): DataResult<TvShowDetailsDto> =
         call { api.getTvShowDetails(id) }
+
+    suspend fun getSeasonDetails(showId: Long, seasonNumber: Int): DataResult<SeasonDetailsDto> =
+        call { api.getSeasonDetails(showId, seasonNumber) }
 
     private suspend fun <T> call(block: suspend () -> T): DataResult<T> {
         if (!tmdbConfig.isConfigured) return DataResult.Failure(DataError.MissingApiKey)

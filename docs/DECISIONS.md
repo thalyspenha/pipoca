@@ -210,3 +210,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Transições automáticas: marcar episódio de série fora da biblioteca ou em `WANT_TO_WATCH` passa para `WATCHING`; desmarcar episódio de série `COMPLETED` volta para `WATCHING`.
 - Estrutura do TMDB (`tv/{id}/season/{n}`) será conferida na parte 1 antes de fechar as regras.
 **Consequência:** substitui a regra provisória de DATABASE.md ("sugerir COMPLETED, não forçar").
+
+### D-036 — Episódios: cache, dados pessoais e migração 2→3
+**Contexto:** estrutura do TMDB conferida com respostas reais: `tv/{id}.seasons` traz a temporada 0 (especiais), `number_of_episodes` já exclui especiais, `tv/{id}/season/{n}` traz episódios com `air_date`/`runtime`/`still_path` que podem faltar em episódios futuros.
+**Decisão:**
+- `tmdb_episode` (FK → `tmdb_season`, CASCADE) com `fetched_at` por episódio; validade da temporada = `MIN(fetched_at)`, com a mesma política da série (`CachePolicy.tvShowTtl`). Nada muda em `tmdb_season`.
+- `TmdbEpisodeDao` separado do `TmdbCacheDao` (interface, `saveSeason` transacional) e `SeasonRepository` separado do `TvShowRepository`, para não inflar DAO/fakes existentes. Sem a série em cache, `refreshSeason` busca a série antes (FK).
+- `user_episode` conforme DATABASE.md, com `watched_at` não nulo (linha existe = assistido). Operações básicas em `UserLibraryDao`; regras (histórico, status automático) ficam para a parte 2.
+- `MIGRATION_2_3` explícita; `MigrationTest` limpa o arquivo antes de cada teste (testes compartilhavam o arquivo e falhavam conforme a ordem).
+**Consequência:** migração real 2→3 no S25 preservou a biblioteca. Especiais continuam no cache, mas as regras da parte 2 os excluem do progresso.

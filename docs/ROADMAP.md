@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 5 concluída:** telas completas de detalhes de filme e série com ações gravando no Room, componentes reutilizáveis, funciona offline com cache; coleção e progresso como "Em breve" (D-031); 110 testes unitários passando; testado no S25. Próxima: Fase 6 — Séries e episódios, dividida em 3 partes (D-035); aguardando "IMPLEMENTAR FASE 6 – PARTE 1".
+**Fase 6 em andamento:** parte 1 concluída (episódios no cache, `user_episode`, migração 2→3 testada no S25 com dados reais, `SeasonRepository`); 115 testes unitários e 16 instrumentados passando. Próxima: "IMPLEMENTAR FASE 6 – PARTE 2" (regras e use cases).
 
 ## Fases
 
@@ -69,7 +69,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela do filme e componentes reutilizáveis — cabeçalho backdrop/poster, chips de gênero, faixa de elenco, seletor de status, favorito, avaliação 1–10.
   3. ✅ Série — ViewModel + tela reusando componentes, status assistindo/concluída; docs e ROADMAP.
 
-### ⏳ Fase 6 — Séries e episódios (ver `fase6.md`)
+### 🚧 Fase 6 — Séries e episódios (ver `fase6.md`)
 - Entidades Season, Episode, UserEpisode; adaptar banco sem perder dados.
 - Listas de temporadas e episódios (imagem, título, número, sinopse, duração, data, assistido).
 - Marcar/desmarcar episódio e temporada inteira; ao marcar: salvar, registrar data, atualizar progresso e contagem.
@@ -77,7 +77,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Testes de cálculo de progresso; atualizar DATABASE.md, ARCHITECTURE.md, ROADMAP.md.
 - Série concluída: regra (a) — automática só se todos os episódios exibidos estiverem assistidos **e** o TMDB indicar fim (Ended/Canceled); se ainda no ar, fica Assistindo ("Em dia") (D-035).
 - **Executada em 3 partes** (D-035). Uma por vez, só com "IMPLEMENTAR FASE 6 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ Dados — endpoint/DTO de temporada, `tmdb_episode` + `user_episode`, migração 2→3, cache de episódios no repositório; testes de parsing, DAO e migração.
+  1. ✅ Dados — endpoint/DTO de temporada, `tmdb_episode` + `user_episode`, migração 2→3, cache de episódios no repositório; testes de parsing, DAO e migração.
   2. ⏳ Regras — cálculo puro de progresso, próximo episódio/temporada, conclusão; use cases de marcar/desmarcar episódio e temporada (com `watch_history`); testes de progresso.
   3. ⏳ Telas — temporadas, episódios, navegação a partir dos detalhes da série; progresso real no lugar do "Em breve"; docs.
 

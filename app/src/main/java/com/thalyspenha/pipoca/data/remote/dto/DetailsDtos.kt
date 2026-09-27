@@ -87,3 +87,28 @@ data class CrewDto(
     val job: String? = null,
     val department: String? = null,
 )
+
+/** `tv/{id}/season/{n}`: temporada com a lista de episódios. */
+@Serializable
+data class SeasonDetailsDto(
+    val id: Long,
+    @SerialName("season_number") val seasonNumber: Int,
+    val name: String = "",
+    val overview: String? = null,
+    @SerialName("poster_path") val posterPath: String? = null,
+    @SerialName("air_date") val airDate: String? = null,
+    val episodes: List<EpisodeDto> = emptyList(),
+)
+
+/** Episódio. Futuros podem vir sem `air_date`, `runtime` e `still_path`. */
+@Serializable
+data class EpisodeDto(
+    val id: Long,
+    @SerialName("episode_number") val episodeNumber: Int,
+    @SerialName("season_number") val seasonNumber: Int,
+    val name: String = "",
+    val overview: String? = null,
+    @SerialName("still_path") val stillPath: String? = null,
+    @SerialName("air_date") val airDate: String? = null,
+    val runtime: Int? = null,
+)

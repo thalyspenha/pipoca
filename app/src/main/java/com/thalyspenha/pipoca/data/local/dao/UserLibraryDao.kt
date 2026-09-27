@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.thalyspenha.pipoca.data.local.entity.UserEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.UserMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.UserTvShowEntity
 import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
@@ -107,4 +108,15 @@ interface UserLibraryDao {
 
     @Query("DELETE FROM watch_history WHERE movie_id = :movieId")
     suspend fun deleteMovieHistory(movieId: Long)
+
+    // ---- Episódios assistidos
+
+    @Query("SELECT * FROM user_episode WHERE show_id = :showId ORDER BY season_number, episode_number")
+    fun observeWatchedEpisodes(showId: Long): Flow<List<UserEpisodeEntity>>
+
+    @Upsert
+    suspend fun upsertWatchedEpisodes(episodes: List<UserEpisodeEntity>)
+
+    @Query("DELETE FROM user_episode WHERE episode_id IN (:episodeIds)")
+    suspend fun deleteWatchedEpisodes(episodeIds: List<Long>)
 }

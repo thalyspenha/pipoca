@@ -31,4 +31,28 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
-val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2)
+/** Episódios: cache `tmdb_episode` e dados pessoais `user_episode` (Fase 6, D-036). */
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(connection: SQLiteConnection) {
+        connection.execSQL(
+            "CREATE TABLE IF NOT EXISTS `tmdb_episode` (`id` INTEGER NOT NULL, `show_id` INTEGER NOT NULL, " +
+                "`season_id` INTEGER NOT NULL, `season_number` INTEGER NOT NULL, `episode_number` INTEGER NOT NULL, " +
+                "`name` TEXT NOT NULL, `overview` TEXT, `still_path` TEXT, `air_date` TEXT, `runtime_minutes` INTEGER, " +
+                "`fetched_at` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`season_id`) REFERENCES `tmdb_season`(`id`) " +
+                "ON UPDATE NO ACTION ON DELETE CASCADE )",
+        )
+        connection.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_tmdb_episode_show_id_season_number_episode_number` " +
+                "ON `tmdb_episode` (`show_id`, `season_number`, `episode_number`)",
+        )
+        connection.execSQL("CREATE INDEX IF NOT EXISTS `index_tmdb_episode_season_id` ON `tmdb_episode` (`season_id`)")
+        connection.execSQL(
+            "CREATE TABLE IF NOT EXISTS `user_episode` (`episode_id` INTEGER NOT NULL, `show_id` INTEGER NOT NULL, " +
+                "`season_number` INTEGER NOT NULL, `episode_number` INTEGER NOT NULL, `watched_at` INTEGER NOT NULL, " +
+                "PRIMARY KEY(`episode_id`))",
+        )
+        connection.execSQL("CREATE INDEX IF NOT EXISTS `index_user_episode_show_id` ON `user_episode` (`show_id`)")
+    }
+}
+
+val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2, MIGRATION_2_3)

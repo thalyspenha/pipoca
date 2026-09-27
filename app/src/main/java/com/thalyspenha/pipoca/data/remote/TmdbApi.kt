@@ -3,6 +3,7 @@ package com.thalyspenha.pipoca.data.remote
 import com.thalyspenha.pipoca.data.remote.dto.MovieDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.MovieSummaryDto
 import com.thalyspenha.pipoca.data.remote.dto.PagedResponseDto
+import com.thalyspenha.pipoca.data.remote.dto.SeasonDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.TvShowDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.TvShowSummaryDto
 import retrofit2.http.GET
@@ -40,6 +41,12 @@ interface TmdbApi {
         @Path("id") id: Long,
         @Query("append_to_response") appendToResponse: String = CREDITS,
     ): TvShowDetailsDto
+
+    @GET("tv/{id}/season/{seasonNumber}")
+    suspend fun getSeasonDetails(
+        @Path("id") showId: Long,
+        @Path("seasonNumber") seasonNumber: Int,
+    ): SeasonDetailsDto
 
     companion object {
         const val BASE_URL = "https://api.themoviedb.org/3/"

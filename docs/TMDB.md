@@ -1,6 +1,6 @@
 # TMDB
 
-Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl` (em `util/`, D-025). Fase 2 concluída: busca de filmes/séries e detalhes de filme/série, com cache de detalhes no Room.
+Integração com a API oficial do The Movie Database. Status: **infraestrutura pronta** (Fase 1): Retrofit + OkHttp, `AuthInterceptor` (Bearer), `LanguageInterceptor` (`pt-BR`), logging só em debug com header de autorização ocultado, `TmdbImageUrl` (em `util/`, D-025). Fase 2 concluída: busca de filmes/séries e detalhes de filme/série, com cache de detalhes no Room. Fase 6: `tv/{id}/season/{n}` com episódios em cache (`SeasonRepository`, D-036).
 
 ## Autenticação
 
@@ -83,7 +83,7 @@ Falha no refresh devolve `DataResult.Failure` e não apaga o cache: com cache, a
 | Busca combinada (opcional) | `GET search/multi?query=` (filtrar `movie`/`tv`) |
 | Detalhes filme + elenco | `GET movie/{id}?append_to_response=credits` |
 | Detalhes série | `GET tv/{id}?append_to_response=credits` |
-| Temporada + episódios | `GET tv/{id}/season/{n}` |
+| Temporada + episódios | `GET tv/{id}/season/{n}` (temporada 0 = especiais; `number_of_episodes` da série já os exclui) |
 | Gêneros | `GET genre/movie/list`, `GET genre/tv/list` |
 | Imagens extras (opcional) | `GET movie/{id}/images`, `GET tv/{id}/images` |
 

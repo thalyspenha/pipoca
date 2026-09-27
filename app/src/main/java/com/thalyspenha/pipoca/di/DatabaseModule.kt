@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.thalyspenha.pipoca.data.local.AppDatabase
 import com.thalyspenha.pipoca.data.local.dao.TmdbCacheDao
+import com.thalyspenha.pipoca.data.local.dao.TmdbEpisodeDao
 import com.thalyspenha.pipoca.data.local.dao.UserLibraryDao
 import com.thalyspenha.pipoca.data.local.migration.ALL_MIGRATIONS
 import dagger.Module
@@ -29,4 +30,7 @@ object DatabaseModule {
 
     @Provides
     fun provideUserLibraryDao(database: AppDatabase): UserLibraryDao = database.userLibraryDao()
+
+    @Provides
+    fun provideTmdbEpisodeDao(database: AppDatabase): TmdbEpisodeDao = database.tmdbEpisodeDao()
 }

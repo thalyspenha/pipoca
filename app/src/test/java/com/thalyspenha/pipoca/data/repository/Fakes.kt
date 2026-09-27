@@ -1,10 +1,12 @@
 package com.thalyspenha.pipoca.data.repository
 
 import com.thalyspenha.pipoca.data.local.dao.TmdbCacheDao
+import com.thalyspenha.pipoca.data.local.dao.TmdbEpisodeDao
 import com.thalyspenha.pipoca.data.local.dao.TvShowCacheInfo
 import com.thalyspenha.pipoca.data.local.entity.CastRow
 import com.thalyspenha.pipoca.data.local.entity.CreditMediaType
 import com.thalyspenha.pipoca.data.local.entity.TmdbCreditEntity
+import com.thalyspenha.pipoca.data.local.entity.TmdbEpisodeEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbGenreEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbMovieEntity
 import com.thalyspenha.pipoca.data.local.entity.TmdbMovieGenreCrossRef
@@ -17,6 +19,7 @@ import com.thalyspenha.pipoca.data.remote.TmdbJson
 import com.thalyspenha.pipoca.data.remote.dto.MovieDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.MovieSummaryDto
 import com.thalyspenha.pipoca.data.remote.dto.PagedResponseDto
+import com.thalyspenha.pipoca.data.remote.dto.SeasonDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.TvShowDetailsDto
 import com.thalyspenha.pipoca.data.remote.dto.TvShowSummaryDto
 import com.thalyspenha.pipoca.data.remote.fixture
@@ -55,6 +58,45 @@ class FakeTmdbApi : TmdbApi {
         hit()
         val dto = TmdbJson.decodeFromString<TvShowDetailsDto>(fixture("tv_details.json"))
         return tvShowStatus?.let { dto.copy(status = it) } ?: dto
+    }
+
+    var seasonCalls = 0
+
+    override suspend fun getSeasonDetails(showId: Long, seasonNumber: Int): SeasonDetailsDto {
+        hit()
+        seasonCalls++
+        return TmdbJson.decodeFromString(fixture("tv_season.json"))
+    }
+}
+
+/** Episódios em memória; herda `saveSeason` (transação) do DAO real. */
+class FakeTmdbEpisodeDao : TmdbEpisodeDao {
+    val seasons = mutableMapOf<Long, TmdbSeasonEntity>()
+    private val episodes = MutableStateFlow<Map<Long, TmdbEpisodeEntity>>(emptyMap())
+
+    override fun observeSeasonEpisodes(showId: Long, seasonNumber: Int): Flow<List<TmdbEpisodeEntity>> =
+        episodes.map { all ->
+            all.values.filter { it.showId == showId && it.seasonNumber == seasonNumber }.sortedBy { it.episodeNumber }
+        }
+
+    override fun observeShowEpisodes(showId: Long): Flow<List<TmdbEpisodeEntity>> =
+        episodes.map { all ->
+            all.values.filter { it.showId == showId }.sortedWith(compareBy({ it.seasonNumber }, { it.episodeNumber }))
+        }
+
+    override suspend fun getSeasonEpisodesFetchedAt(showId: Long, seasonNumber: Int): Long? =
+        episodes.value.values.filter { it.showId == showId && it.seasonNumber == seasonNumber }.minOfOrNull { it.fetchedAt }
+
+    override suspend fun upsertSeason(season: TmdbSeasonEntity) {
+        seasons[season.id] = season
+    }
+
+    override suspend fun upsertEpisodes(episodes: List<TmdbEpisodeEntity>) {
+        this.episodes.value += episodes.associateBy { it.id }
+    }
+
+    override suspend fun deleteEpisodesNotIn(seasonId: Long, keepIds: List<Long>) {
+        episodes.value = episodes.value.filterValues { it.seasonId != seasonId || it.id in keepIds }
     }
 }
 

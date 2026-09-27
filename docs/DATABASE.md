@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `tmdb_episode`, `user_episode` e `collection_item` chegam nas fases seguintes. `AppDatabase` versão 2, schema em `app/schemas/`.
+Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`; `tmdb_episode` (Fase 6) por `TmdbEpisodeDao` via `SeasonRepository`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `user_episode` (Fase 6) também em `UserLibraryDao`. `collection_item` chega na fase da coleção. `AppDatabase` versão 3, schema em `app/schemas/`.
 
 ## Migrações
 
@@ -10,6 +10,7 @@ A partir da versão 1 toda mudança de schema tem `Migration` explícita em `dat
 |---|---|
 | 1 | Cache TMDB |
 | 2 | `user_movie`, `user_tv_show`, `watch_history` (+ índices) |
+| 3 | `tmdb_episode` (FK → `tmdb_season`, CASCADE), `user_episode` (+ índices) |
 
 ## Princípios
 
@@ -83,10 +84,13 @@ A partir da versão 1 toda mudança de schema tem `Migration` explícita em `dat
 | name | String | |
 | overview | String? | |
 | still_path | String? | |
-| air_date | LocalDate? | usado para "próximos episódios" |
-| runtime_minutes | Int? | |
+| air_date | LocalDate? | nula = sem data anunciada; base de "episódio lançado" |
+| runtime_minutes | Int? | 0 do TMDB vira nulo |
+| fetched_at | Long | controle de cache; validade da temporada = `MIN(fetched_at)` dos episódios |
 
-Índice único `(show_id, season_number, episode_number)`.
+Índice único `(show_id, season_number, episode_number)`; índice em `season_id`. Gravação transacional (`TmdbEpisodeDao.saveSeason`): upsert da temporada (sem REPLACE, para não disparar CASCADE), episódios que sumiram saem antes do upsert.
+
+Estrutura do TMDB conferida (D-036): `tv/{id}.seasons` inclui a temporada 0 (especiais); `number_of_episodes` já exclui especiais (Breaking Bad: 62, com 9 especiais à parte). Episódios futuros podem vir sem `air_date`/`runtime`/`still_path`.
 
 ### tmdb_genre
 `id` Long PK, `name` String. Relações N:N:
@@ -131,7 +135,7 @@ Data em que assistiu vem de `watch_history` (permite reassistir). Passar a `WATC
 | show_id | Long | índice |
 | season_number | Int | redundante de propósito: permite progresso sem cache |
 | episode_number | Int | idem |
-| watched_at | Long? | data de visualização (editável) |
+| watched_at | Long | data de visualização (linha só existe se assistido) |
 
 Linha existe = assistido. Desmarcar = apagar linha.
 
@@ -178,7 +182,7 @@ Um título pode ter vários itens (ex.: 4K e DVD).
 
 - **Progresso da série** = episódios assistidos / episódios lançados, excluindo temporada 0 (especiais). Episódio lançado = `air_date <= hoje`.
 - **Próximo episódio** = primeiro episódio lançado não assistido, em ordem (temporada, número).
-- **Status automático**: ao marcar o último episódio lançado, sugerir `COMPLETED` (não forçar para séries em produção). Regra final definida na fase de episódios.
+- **Status automático** (D-035): `COMPLETED` automático quando todos os episódios lançados (sem temporada 0) estão assistidos **e** `tmdb_status` é `Ended`/`Canceled`; no ar, fica `WATCHING` ("Em dia"). Marcar episódio de série fora da biblioteca ou em `WANT_TO_WATCH` passa a `WATCHING`; desmarcar episódio de `COMPLETED` volta a `WATCHING`.
 - **Horas assistidas** = soma de `runtime_minutes` dos filmes assistidos (considerando reassistidos) + episódios assistidos (fallback `episode_run_time`).
 
 ## Enums

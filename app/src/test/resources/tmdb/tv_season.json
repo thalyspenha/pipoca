@@ -1,0 +1,71 @@
+{
+  "_id": "52542272760ee313280005f8",
+  "air_date": "2008-01-20",
+  "episodes": [
+    {
+      "air_date": "2008-01-20",
+      "episode_number": 1,
+      "episode_type": "standard",
+      "id": 62085,
+      "name": "Piloto",
+      "overview": "Um professor de química do ensino médio decide vender drogas a fim de sustentar sua família.",
+      "production_code": "",
+      "runtime": 59,
+      "season_number": 1,
+      "show_id": 1396,
+      "still_path": "/ydlY3iPfeOAvu8gVqrxPoMvzNCn.jpg",
+      "vote_average": 8.5,
+      "vote_count": 559,
+      "crew": [],
+      "guest_stars": []
+    },
+    {
+      "air_date": "2008-01-27",
+      "episode_number": 2,
+      "episode_type": "standard",
+      "id": 62086,
+      "name": "Cat's in the Bag...",
+      "overview": "Sua primeira venda de droga abortada faz Walt e Jesse se disporem de um par de cadáveres, enquanto Skyler suspeita que seu marido está metido em coisa errada.",
+      "production_code": "",
+      "runtime": 49,
+      "season_number": 1,
+      "show_id": 1396,
+      "still_path": "/AbMoecO0ZZio0LcgeLxlzdyGs6X.jpg",
+      "vote_average": 8.247,
+      "vote_count": 298,
+      "crew": [],
+      "guest_stars": []
+    },
+    {
+      "air_date": null,
+      "episode_number": 3,
+      "episode_type": "standard",
+      "id": 999001,
+      "name": "Episódio 3",
+      "overview": "",
+      "production_code": "",
+      "runtime": null,
+      "season_number": 1,
+      "show_id": 1396,
+      "still_path": null,
+      "vote_average": 8.247,
+      "vote_count": 298,
+      "crew": [],
+      "guest_stars": []
+    }
+  ],
+  "name": "Temporada 1",
+  "networks": [
+    {
+      "id": 174,
+      "logo_path": "/pmvRmATOCaDykE6JrVoeYxlFHw3.png",
+      "name": "AMC",
+      "origin_country": "US"
+    }
+  ],
+  "overview": "À medida que Walter constrói seu império, sua esposa começa a suspeitar do seu comportamento. A polícia federal tenta descobrir quem é o novo cabeça.",
+  "id": 3572,
+  "poster_path": "/sUbZ6TUTslNkM1f1PZclYVa60zv.jpg",
+  "season_number": 1,
+  "vote_average": 8.4
+}
