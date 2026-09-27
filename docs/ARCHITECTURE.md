@@ -58,6 +58,7 @@ app/src/main/java/com/thalyspenha/pipoca/
 │   ├── navigation/
 │   ├── theme/
 │   ├── components/             # componentes reutilizáveis
+│   │   └── details/            # blocos das telas de detalhes (D-033)
 │   └── screens/
 │       └── <feature>/          # Screen + ViewModel + UiState juntos
 ├── di/                         # módulos Hilt
