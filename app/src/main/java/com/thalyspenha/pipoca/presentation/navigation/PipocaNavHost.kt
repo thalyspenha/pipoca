@@ -24,6 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
+import com.thalyspenha.pipoca.presentation.screens.collection.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.details.movie.MovieDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.details.season.SeasonScreen
 import com.thalyspenha.pipoca.presentation.screens.details.tv.TvShowDetailsScreen
@@ -83,7 +84,9 @@ fun PipocaApp() {
                 SearchScreen(onResultClick = { item -> navController.navigate(item.detailsRoute()) })
             }
             composable<LibraryRoute> { LibraryScreen() }
-            composable<CollectionRoute> { CollectionScreen() }
+            composable<CollectionRoute> {
+                CollectionScreen(onItemClick = { item -> navController.navigate(item.detailsRoute()) })
+            }
             composable<MoreRoute> { MoreScreen() }
             composable<MovieDetailsRoute> {
                 MovieDetailsScreen(onBack = navController::navigateUp)

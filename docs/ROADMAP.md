@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 7 em andamento:** parte 1 concluída (`collection_item`, migração 3→4 testada no S25, `CollectionRepository`, use cases com validação, filtros e ordenação); 166 testes unitários e 23 instrumentados passando. Ainda sem telas. Próxima: "IMPLEMENTAR FASE 7 – PARTE 2" (tela Minha Coleção).
+**Fase 7 em andamento:** partes 1 e 2 concluídas (`collection_item`, migração 3→4, regras, tela "Minha Coleção" com filtros e ordenação); 173 testes unitários e 23 instrumentados passando. Ainda não há como adicionar itens pela UI. Próxima: "IMPLEMENTAR FASE 7 – PARTE 3" (formulário).
 
 ## Fases
 
@@ -87,7 +87,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Coleção independente de status assistido (ex.: 4K + Quero assistir, 4K + Assistido). Testar CRUD completo; build; docs.
 - **Executada em 3 partes** (D-039). Uma por vez, só com "IMPLEMENTAR FASE 7 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Dados e regras — `collection_item`, migração 3→4, consulta com título/pôster do cache, repositório e use cases (adicionar/editar/remover, validação), filtros e ordenação puros; testes de CRUD, DAO e migração.
-  2. ⏳ Tela "Minha Coleção" — aba Coleção com lista, filtros, ordenação e estado vazio.
+  2. ✅ Tela "Minha Coleção" — aba Coleção com lista, filtros, ordenação e estado vazio.
   3. ⏳ Formulário — adicionar/editar (formato, edição, região, quantidade, data, observações) e remover; acesso pelos detalhes de filme e série e pela tela da coleção; docs.
 
 ### ⏳ Fases 8–11

@@ -59,6 +59,8 @@ Ver `.env.example` e `docs/TMDB.md`.
 ```
 Deve terminar em `BUILD SUCCESSFUL` com todos os testes unitários passando.
 
+Problema conhecido (D-041): às vezes o lint falha com "Unexpected failure during lint analysis" no primeiro build depois de muitas mudanças. Rodar `./gradlew build` de novo; se persistir, é erro real.
+
 ## Rodar no aparelho
 
 S25: ativar modo desenvolvedor e depuração USB, conectar e `./gradlew installDebug` (ou Run no Android Studio). No Linux pode ser preciso regra `udev` para o `adb` enxergar o aparelho (`adb devices`).

@@ -248,3 +248,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Use cases `Add`/`Update`/`RemoveCollectionItemUseCase` recebem `CollectionItemDraft`: quantidade 1–99, data de aquisição não futura (`IllegalArgumentException`; a UI valida antes), textos aparados e em branco → nulo. Editar não muda título nem tipo e mantém `addedAt`. Nenhum toca na biblioteca (independência coleção × assistido, testada nos dois sentidos).
 - `filterAndSort` puro no domain: título com `Collator` pt-BR (ignora acento e caixa), sem título no fim; adicionado recentemente; data de aquisição mais recente primeiro, sem data no fim; desempate por adicionado e id. Filtro `OTHER` só aparece em "Todos".
 **Consequência:** as partes 2 e 3 só montam telas sobre `CollectionRepository` e os use cases.
+
+### D-041 — Tela "Minha Coleção"
+**Decisão:**
+- Aba Coleção deixa de ser placeholder: título "Minha Coleção" + contagem, menu de ordenação (Título, Adicionados recentemente, Data de aquisição), chips de filtro (Todos, 4K, Blu-ray, DVD, Digital) e lista com pôster, título, "formato · edição" e "Filme/Série · N unidades". Toque abre os detalhes do título (edição do item fica para a parte 3).
+- Padrão: ordem por título. Filtro e ordenação no `SavedStateHandle`. Coleção vazia e filtro sem itens têm mensagens diferentes.
+- Item sem cache TMDB busca detalhes uma vez (como a Home, D-030), só com token.
+- Rótulos de formato/filtro/ordenação em `presentation/components/CollectionLabels.kt`.
+- Problema conhecido: o lint do AGP às vezes falha com "Unexpected failure during lint analysis" no primeiro `./gradlew build` depois de muitas mudanças e passa ao repetir, sem alteração de código (3 ocorrências, não reproduzido isoladamente). Ver SETUP.md.
+**Consequência:** a parte 3 adiciona o formulário e o acesso pelos detalhes; esta tela ganha edição por item.
