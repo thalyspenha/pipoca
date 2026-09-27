@@ -235,3 +235,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - O endpoint da temporada pode trazer `poster_path` nulo em pt-BR: o refresh da temporada mantém o resumo já gravado a partir de `tv/{id}` e só grava episódios.
 - Fakes compartilhados de série/temporada em `test/.../domain/usecase/episodes/EpisodeFakes.kt`.
 **Consequência:** Home e Biblioteca podem mostrar progresso/próximo episódio reutilizando `ObserveShowProgressUseCase`.
+
+### D-039 — Fase 7 em 3 partes
+**Contexto:** `fase7.md` pede coleção física/digital com CRUD, tela com filtros e ordenação, independente do status assistido.
+**Decisão:** Fase 7 em 3 partes (ver ROADMAP.md): (1) dados e regras com migração 3→4, (2) tela "Minha Coleção", (3) formulário de adicionar/editar/remover e acesso pelos detalhes. Coleção em tabela própria (`collection_item`, sem FK para o cache, D-007), vários itens por título; não toca em `user_movie`/`user_tv_show`, o que garante a independência coleção × assistido.
+**Consequência:** os cards "Em breve" de coleção (D-031) são substituídos na parte 3.
