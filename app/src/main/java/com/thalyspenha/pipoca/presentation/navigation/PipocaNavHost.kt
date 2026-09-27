@@ -22,10 +22,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.thalyspenha.pipoca.presentation.screens.collection.CollectionScreen
-import com.thalyspenha.pipoca.presentation.screens.details.TvShowDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.details.movie.MovieDetailsScreen
+import com.thalyspenha.pipoca.presentation.screens.details.tv.TvShowDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.home.HomeScreen
 import com.thalyspenha.pipoca.presentation.screens.home.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.library.LibraryScreen
@@ -87,8 +86,8 @@ fun PipocaApp() {
             composable<MovieDetailsRoute> {
                 MovieDetailsScreen(onBack = navController::navigateUp)
             }
-            composable<TvShowDetailsRoute> { entry ->
-                TvShowDetailsScreen(id = entry.toRoute<TvShowDetailsRoute>().id, onBack = navController::navigateUp)
+            composable<TvShowDetailsRoute> {
+                TvShowDetailsScreen(onBack = navController::navigateUp)
             }
         }
     }

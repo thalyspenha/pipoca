@@ -193,3 +193,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `util/DisplayFormat.kt`: `formatRuntime` ("2h 16min") e `formatVote` ("8,2", pt-BR).
 - `MovieDetailsRoute` agora abre a tela real; a série segue placeholder até a parte 3.
 **Consequência:** a série reutiliza os mesmos componentes; nenhuma dependência nova.
+
+### D-034 — Detalhes da série e ajustes nos componentes
+**Decisão:**
+- `TvShowDetailsViewModel`/`TvShowDetailsScreen` seguem o contrato do filme (D-032). Status oferecidos: Quero ver, Assistindo, Concluída (`PAUSED`/`DROPPED` ficam para depois); tocar no atual tira da biblioteca. Série também tem nota pessoal (use case já existia), embora `fase5.md` não peça.
+- Cabeçalho da série: ano · status de produção traduzido (`tmdbStatusLabel`), "N temporadas · M episódios", nota TMDB. Seção Criação (criadores) no lugar de Direção. Progresso como "Em breve".
+- `DetailsScaffold` (barra + snackbar de refresh) extraído e usado por filme e série. `DetailsSection` ganhou slot `action`: o favorito foi para o título da seção de biblioteca, liberando a largura para 3 status. Segmentos sem ✓ (o preenchimento indica a seleção).
+- `DetailsPlaceholderScreen` removido; rotas de detalhes usam as telas reais.
+**Consequência:** fase de episódios troca o card de progresso; nenhuma dependência nova.

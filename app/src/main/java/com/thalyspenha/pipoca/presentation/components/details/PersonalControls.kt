@@ -43,7 +43,9 @@ fun <T> StatusSelector(
                 selected = option == selected,
                 onClick = { onClick(option) },
                 shape = SegmentedButtonDefaults.itemShape(index, options.size),
-            ) { Text(label(option)) }
+                // Sem o ✓: com 3 opções o texto não cabe; o preenchimento já indica a seleção.
+                icon = {},
+            ) { Text(label(option), maxLines = 1) }
         }
     }
 }

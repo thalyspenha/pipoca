@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 4 concluída** (biblioteca pessoal, Home com dados reais). **Fase 5 em andamento:** partes 1 e 2 concluídas (tela completa de detalhes do filme com ações, componentes em `presentation/components/details`); 104 testes unitários passando; testado no S25. Série ainda é placeholder. Próxima: "IMPLEMENTAR FASE 5 – PARTE 3" (série).
+**Fase 5 concluída:** telas completas de detalhes de filme e série com ações gravando no Room, componentes reutilizáveis, funciona offline com cache; coleção e progresso como "Em breve" (D-031); 110 testes unitários passando; testado no S25. Próxima: Fase 6 (aguardando permissão para ler `fase6.md`).
 
 ## Fases
 
@@ -59,7 +59,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Repository e Use Cases — todas as operações listadas, com testes dos casos de uso.
   3. ✅ Home com dados reais — HomeViewModel lendo a biblioteca via Use Cases, estados vazio/lista, ROADMAP.
 
-### 🚧 Fase 5 — Detalhes (ver `fase5.md`)
+### ✅ Fase 5 — Detalhes (ver `fase5.md`)
 - Filme: backdrop, poster, título, título original, ano, duração, gêneros, nota TMDB, sinopse, diretor, elenco, status pessoal, favorito, nota pessoal, coleção. Ações: quero assistir, marcar assistido, favoritar, adicionar à coleção, avaliar.
 - Série: backdrop, poster, título, ano, gêneros, nota TMDB, sinopse, elenco, número de temporadas, progresso, status pessoal, favorito.
 - Componentes Compose reutilizáveis; estados Loading/Success/Error; ações gravam no banco na hora; funciona com cache.
@@ -67,7 +67,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - **Executada em 3 partes** (D-031). Uma por vez, só com "IMPLEMENTAR FASE 5 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Detalhes do filme: ViewModel e testes — observa cache + biblioteca, refresh, ações via use cases da Fase 4.
   2. ✅ Tela do filme e componentes reutilizáveis — cabeçalho backdrop/poster, chips de gênero, faixa de elenco, seletor de status, favorito, avaliação 1–10.
-  3. ⏳ Série — ViewModel + tela reusando componentes, status assistindo/concluída; docs e ROADMAP.
+  3. ✅ Série — ViewModel + tela reusando componentes, status assistindo/concluída; docs e ROADMAP.
 
 ### ⏳ Fases 6–11
 Definidas nos arquivos `fase6.md` … `fase11.md` (ainda não lidos). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

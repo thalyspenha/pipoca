@@ -1,4 +1,4 @@
-package com.thalyspenha.pipoca.presentation.screens.details.movie
+package com.thalyspenha.pipoca.presentation.screens.details.tv
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
@@ -17,10 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thalyspenha.pipoca.domain.model.CastMember
-import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.domain.model.Genre
-import com.thalyspenha.pipoca.domain.model.MovieDetails
-import com.thalyspenha.pipoca.domain.model.MovieStatus
+import com.thalyspenha.pipoca.domain.model.TvShowDetails
+import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import com.thalyspenha.pipoca.presentation.components.ErrorContent
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.details.CastRow
@@ -36,14 +35,13 @@ import com.thalyspenha.pipoca.presentation.components.details.StatusSelector
 import com.thalyspenha.pipoca.presentation.components.isRetryable
 import com.thalyspenha.pipoca.presentation.components.toMessage
 import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
-import com.thalyspenha.pipoca.util.formatRuntime
 import com.thalyspenha.pipoca.util.formatVote
 import java.time.LocalDate
 
 @Composable
-fun MovieDetailsScreen(onBack: () -> Unit, viewModel: MovieDetailsViewModel = hiltViewModel()) {
+fun TvShowDetailsScreen(onBack: () -> Unit, viewModel: TvShowDetailsViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    MovieDetailsContent(
+    TvShowDetailsContent(
         state = state,
         onBack = onBack,
         onRetry = { viewModel.refresh() },
@@ -55,31 +53,31 @@ fun MovieDetailsScreen(onBack: () -> Unit, viewModel: MovieDetailsViewModel = hi
 }
 
 @Composable
-private fun MovieDetailsContent(
-    state: MovieDetailsUiState,
+private fun TvShowDetailsContent(
+    state: TvShowDetailsUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
     onDismissRefreshError: () -> Unit,
-    onStatusClick: (MovieStatus) -> Unit,
+    onStatusClick: (TvShowStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
 ) {
-    val success = state as? MovieDetailsUiState.Success
+    val success = state as? TvShowDetailsUiState.Success
     DetailsScaffold(
-        title = success?.movie?.title ?: "Filme",
+        title = success?.show?.name ?: "Série",
         onBack = onBack,
         refreshError = success?.refreshError,
         onRetry = onRetry,
         onDismissRefreshError = onDismissRefreshError,
     ) { modifier ->
         when (state) {
-            MovieDetailsUiState.Loading -> LoadingContent(modifier)
-            is MovieDetailsUiState.Error -> ErrorContent(
+            TvShowDetailsUiState.Loading -> LoadingContent(modifier)
+            is TvShowDetailsUiState.Error -> ErrorContent(
                 message = state.error.toMessage(),
                 onRetry = onRetry.takeIf { state.error.isRetryable },
                 modifier = modifier,
             )
-            is MovieDetailsUiState.Success -> MovieDetailsBody(
+            is TvShowDetailsUiState.Success -> TvShowDetailsBody(
                 state = state,
                 onStatusClick = onStatusClick,
                 onFavoriteClick = onFavoriteClick,
@@ -91,14 +89,14 @@ private fun MovieDetailsContent(
 }
 
 @Composable
-private fun MovieDetailsBody(
-    state: MovieDetailsUiState.Success,
-    onStatusClick: (MovieStatus) -> Unit,
+private fun TvShowDetailsBody(
+    state: TvShowDetailsUiState.Success,
+    onStatusClick: (TvShowStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val movie = state.movie
+    val show = state.show
     val personal = state.personal
     LazyColumn(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         if (state.isRefreshing) {
@@ -106,16 +104,15 @@ private fun MovieDetailsBody(
         }
         item {
             DetailsHeader(
-                title = movie.title,
-                posterPath = movie.posterPath,
-                backdropPath = movie.backdropPath,
+                title = show.name,
+                posterPath = show.posterPath,
+                backdropPath = show.backdropPath,
                 supportingLines = listOfNotNull(
-                    movie.originalTitle.takeIf { it != movie.title },
-                    listOfNotNull(
-                        movie.releaseDate?.year?.toString(),
-                        movie.runtimeMinutes?.let(::formatRuntime),
-                    ).joinToString(" · ").ifEmpty { null },
-                    movie.voteAverage?.let { "★ ${formatVote(it)} TMDB" },
+                    show.originalName.takeIf { it != show.name },
+                    listOfNotNull(show.firstAirDate?.year?.toString(), show.tmdbStatus?.let(::tmdbStatusLabel))
+                        .joinToString(" · ").ifEmpty { null },
+                    seasonsLine(show),
+                    show.voteAverage?.let { "★ ${formatVote(it)} TMDB" },
                 ),
             )
         }
@@ -125,10 +122,18 @@ private fun MovieDetailsBody(
                 action = { FavoriteButton(isFavorite = personal.isFavorite, onClick = onFavoriteClick) },
             ) {
                 StatusSelector(
-                    options = MovieStatus.entries,
+                    options = TV_SHOW_SELECTABLE_STATUSES,
                     selected = personal.status,
-                    label = MovieStatus::label,
+                    label = TvShowStatus::label,
                     onClick = onStatusClick,
+                )
+            }
+        }
+        item {
+            DetailsSection("Progresso") {
+                ComingSoonCard(
+                    title = "Em breve",
+                    description = "Episódios assistidos e próximo episódio chegam na fase de episódios.",
                 )
             }
         }
@@ -137,73 +142,72 @@ private fun MovieDetailsBody(
                 RatingSelector(rating = personal.rating, onRatingChange = onRatingChange)
             }
         }
-        if (movie.genres.isNotEmpty()) {
-            item { GenreChips(movie.genres.map(Genre::name)) }
+        if (show.genres.isNotEmpty()) {
+            item { GenreChips(show.genres.map(Genre::name)) }
         }
-        movie.overview?.takeIf { it.isNotBlank() }?.let { overview ->
+        show.overview?.takeIf { it.isNotBlank() }?.let { overview ->
             item { DetailsSection("Sinopse") { Overview(overview) } }
         }
-        if (movie.directors.isNotEmpty()) {
+        if (show.creators.isNotEmpty()) {
             item {
-                DetailsSection(if (movie.directors.size == 1) "Direção" else "Direção (${movie.directors.size})") {
+                DetailsSection("Criação") {
                     Text(
-                        movie.directors.joinToString(", "),
+                        show.creators.joinToString(", "),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(horizontal = 16.dp),
                     )
                 }
             }
         }
-        if (movie.cast.isNotEmpty()) {
-            item { DetailsSection("Elenco") { CastRow(movie.cast) } }
-        }
-        item {
-            DetailsSection("Coleção") {
-                ComingSoonCard(
-                    title = "Em breve",
-                    description = "Registrar Blu-ray, 4K, DVD e digital chega na fase da coleção física.",
-                )
-            }
+        if (show.cast.isNotEmpty()) {
+            item { DetailsSection("Elenco") { CastRow(show.cast) } }
         }
         item { Spacer(Modifier.padding(bottom = 16.dp)) }
     }
 }
 
-private val MovieStatus.label: String
+/** "5 temporadas · 62 episódios"; temporada 0 (especiais) não conta (TMDB já exclui em `number_of_seasons`). */
+private fun seasonsLine(show: TvShowDetails): String? = listOfNotNull(
+    show.numberOfSeasons?.let { if (it == 1) "1 temporada" else "$it temporadas" },
+    show.numberOfEpisodes?.let { if (it == 1) "1 episódio" else "$it episódios" },
+).joinToString(" · ").ifEmpty { null }
+
+/** Status de produção do TMDB em português; valor desconhecido aparece como veio. */
+internal fun tmdbStatusLabel(status: String): String = when (status) {
+    "Returning Series" -> "Em exibição"
+    "Ended" -> "Finalizada"
+    "Canceled" -> "Cancelada"
+    "In Production" -> "Em produção"
+    "Planned" -> "Planejada"
+    "Pilot" -> "Piloto"
+    else -> status
+}
+
+private val TvShowStatus.label: String
     get() = when (this) {
-        MovieStatus.WANT_TO_WATCH -> "Quero assistir"
-        MovieStatus.WATCHED -> "Assistido"
+        TvShowStatus.WANT_TO_WATCH -> "Quero ver"
+        TvShowStatus.WATCHING -> "Assistindo"
+        TvShowStatus.COMPLETED -> "Concluída"
+        TvShowStatus.PAUSED -> "Pausada"
+        TvShowStatus.DROPPED -> "Abandonada"
     }
 
 @Preview(showBackground = true, heightDp = 1400)
 @Composable
-private fun MovieDetailsPreview() {
+private fun TvShowDetailsPreview() {
     PipocaTheme {
-        MovieDetailsContent(
-            state = MovieDetailsUiState.Success(
-                movie = MovieDetails(
-                    id = 603, title = "Matrix", originalTitle = "The Matrix",
-                    overview = "Um hacker descobre que a realidade é uma simulação.",
-                    posterPath = null, backdropPath = null, releaseDate = LocalDate.of(1999, 3, 31),
-                    runtimeMinutes = 136, voteAverage = 8.2,
-                    genres = listOf(Genre(28, "Ação"), Genre(878, "Ficção científica")),
-                    directors = listOf("Lana Wachowski", "Lilly Wachowski"),
-                    cast = listOf(CastMember(6384, "Keanu Reeves", "Neo", null, 0)),
+        TvShowDetailsContent(
+            state = TvShowDetailsUiState.Success(
+                show = TvShowDetails(
+                    id = 1396, name = "Breaking Bad", originalName = "Breaking Bad",
+                    overview = "Um professor de química vira fabricante de metanfetamina.",
+                    posterPath = null, backdropPath = null, firstAirDate = LocalDate.of(2008, 1, 20),
+                    tmdbStatus = "Ended", numberOfSeasons = 5, numberOfEpisodes = 62, episodeRunTime = 47,
+                    voteAverage = 8.9, genres = listOf(Genre(18, "Drama")), creators = listOf("Vince Gilligan"),
+                    seasons = emptyList(), cast = listOf(CastMember(17419, "Bryan Cranston", "Walter White", null, 0)),
                 ),
-                personal = PersonalMovie(status = MovieStatus.WATCHED, isFavorite = true, rating = 9),
+                personal = PersonalTvShow(status = TvShowStatus.WATCHING, isFavorite = true),
             ),
-            onBack = {}, onRetry = {}, onDismissRefreshError = {},
-            onStatusClick = {}, onFavoriteClick = {}, onRatingChange = {},
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun MovieDetailsErrorPreview() {
-    PipocaTheme {
-        MovieDetailsContent(
-            state = MovieDetailsUiState.Error(DataError.Network),
             onBack = {}, onRetry = {}, onDismissRefreshError = {},
             onStatusClick = {}, onFavoriteClick = {}, onRatingChange = {},
         )
