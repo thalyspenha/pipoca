@@ -21,3 +21,6 @@ import kotlinx.serialization.Serializable
  * `itemId` 0 = item novo (ids começam em 1).
  */
 @Serializable data class CollectionItemFormRoute(val tmdbId: Long, val mediaType: String, val itemId: Long = 0)
+
+// Telas acessadas pela aba "Mais" e pela Home (D-043).
+@Serializable data object FavoritesRoute

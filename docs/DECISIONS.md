@@ -283,3 +283,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `HomeViewModel` combina biblioteca, séries assistindo e coleção via Flow: qualquer marcação em outras telas atualiza a Home. Com token, busca uma vez o que falta (detalhes sem título, inclusive da coleção; temporadas de séries assistindo com progresso incompleto).
 - A Home só fica "vazia" sem biblioteca **e** sem coleção.
 **Consequência:** Favoritos e Histórico (partes 2 e 3) ganham "Ver todos" nas seções correspondentes.
+
+### D-045 — Tela Favoritos e aba "Mais"
+**Decisão:**
+- `FavoritesRoute` empilhada (a bottom bar marca a aba de origem): abas Filmes (n) / Séries (n), lista com pôster, título, "ano · status" e coração para remover. Remover só desfavorita (continua na biblioteca) e mostra snackbar longo com "Desfazer". Aba escolhida no `SavedStateHandle`. Toque abre os detalhes.
+- Dados: `observeMovieItems`/`observeTvShowItems` filtrados por favorito, mesma ordem da biblioteca (atualização mais recente primeiro); sem consulta nova.
+- Aba "Mais" deixa de ser placeholder: título + lista de entradas (`ListItem`); por ora só Favoritos, Histórico entra na parte 3.
+- Home: seções ganharam "Ver todos" opcional; Favoritos usa.
+- Lint: a falha intermitente voltou com 4 GB, então a hipótese de memória (D-042) não se confirmou; 4 GB ficam (não atrapalham). Tentativas de reproduzir isoladamente não falharam. Instrução segue no SETUP.md: repetir o build.
+**Consequência:** Histórico reusa a aba "Mais" e o padrão de rota empilhada.

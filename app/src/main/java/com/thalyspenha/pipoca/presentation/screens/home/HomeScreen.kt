@@ -27,6 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,6 +49,7 @@ fun HomeScreen(
     onItemClick: (HomeItem) -> Unit,
     onShowClick: (showId: Long) -> Unit,
     onSearchClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,6 +60,7 @@ fun HomeScreen(
             onShowClick = onShowClick,
             onMarkWatched = viewModel::onMarkWatched,
             onSearchClick = onSearchClick,
+            onFavoritesClick = onFavoritesClick,
         )
     }
 }
@@ -69,6 +72,7 @@ private fun HomeContentView(
     onShowClick: (Long) -> Unit,
     onMarkWatched: (Episode) -> Unit,
     onSearchClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (content.isLibraryEmpty) {
@@ -97,7 +101,7 @@ private fun HomeContentView(
         inProgressSection(content.inProgress, onShowClick)
         section("Quero assistir", content.wantToWatch, onItemClick)
         section("Assistidos recentemente", content.recentlyWatched, onItemClick)
-        section("Favoritos", content.favorites, onItemClick)
+        section("Favoritos", content.favorites, onItemClick, onSeeAll = onFavoritesClick)
         section("Adicionados recentemente à coleção", content.recentCollection, onItemClick)
     }
 }
@@ -106,11 +110,18 @@ private fun LazyListScope.section(
     title: String,
     items: List<HomeItem>,
     onItemClick: (HomeItem) -> Unit,
+    onSeeAll: (() -> Unit)? = null,
 ) {
     if (items.isEmpty()) return
     item(key = title) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                onSeeAll?.let { TextButton(onClick = it) { Text("Ver todos") } }
+            }
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -189,7 +200,7 @@ private fun plural(count: Int, one: String, many: String) = "$count ${if (count 
 @Preview(showBackground = true)
 @Composable
 private fun HomeEmptyPreview() {
-    PipocaTheme { HomeContentView(HomeContent(tmdbConfigured = true), onItemClick = {}, onShowClick = {}, onMarkWatched = {}, onSearchClick = {}) }
+    PipocaTheme { HomeContentView(HomeContent(tmdbConfigured = true), onItemClick = {}, onShowClick = {}, onMarkWatched = {}, onSearchClick = {}, onFavoritesClick = {}) }
 }
 
 @Preview(showBackground = true)
@@ -218,6 +229,7 @@ private fun HomeContentPreview() {
             onShowClick = {},
             onMarkWatched = {},
             onSearchClick = {},
+            onFavoritesClick = {},
         )
     }
 }

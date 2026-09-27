@@ -30,6 +30,8 @@ import com.thalyspenha.pipoca.presentation.screens.collection.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.details.movie.MovieDetailsScreen
 import com.thalyspenha.pipoca.presentation.screens.details.season.SeasonScreen
 import com.thalyspenha.pipoca.presentation.screens.details.tv.TvShowDetailsScreen
+import com.thalyspenha.pipoca.presentation.screens.favorites.FavoritesScreen
+import com.thalyspenha.pipoca.presentation.screens.favorites.FavoritesTab
 import com.thalyspenha.pipoca.presentation.screens.home.HomeScreen
 import com.thalyspenha.pipoca.presentation.screens.home.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.library.LibraryScreen
@@ -80,6 +82,7 @@ fun PipocaApp() {
                 HomeScreen(
                     onItemClick = { item -> navController.navigate(item.detailsRoute()) },
                     onShowClick = { showId -> navController.navigate(TvShowDetailsRoute(showId)) },
+                    onFavoritesClick = { navController.navigate(FavoritesRoute) },
                     onSearchClick = { navController.navigateToTab(TopLevelDestination.SEARCH) },
                 )
             }
@@ -98,7 +101,19 @@ fun PipocaApp() {
             composable<CollectionItemFormRoute> {
                 CollectionItemFormScreen(onDone = navController::navigateUp)
             }
-            composable<MoreRoute> { MoreScreen() }
+            composable<MoreRoute> {
+                MoreScreen(onFavoritesClick = { navController.navigate(FavoritesRoute) })
+            }
+            composable<FavoritesRoute> {
+                FavoritesScreen(
+                    onBack = navController::navigateUp,
+                    onItemClick = { item ->
+                        navController.navigate(
+                            if (item.tab == FavoritesTab.MOVIES) MovieDetailsRoute(item.id) else TvShowDetailsRoute(item.id),
+                        )
+                    },
+                )
+            }
             composable<MovieDetailsRoute> {
                 val id = it.toRoute<MovieDetailsRoute>().id
                 MovieDetailsScreen(

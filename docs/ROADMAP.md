@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase 8 em andamento:** parte 1 concluída (Home como painel: Continuar assistindo, Séries em andamento, Quero assistir, Assistidos recentemente, Favoritos, Adicionados recentemente à coleção; consultas agregadas); 185 testes unitários e 24 instrumentados passando; testado no S25. Próxima: "IMPLEMENTAR FASE 8 – PARTE 2" (Favoritos).
+**Fase 8 em andamento:** partes 1 e 2 concluídas (Home como painel com consultas agregadas; tela Favoritos com abas, remover e desfazer; aba "Mais" com entradas); 189 testes unitários e 24 instrumentados passando; testado no S25. Próxima: "IMPLEMENTAR FASE 8 – PARTE 3" (Histórico).
 
 ## Fases
 
@@ -97,7 +97,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Favoritos e Histórico acessados pela aba "Mais" (lista de entradas) e por "Ver todos" na Home (opção A, D-043).
 - **Executada em 3 partes** (D-043). Uma por vez, só com "IMPLEMENTAR FASE 8 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Home — consultas agregadas (progresso/próximo episódio de todas as séries em uma consulta de episódios + uma de assistidos), seis seções, ViewModel e testes.
-  2. ⏳ Favoritos — tela com abas Filmes/Séries, remover favorito; aba "Mais" com entradas; "Ver todos" na Home.
+  2. ✅ Favoritos — tela com abas Filmes/Séries, remover favorito; aba "Mais" com entradas; "Ver todos" na Home.
   3. ⏳ Histórico — consulta com cache (título, pôster, episódio), filtros Todos/Filmes/Séries, abrir conteúdo, testes de geração; ROADMAP.
 
 ### ⏳ Fases 9–11
