@@ -1,5 +1,14 @@
 # Pipoca — notas de versão
 
+## Não lançado (depois da 1.0.0)
+
+Ainda na versão 1.0.0 (sem novo APK release); instalado no S25 como debug.
+
+- Aba "Mais" sempre reabre no menu (D-059).
+- Correções: "hoje" no fuso do aparelho, histórico sem duplicar por toque duplo, toque duplo no status e no "Assisti", plural "1 episódio" (D-060).
+- UX: estrelas da nota maiores e "Remover nota", confirmação ao desmarcar temporada, busca sem resultado no topo, gêneros como rótulos, toque na Coleção abre detalhes, novos ícones de Biblioteca/Coleção/Estatísticas (D-061).
+- Histórico agrupa episódios marcados juntos (D-062); sinopse antes das temporadas (D-063); abas Filmes/Séries iguais em todas as telas (D-064); título dos detalhes só na barra depois de rolar (D-065).
+
 ## 1.0.0 (versionCode 2) — 2026-09-28
 
 Primeira versão utilizável, para uso pessoal (fora da Google Play).

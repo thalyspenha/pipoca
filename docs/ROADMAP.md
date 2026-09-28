@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. **Fase 10 concluída:** versão 1.0.0 (APKs debug e release, `RELEASE_NOTES.md`); 238 testes unitários, 34 instrumentados, lint sem avisos. Projeto encerrado em 2026-09-28 na versão 1.0.0 (`fase11.md` está vazio; retomar só com novas instruções).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. **Fase 10 concluída:** versão 1.0.0 (APKs debug e release, `RELEASE_NOTES.md`); 238 testes unitários, 34 instrumentados, lint sem avisos. Projeto encerrado em 2026-09-28 na versão 1.0.0 (`fase11.md` está vazio; retomar só com novas instruções). Depois da 1.0.0, no mesmo dia: correções de QA e ajustes de UX/UI (D-059 a D-065); 244 testes unitários, 35 instrumentados, lint sem avisos. Pendências opcionais em D-060 e D-061.
 
 ## Fases
 
