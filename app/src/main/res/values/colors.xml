@@ -1,3 +1,5 @@
 <resources>
     <color name="ic_launcher_background">#F2B705</color>
+    <!-- Mesmo valor de SurfaceLight/SurfaceDark (theme/Color.kt). -->
+    <color name="window_background">#FFF8F0</color>
 </resources>

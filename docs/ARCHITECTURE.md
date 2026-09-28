@@ -55,7 +55,7 @@ app/src/main/java/com/thalyspenha/pipoca/
 │   ├── repository/             # interfaces
 │   ├── progress/               # cálculo puro de progresso de séries (D-037)
 │   ├── stats/                  # modelo e cálculos das estatísticas (D-048)
-│   └── usecase/                # library/, librarylist/, episodes/, collection/, stats/
+│   └── usecase/                # library/, librarylist/, episodes/, collection/, stats/, cache/
 ├── presentation/
 │   ├── navigation/
 │   ├── theme/

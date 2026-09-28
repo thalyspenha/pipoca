@@ -10,11 +10,9 @@ import com.thalyspenha.pipoca.domain.model.LibraryTvShowItem
 import com.thalyspenha.pipoca.domain.model.TmdbConfig
 import com.thalyspenha.pipoca.domain.repository.CollectionRepository
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
-import com.thalyspenha.pipoca.domain.repository.MovieRepository
-import com.thalyspenha.pipoca.domain.repository.TvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.MarkEpisodeWatchedUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.ObserveWatchingShowsUseCase
-import com.thalyspenha.pipoca.domain.usecase.episodes.RefreshShowEpisodesUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.WatchingShow
 import com.thalyspenha.pipoca.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,15 +37,9 @@ class HomeViewModel @Inject constructor(
     library: LibraryRepository,
     collection: CollectionRepository,
     observeWatchingShows: ObserveWatchingShowsUseCase,
-    private val movieRepository: MovieRepository,
-    private val tvShowRepository: TvShowRepository,
-    private val refreshShowEpisodes: RefreshShowEpisodesUseCase,
+    private val fetchMissingDetails: FetchMissingDetailsUseCase,
     private val markEpisode: MarkEpisodeWatchedUseCase,
 ) : ViewModel() {
-
-    private val requestedMovies = mutableSetOf<Long>()
-    private val requestedTvShows = mutableSetOf<Long>()
-    private val requestedEpisodes = mutableSetOf<Long>()
 
     val uiState: StateFlow<UiState<HomeContent>> =
         combine(
@@ -74,20 +66,16 @@ class HomeViewModel @Inject constructor(
         watching: List<WatchingShow>,
         collectionEntries: List<CollectionEntry>,
     ) {
-        if (!tmdbConfig.isConfigured) return
         val movieIds = movies.filter { it.title == null }.map { it.movie.movieId } +
             collectionEntries.filter { it.title == null && it.item.mediaType == CollectionMediaType.MOVIE }.map { it.item.tmdbId }
         val showIds = tvShows.filter { it.name == null }.map { it.show.showId } +
             collectionEntries.filter { it.title == null && it.item.mediaType == CollectionMediaType.TV_SHOW }.map { it.item.tmdbId }
-        movieIds.filter(requestedMovies::add).forEach { id ->
-            viewModelScope.launch { movieRepository.refreshMovieDetails(id) }
-        }
-        showIds.filter(requestedTvShows::add).forEach { id ->
-            viewModelScope.launch { tvShowRepository.refreshTvShowDetails(id) }
-        }
-        watching.filter { !it.progress.isComplete && requestedEpisodes.add(it.item.show.showId) }.forEach { show ->
-            viewModelScope.launch { refreshShowEpisodes(show.item.show.showId) }
-        }
+        fetchMissingDetails.request(
+            scope = viewModelScope,
+            movieIds = movieIds,
+            tvShowIds = showIds,
+            episodesOfShowIds = watching.filter { !it.progress.isComplete }.map { it.item.show.showId },
+        )
     }
 
     private companion object {

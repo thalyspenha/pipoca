@@ -105,10 +105,23 @@ class MovieDetailsViewModelTest {
     }
 
     @Test
-    fun `com cache, falha do refresh nao bloqueia`() = test {
+    fun `com cache, sem internet ao abrir nao avisa`() = test {
         movies.details.value = matrix()
         movies.onRefresh = { DataResult.Failure(DataError.Network) }
         val vm = started()
+        advanceUntilIdle()
+
+        assertEquals(matrix(), vm.success().movie)
+        assertNull(vm.success().refreshError)
+    }
+
+    @Test
+    fun `com cache, falha do refresh pedido pelo usuario avisa sem bloquear`() = test {
+        movies.details.value = matrix()
+        movies.onRefresh = { DataResult.Failure(DataError.Network) }
+        val vm = started()
+        advanceUntilIdle()
+        vm.refresh()
         advanceUntilIdle()
 
         assertEquals(matrix(), vm.success().movie)
@@ -117,6 +130,16 @@ class MovieDetailsViewModelTest {
         vm.dismissRefreshError()
         advanceUntilIdle()
         assertNull(vm.success().refreshError)
+    }
+
+    @Test
+    fun `com cache, erro que nao e de rede avisa ao abrir`() = test {
+        movies.details.value = matrix()
+        movies.onRefresh = { DataResult.Failure(DataError.InvalidApiKey) }
+        val vm = started()
+        advanceUntilIdle()
+
+        assertEquals(DataError.InvalidApiKey, vm.success().refreshError)
     }
 
     @Test

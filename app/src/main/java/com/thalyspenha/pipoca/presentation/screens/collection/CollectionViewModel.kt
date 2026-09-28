@@ -7,34 +7,27 @@ import com.thalyspenha.pipoca.domain.model.CollectionEntry
 import com.thalyspenha.pipoca.domain.model.CollectionFilter
 import com.thalyspenha.pipoca.domain.model.CollectionMediaType
 import com.thalyspenha.pipoca.domain.model.CollectionSort
-import com.thalyspenha.pipoca.domain.model.TmdbConfig
 import com.thalyspenha.pipoca.domain.model.filterAndSort
 import com.thalyspenha.pipoca.domain.repository.CollectionRepository
-import com.thalyspenha.pipoca.domain.repository.MovieRepository
-import com.thalyspenha.pipoca.domain.repository.TvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * "Minha Coleção": observa a coleção (Room), aplica filtro e ordenação (D-040, D-041).
  * Filtro e ordenação sobrevivem à recriação do processo (SavedStateHandle).
- * Item sem cache TMDB dispara uma busca de detalhes por título, como a Home (D-030).
+ * Item sem cache TMDB dispara uma busca de detalhes por título, como a Home (D-030, D-055).
  */
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     repository: CollectionRepository,
-    private val tmdbConfig: TmdbConfig,
-    private val movieRepository: MovieRepository,
-    private val tvShowRepository: TvShowRepository,
+    private val fetchMissingDetails: FetchMissingDetailsUseCase,
 ) : ViewModel() {
-
-    private val requested = mutableSetOf<Pair<CollectionMediaType, Long>>()
 
     private val filter = savedStateHandle.getStateFlow(KEY_FILTER, CollectionFilter.ALL)
     private val sort = savedStateHandle.getStateFlow(KEY_SORT, CollectionSort.TITLE)
@@ -60,17 +53,12 @@ class CollectionViewModel @Inject constructor(
     }
 
     private fun fetchMissingDetails(entries: List<CollectionEntry>) {
-        if (!tmdbConfig.isConfigured) return
-        entries
-            .filter { it.title == null && requested.add(it.item.mediaType to it.item.tmdbId) }
-            .forEach { entry ->
-                viewModelScope.launch {
-                    when (entry.item.mediaType) {
-                        CollectionMediaType.MOVIE -> movieRepository.refreshMovieDetails(entry.item.tmdbId)
-                        CollectionMediaType.TV_SHOW -> tvShowRepository.refreshTvShowDetails(entry.item.tmdbId)
-                    }
-                }
-            }
+        val missing = entries.filter { it.title == null }.map { it.item }
+        fetchMissingDetails.request(
+            scope = viewModelScope,
+            movieIds = missing.filter { it.mediaType == CollectionMediaType.MOVIE }.map { it.tmdbId },
+            tvShowIds = missing.filter { it.mediaType == CollectionMediaType.TV_SHOW }.map { it.tmdbId },
+        )
     }
 
     private companion object {

@@ -19,3 +19,6 @@ apikey.txt
 
 # SO
 .DS_Store
+
+# Token TMDB colado em arquivo avulso (o oficial fica em local.properties)
+key.txt

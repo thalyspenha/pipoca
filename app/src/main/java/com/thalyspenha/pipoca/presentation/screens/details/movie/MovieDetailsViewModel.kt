@@ -14,11 +14,13 @@ import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCa
 import com.thalyspenha.pipoca.domain.usecase.library.SetMovieFavoriteUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetMovieRatingUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetMovieStatusUseCase
+import com.thalyspenha.pipoca.presentation.components.shownFor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -68,16 +70,21 @@ class MovieDetailsViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), MovieDetailsUiState.Loading)
 
     init {
-        refresh()
+        refresh(userInitiated = false)
     }
 
     /** Busca no TMDB se o cache estiver ausente ou vencido; [force] ignora a validade. */
-    fun refresh(force: Boolean = false) {
+    /** [userInitiated] falso = refresh ao abrir: sem internet e com cache, não avisa (D-055). */
+    fun refresh(force: Boolean = false, userInitiated: Boolean = true) {
         if (refreshState.value.isRefreshing) return
         refreshState.value = RefreshState(isRefreshing = true)
         viewModelScope.launch {
             val result = movieRepository.refreshMovieDetails(movieId, force)
-            refreshState.value = RefreshState(error = (result as? DataResult.Failure)?.error)
+            val error = (result as? DataResult.Failure)?.error?.shownFor(
+                hasCache = movieRepository.observeMovieDetails(movieId).first() != null,
+                userInitiated = userInitiated,
+            )
+            refreshState.value = RefreshState(error = error)
         }
     }
 

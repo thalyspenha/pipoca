@@ -1,4 +1,7 @@
 <resources>
-    <!-- Tema só da janela; cores reais ficam em PipocaTheme (Compose). -->
-    <style name="Theme.Pipoca" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Tema só da janela; cores reais ficam em PipocaTheme (Compose). Fundo igual ao do app
+         para não piscar branco/preto ao abrir (D-056). -->
+    <style name="Theme.Pipoca" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
 </resources>

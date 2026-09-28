@@ -103,12 +103,15 @@ class TvShowDetailsViewModelTest {
     }
 
     @Test
-    fun `com cache, falha do refresh nao bloqueia`() = test {
+    fun `com cache, sem internet ao abrir nao avisa e ao tentar de novo avisa`() = test {
         shows.details.value = breakingBad()
         shows.onRefresh = { DataResult.Failure(DataError.Network) }
         val vm = started()
         advanceUntilIdle()
+        assertNull(vm.success().refreshError)
 
+        vm.refresh()
+        advanceUntilIdle()
         assertEquals(DataError.Network, vm.success().refreshError)
     }
 
@@ -188,7 +191,7 @@ class TvShowDetailsViewModelTest {
     }
 
     @Test
-    fun `falha ao baixar temporadas aparece como erro nao bloqueante`() = test {
+    fun `sem internet ao baixar temporadas automaticamente nao avisa, pedido pelo usuario avisa`() = test {
         shows.details.value = breakingBad()
         seasons.failOn = 2
         val vm = started()
@@ -196,9 +199,12 @@ class TvShowDetailsViewModelTest {
 
         vm.onStatusClick(TvShowStatus.WATCHING)
         advanceUntilIdle()
-
-        assertEquals(DataError.Network, vm.success().refreshError)
+        assertNull(vm.success().refreshError)
         assertFalse(vm.success().isLoadingEpisodes)
+
+        vm.loadEpisodes()
+        advanceUntilIdle()
+        assertEquals(DataError.Network, vm.success().refreshError)
     }
 
     @Test

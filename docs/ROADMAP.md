@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Fase 10 parte 1 (auditoria, `docs/AUDIT.md`) concluída. Próxima: "IMPLEMENTAR FASE 10 – PARTE 2" (correções: offline sem avisos desnecessários, tema claro/escuro, acessibilidade, ícone).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Fase 10: partes 1 (auditoria) e 2 (correções) concluídas; 232 testes unitários, 32 instrumentados, lint sem avisos. Próxima: "IMPLEMENTAR FASE 10 – PARTE 3" (Configurações).
 
 ## Fases
 
@@ -121,7 +121,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Pendentes (decidir na parte correspondente): tema em `SharedPreferences` (provável, via `PreferencesRepository`, D-052), assinatura do APK release (chave fora do git).
 - **Executada em 4 partes** (D-054). Uma por vez, só com "IMPLEMENTAR FASE 10 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Auditoria — 26 achados em `docs/AUDIT.md` com severidade e destino (P2 correções, P3 Configurações, P4 release).
-  2. ⏳ Correções — resolver os achados da auditoria.
+  2. ✅ Correções — offline sem avisos desnecessários e busca de itens sem cache com nova tentativa (D-055), paleta completa claro/escuro, janela e ícone temático (D-056), acessibilidade, `key.txt` ignorado.
   3. ⏳ Configurações — Sobre/TMDB, Tema, Limpar cache, banco, versão.
   4. ⏳ Release — APK debug/release, `RELEASE_NOTES.md`.
 
@@ -142,5 +142,5 @@ Ordem provável derivada do prompt mestre, apenas como referência:
 - Token TMDB (Read Access Token v4): ✅ validado e configurado no Mac (2026-09-26) e no Linux (2026-09-28). Em outra máquina, repetir no `local.properties` (ver SETUP.md).
 - ✅ Testado no S25 (Android 16) em 2026-09-26: 4 testes instrumentados do DAO passando (`./gradlew connectedDebugAndroidTest`); app instalado e validado manualmente (Home, Busca filmes/séries, pôsteres e fallback, debounce = 1 requisição por pesquisa, detalhes placeholder, voltar, troca de abas). Dois bugs de navegação achados e corrigidos (D-026).
 - ✅ 2026-09-28, a partir do Linux: app reinstalado no S25 (chave de debug diferente da do Mac; dados apagados, ver SETUP.md), 32 testes instrumentados passando, aba Biblioteca verificada (estado vazio, Dark Mode).
-- Polimento visual (fase de UI): indicador da bottom bar e botão segmentado usam o `secondaryContainer` padrão (lilás), fora da paleta amarelo/vermelho do `PipocaTheme`.
+- ~~Polimento visual: lilás padrão do Material na bottom bar e nos segmentos~~ ✅ paleta completa (D-056).
 - ~~Verificar JDK/Android SDK~~ ✅ JDK 25 (JBR do Android Studio, `JAVA_HOME` no `~/.zshrc`), SDK em `~/Library/Android/sdk` (android-33…37.1). JDK 25 exige Gradle ≥ 9.1.

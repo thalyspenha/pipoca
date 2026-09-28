@@ -343,7 +343,7 @@ private fun SortMenu(selected: LibrarySort, options: List<LibrarySort>, onSortCh
                         expanded = false
                     },
                     trailingIcon = if (sort == selected) {
-                        { Icon(Icons.Filled.Check, contentDescription = null) }
+                        { Icon(Icons.Filled.Check, contentDescription = "Selecionado") }
                     } else {
                         null
                     },

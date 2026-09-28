@@ -366,3 +366,14 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 **Contexto:** `fase10.md` (polimento e release pessoal) lido antes da Fase B; divisão proposta confirmada pelo usuário em 2026-09-28.
 **Decisão:** (1) auditoria em `docs/AUDIT.md`, (2) correções, (3) Configurações (Sobre/TMDB, Tema, Limpar cache, banco, versão), (4) release (APK debug/release, `RELEASE_NOTES.md`). Uma parte por vez.
 **Consequência:** tema e assinatura do release decididos nas partes 3 e 4.
+
+### D-055 — Offline sem avisos desnecessários
+**Contexto:** auditoria (AUDIT.md #1–#4): refresh automático com cache vencido avisava "Sem conexão" a cada abertura, offline.
+**Decisão:**
+- `DataError.shownFor(hasCache, userInitiated)`: falha `Network` em refresh automático (ao abrir detalhes/temporada, baixar temporadas de série da biblioteca) com dados salvos não é mostrada. Pedido pelo usuário ("Tentar", "Calcular progresso"), sem cache, ou erro que não é de rede (token, 404) continuam avisando.
+- `FetchMissingDetailsUseCase` (domain/usecase/cache) substitui a busca de itens sem cache de Home e Coleção e passa a valer na Biblioteca: uma vez por item enquanto a tela vive; falha de rede libera o item para a próxima emissão da lista tentar de novo; outras falhas não repetem. Instância por ViewModel.
+**Consequência:** sem internet o app fica silencioso onde há dados; Busca e primeiro acesso a um título continuam avisando.
+
+### D-056 — Paleta completa claro/escuro
+**Decisão:** esquemas `lightColorScheme`/`darkColorScheme` com todos os papéis na paleta manteiga/balde (containers, `tertiary`, superfícies neutras quentes e `surfaceContainer*`), sem cair no lilás padrão. Janela com fundo igual ao do app (`values`/`values-night`), para não piscar ao abrir. Ícone temático (`monochrome`) no ícone adaptativo.
+**Consequência:** indicador da bottom bar e botões de status usam o vermelho-balde em container; resolve a pendência de polimento visual.

@@ -18,6 +18,7 @@ import com.thalyspenha.pipoca.domain.usecase.collection.AddCollectionItemUseCase
 import com.thalyspenha.pipoca.domain.usecase.collection.FakeCollectionRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeSeasonRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeTvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.MarkEpisodeWatchedUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.ObserveShowProgressUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.ObserveWatchingShowsUseCase
@@ -74,9 +75,9 @@ class HomeViewModelTest {
             library = library,
             collection = collection,
             observeWatchingShows = ObserveWatchingShowsUseCase(library, seasons, clock),
-            movieRepository = movies,
-            tvShowRepository = tvShows,
-            refreshShowEpisodes = RefreshShowEpisodesUseCase(tvShows, seasons),
+            fetchMissingDetails = FetchMissingDetailsUseCase(
+                TmdbConfig(apiToken = token), movies, tvShows, RefreshShowEpisodesUseCase(tvShows, seasons),
+            ),
             markEpisode = MarkEpisodeWatchedUseCase(library, sync, clock),
         ).also { vm -> backgroundScope.launch { vm.uiState.collect {} } }
     }

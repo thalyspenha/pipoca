@@ -13,7 +13,10 @@ import com.thalyspenha.pipoca.domain.model.TmdbConfig
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.usecase.collection.AddCollectionItemUseCase
 import com.thalyspenha.pipoca.domain.usecase.collection.FakeCollectionRepository
+import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
+import com.thalyspenha.pipoca.domain.usecase.episodes.FakeSeasonRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeTvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.episodes.RefreshShowEpisodesUseCase
 import com.thalyspenha.pipoca.presentation.navigation.MovieDetailsRoute
 import com.thalyspenha.pipoca.presentation.navigation.TvShowDetailsRoute
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +43,7 @@ class CollectionViewModelTest {
     private val dispatcher = StandardTestDispatcher()
     private val repository = FakeCollectionRepository()
     private val movies = FakeMovieRepository()
+    private val tvShows = FakeTvShowRepository()
     private val clock = MutableClock()
     private val add = AddCollectionItemUseCase(repository, clock)
     private val savedState = SavedStateHandle()
@@ -55,7 +59,11 @@ class CollectionViewModelTest {
     }
 
     private fun TestScope.started(token: String = "token") = CollectionViewModel(
-        savedState, repository, TmdbConfig(token), movies, FakeTvShowRepository(),
+        savedState,
+        repository,
+        FetchMissingDetailsUseCase(
+            TmdbConfig(token), movies, tvShows, RefreshShowEpisodesUseCase(tvShows, FakeSeasonRepository()),
+        ),
     ).also { vm -> backgroundScope.launch { vm.uiState.collect {} } }
 
     private fun test(block: suspend TestScope.() -> Unit) = runTest(dispatcher) { block() }

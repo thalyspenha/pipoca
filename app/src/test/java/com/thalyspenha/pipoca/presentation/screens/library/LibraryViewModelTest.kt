@@ -12,7 +12,14 @@ import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
 import com.thalyspenha.pipoca.domain.model.TvShowStatus
 import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
+import com.thalyspenha.pipoca.domain.model.DataResult
+import com.thalyspenha.pipoca.domain.model.MovieDetails
+import com.thalyspenha.pipoca.domain.model.TmdbConfig
+import com.thalyspenha.pipoca.domain.repository.MovieRepository
+import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeSeasonRepository
+import com.thalyspenha.pipoca.domain.usecase.episodes.FakeTvShowRepository
+import com.thalyspenha.pipoca.domain.usecase.episodes.RefreshShowEpisodesUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.FakeLibraryRepository
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
@@ -27,7 +34,9 @@ import com.thalyspenha.pipoca.presentation.components.MediaCardProgress
 import com.thalyspenha.pipoca.presentation.components.MediaStatusBadge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
@@ -61,6 +70,11 @@ class LibraryViewModelTest {
     private val preferences = FakePreferencesRepository()
     private val savedState = SavedStateHandle()
     private val clock = MutableClock()
+    private val tvShows = FakeTvShowRepository()
+    private val movies = object : MovieRepository {
+        override fun observeMovieDetails(id: Long): Flow<MovieDetails?> = emptyFlow()
+        override suspend fun refreshMovieDetails(id: Long, force: Boolean): DataResult<Unit> = DataResult.Success(Unit)
+    }
 
     @Before
     fun setUp() {
@@ -84,6 +98,9 @@ class LibraryViewModelTest {
         SetTvShowFavoriteUseCase(library, clock),
         RemoveMovieFromLibraryUseCase(library),
         RemoveTvShowFromLibraryUseCase(library),
+        FetchMissingDetailsUseCase(
+            TmdbConfig(apiToken = ""), movies, tvShows, RefreshShowEpisodesUseCase(tvShows, seasons),
+        ),
     ).also { vm -> backgroundScope.launch { vm.uiState.collect {} } }
 
     private fun test(block: suspend TestScope.() -> Unit) = runTest(dispatcher) { block() }

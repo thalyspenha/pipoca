@@ -9,6 +9,7 @@ import com.thalyspenha.pipoca.domain.model.MovieStatus
 import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
 import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
+import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetMovieFavoriteUseCase
@@ -51,6 +52,7 @@ class LibraryViewModel @Inject constructor(
     private val setTvShowFavorite: SetTvShowFavoriteUseCase,
     private val removeMovie: RemoveMovieFromLibraryUseCase,
     private val removeTvShow: RemoveTvShowFromLibraryUseCase,
+    private val fetchMissingDetails: FetchMissingDetailsUseCase,
 ) : ViewModel() {
 
     private val selection = combine(
@@ -78,6 +80,7 @@ class LibraryViewModel @Inject constructor(
 
     val uiState: StateFlow<LibraryUiState> =
         combine(list, observeMovieCounts(), observeTvShowCounts(), preferences.libraryViewMode) { (s, items), movieCounts, tvShowCounts, viewMode ->
+            fetchMissing(items)
             LibraryUiState(
                 selection = s,
                 viewMode = viewMode,
@@ -132,6 +135,16 @@ class LibraryViewModel @Inject constructor(
     /** Remove da biblioteca (série leva junto episódios assistidos e histórico, D-037); a tela confirma antes. */
     fun onRemove(item: MediaCardData) {
         viewModelScope.launch { if (item.isMovie) removeMovie(item.id) else removeTvShow(item.id) }
+    }
+
+    /** Item sem cache TMDB (ex.: depois de limpar o cache) busca os detalhes uma vez (D-055). */
+    private fun fetchMissing(items: List<MediaCardData>) {
+        val missing = items.filter { it.title == null }
+        fetchMissingDetails.request(
+            scope = viewModelScope,
+            movieIds = missing.filter { it.isMovie }.map { it.id },
+            tvShowIds = missing.filterNot { it.isMovie }.map { it.id },
+        )
     }
 
     private companion object {

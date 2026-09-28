@@ -11,13 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.thalyspenha.pipoca.util.TmdbImageUrl
 
 private const val POSTER_ASPECT_RATIO = 2f / 3f
 
-/** Poster 2:3. Sem imagem (ou enquanto carrega), mostra a inicial do título. */
+/**
+ * Poster 2:3. Sem imagem (ou enquanto carrega), mostra a inicial do título.
+ * Decorativo para leitores de tela: o título sempre aparece ao lado.
+ */
 @Composable
 fun PosterImage(
     posterPath: String?,
@@ -27,6 +31,7 @@ fun PosterImage(
 ) {
     Box(
         modifier = modifier
+            .clearAndSetSemantics {}
             .aspectRatio(POSTER_ASPECT_RATIO)
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant),

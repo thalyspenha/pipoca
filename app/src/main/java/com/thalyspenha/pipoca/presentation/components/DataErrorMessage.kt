@@ -15,3 +15,10 @@ fun DataError.toMessage(): String = when (this) {
 /** Tentar de novo só faz sentido quando o problema pode ser passageiro. */
 val DataError.isRetryable: Boolean
     get() = this is DataError.Network || this is DataError.Unknown
+
+/**
+ * Erro que a tela deve mostrar (D-055). Sem internet, um refresh automático com dados já salvos
+ * não avisa nada: a tela funciona com o cache. Pedido pelo usuário ("Tentar") ou sem cache, avisa.
+ */
+fun DataError.shownFor(hasCache: Boolean, userInitiated: Boolean): DataError? =
+    if (this == DataError.Network && hasCache && !userInitiated) null else this

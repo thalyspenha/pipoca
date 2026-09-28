@@ -19,6 +19,7 @@ import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseC
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowFavoriteUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowRatingUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowStatusUseCase
+import com.thalyspenha.pipoca.presentation.components.shownFor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -112,31 +113,40 @@ class TvShowDetailsViewModel @Inject constructor(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), TvShowDetailsUiState.Loading)
 
     init {
-        refresh()
+        refresh(userInitiated = false)
         // Quando (ou se) a série estiver na biblioteca, baixa as temporadas uma vez.
         viewModelScope.launch {
             library.observeTvShow(showId).filterNotNull().first()
-            loadEpisodes()
+            loadEpisodes(userInitiated = false)
         }
     }
 
-    fun refresh(force: Boolean = false) {
+    /** [userInitiated] falso = refresh ao abrir: sem internet e com cache, não avisa (D-055). */
+    fun refresh(force: Boolean = false, userInitiated: Boolean = true) {
         if (refreshState.value.isRefreshing) return
         refreshState.value = RefreshState(isRefreshing = true)
         viewModelScope.launch {
             val result = tvShowRepository.refreshTvShowDetails(showId, force)
-            refreshState.value = RefreshState(error = (result as? DataResult.Failure)?.error)
+            val error = (result as? DataResult.Failure)?.error?.shownFor(
+                hasCache = tvShowRepository.observeTvShowDetails(showId).first() != null,
+                userInitiated = userInitiated,
+            )
+            refreshState.value = RefreshState(error = error)
         }
     }
 
-    /** Baixa as temporadas que faltam; falha aparece como erro de refresh não bloqueante. */
-    fun loadEpisodes() {
+    /**
+     * Baixa as temporadas que faltam; falha aparece como erro de refresh não bloqueante.
+     * Automático e sem internet, não avisa: o progresso usa o que já está salvo (D-055).
+     */
+    fun loadEpisodes(userInitiated: Boolean = true) {
         if (episodesLoading.value) return
         episodesLoading.value = true
         viewModelScope.launch {
             val result = refreshEpisodes(showId)
             episodesLoading.value = false
-            if (result is DataResult.Failure) refreshState.update { it.copy(error = result.error) }
+            val error = (result as? DataResult.Failure)?.error?.shownFor(hasCache = true, userInitiated = userInitiated)
+            if (error != null) refreshState.update { it.copy(error = error) }
         }
     }
 

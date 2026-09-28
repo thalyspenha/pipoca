@@ -1,7 +1,9 @@
 package com.thalyspenha.pipoca.presentation.components
 
 import com.thalyspenha.pipoca.domain.model.DataError
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -18,5 +20,13 @@ class DataErrorMessageTest {
         assertFalse(DataError.MissingApiKey.isRetryable)
         assertFalse(DataError.InvalidApiKey.isRetryable)
         assertFalse(DataError.NotFound.isRetryable)
+    }
+
+    @Test
+    fun `sem internet com cache so avisa se o usuario pediu`() {
+        assertNull(DataError.Network.shownFor(hasCache = true, userInitiated = false))
+        assertEquals(DataError.Network, DataError.Network.shownFor(hasCache = true, userInitiated = true))
+        assertEquals(DataError.Network, DataError.Network.shownFor(hasCache = false, userInitiated = false))
+        assertEquals(DataError.NotFound, DataError.NotFound.shownFor(hasCache = true, userInitiated = false))
     }
 }
