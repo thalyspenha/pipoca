@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Fase 10: partes 1 (auditoria), 2 (correções) e 3 (Configurações) concluídas; 238 testes unitários, 34 instrumentados, lint sem avisos. Próxima: "IMPLEMENTAR FASE 10 – PARTE 4" (release).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. **Fase 10 concluída:** versão 1.0.0 (APKs debug e release, `RELEASE_NOTES.md`); 238 testes unitários, 34 instrumentados, lint sem avisos. Próxima: Fase 11 (`fase11.md`, ainda não lido).
 
 ## Fases
 
@@ -117,13 +117,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela — Grid/Lista, `MediaPosterCard`, filtros com contagem, ordenação, pesquisa, estados vazios, nova ordem das abas, preferência salva.
   3. ✅ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
 
-### 🚧 Fase 10 — Polimento e release pessoal (ver `fase10.md`)
-- Pendente (decidir na parte 4): assinatura do APK release (chave fora do git). Tema resolvido na parte 3 (D-057).
+### ✅ Fase 10 — Polimento e release pessoal (ver `fase10.md`)
+- Tema resolvido na parte 3 (D-057); release assinado com a chave de debug, sem R8 (D-058).
 - **Executada em 4 partes** (D-054). Uma por vez, só com "IMPLEMENTAR FASE 10 – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Auditoria — 26 achados em `docs/AUDIT.md` com severidade e destino (P2 correções, P3 Configurações, P4 release).
   2. ✅ Correções — offline sem avisos desnecessários e busca de itens sem cache com nova tentativa (D-055), paleta completa claro/escuro, janela e ícone temático (D-056), acessibilidade, `key.txt` ignorado.
   3. ✅ Configurações — aba "Mais" → Configurações: Tema (Sistema/Claro/Escuro), Limpar cache (preserva o que o usuário usa), informações do banco, versão; Sobre com atribuição ao TMDB (D-057).
-  4. ⏳ Release — APK debug/release, `RELEASE_NOTES.md`.
+  4. ✅ Release — versão 1.0.0 (versionCode 2), APK debug e release (assinado com a chave de debug, sem R8), `RELEASE_NOTES.md`, SETUP (D-058).
 
 ### ⏳ Fase 11
 Definida em `fase11.md` (ainda não lido). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.

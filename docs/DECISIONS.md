@@ -388,3 +388,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Versão do app via `AppInfo` injetado pelo `AppModule` (único ponto que lê `BuildConfig`).
 - Sobre: texto exigido pelo TMDB ("This product uses the TMDB API but is not endorsed or certified by TMDB") e link para themoviedb.org; sem o logo oficial (evita baixar/embutir o arquivo; pode entrar depois).
 **Consequência:** achados de Configurações da auditoria resolvidos; parte 4 trata só do release.
+
+### D-058 — Release pessoal
+**Contexto:** Fase 10, parte 4 (AUDIT.md #15, #20, #21). App de hobby, sem Google Play.
+**Decisão (opção 2, escolhida pelo usuário):**
+- Release assinado com a chave de debug da máquina (`signingConfig = debug`): sem keystore nova para guardar. Todo APK precisa de assinatura para instalar; a de debug basta fora da Play Store.
+- Mac e Linux devem usar o mesmo `debug.keystore` para atualizar o app de qualquer máquina sem desinstalar.
+- Sem R8 (`isMinifyEnabled = false`): evita regras para Retrofit/serialization/Room; tamanho não importa aqui.
+- Versão 1.0.0 (`versionCode` 2). Notas em `RELEASE_NOTES.md`; token dentro do APK documentado como limitação (D-012).
+**Consequência:** Fase 10 concluída. Se um dia for publicar, trocar por keystore própria (fora do git) e revisar R8.

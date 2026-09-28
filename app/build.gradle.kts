@@ -24,8 +24,8 @@ android {
         applicationId = "com.thalyspenha.pipoca"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "TMDB_API_TOKEN", "\"$tmdbApiToken\"")
@@ -33,6 +33,8 @@ android {
 
     buildTypes {
         release {
+            // App pessoal, fora da Play Store: release assinado com a chave de debug da máquina (D-058).
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }

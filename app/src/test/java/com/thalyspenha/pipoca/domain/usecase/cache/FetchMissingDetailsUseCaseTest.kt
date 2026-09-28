@@ -8,6 +8,7 @@ import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeSeasonRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeTvShowRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.RefreshShowEpisodesUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.TestScope
@@ -16,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FetchMissingDetailsUseCaseTest {
     private val tvShows = FakeTvShowRepository()
 

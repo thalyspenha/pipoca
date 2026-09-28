@@ -75,6 +75,14 @@ Não usar `./gradlew connectedDebugAndroidTest`: ao final ele desinstala o app e
 
 Cada máquina tem sua chave de debug (`~/.android/debug.keystore`). Instalar a partir de outra máquina falha com `INSTALL_FAILED_UPDATE_INCOMPATIBLE`; para não perder dados ao alternar Mac/Linux, copiar o mesmo `debug.keystore` para as duas. Em 2026-09-28 o app foi desinstalado no S25 (dados apagados) para instalar a partir do Linux.
 
+## APKs (debug e release)
+
+```sh
+./gradlew assembleDebug assembleRelease
+adb install -r app/build/outputs/apk/release/app-release.apk
+```
+Release sem R8 e assinado com a chave de debug da máquina (D-058): instala por cima do debug da mesma máquina sem perder dados. Para alternar Mac/Linux sem desinstalar, usar o mesmo `debug.keystore` nas duas (acima). O token TMDB fica dentro do APK: não compartilhar o arquivo. Notas da versão em `RELEASE_NOTES.md`.
+
 ## Linux (Omarchy)
 
 - Android Studio em `~/Documents/android-studio`; JDK = JBR dele: `JAVA_HOME=~/Documents/android-studio/jbr ./gradlew build` (sem `java` no PATH).
