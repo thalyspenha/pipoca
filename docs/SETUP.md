@@ -81,7 +81,7 @@ Cada máquina tem sua chave de debug (`~/.android/debug.keystore`). Instalar a p
 ./gradlew assembleDebug assembleRelease
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
-Release sem R8 e assinado com a chave de debug da máquina (D-058): instala por cima do debug da mesma máquina sem perder dados. Para alternar Mac/Linux sem desinstalar, usar o mesmo `debug.keystore` nas duas (acima). O token TMDB fica dentro do APK: não compartilhar o arquivo. Notas da versão em `RELEASE_NOTES.md`.
+Release sem R8 e assinado com a chave de debug da máquina (D-058): instala por cima do debug da mesma máquina sem perder dados. Para alternar Mac/Linux sem desinstalar, usar o mesmo `debug.keystore` nas duas (acima). O token TMDB fica dentro do APK: não compartilhar o arquivo. Notas da versão em `RELEASE_NOTES.md`. Com o release instalado, os testes instrumentados não rodam (release não é depurável): `./gradlew installDebug` antes, por cima, sem perder dados.
 
 ## Linux (Omarchy)
 

@@ -65,8 +65,9 @@ fun SettingsScreen(onBack: () -> Unit, onAboutClick: () -> Unit, viewModel: Sett
             else -> null
         }
         if (message != null) {
-            viewModel.onCacheClearMessageShown()
+            // Marcar como mostrada só depois: mudar o estado antes troca a chave do efeito e cancela o aviso.
             snackbarHostState.showSnackbar(message)
+            viewModel.onCacheClearMessageShown()
         }
     }
     Scaffold(
