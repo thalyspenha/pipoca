@@ -397,3 +397,8 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Sem R8 (`isMinifyEnabled = false`): evita regras para Retrofit/serialization/Room; tamanho não importa aqui.
 - Versão 1.0.0 (`versionCode` 2). Notas em `RELEASE_NOTES.md`; token dentro do APK documentado como limitação (D-012).
 **Consequência:** Fase 10 concluída. Se um dia for publicar, trocar por keystore própria (fora do git) e revisar R8.
+
+### D-059 — Aba "Mais" sempre abre no menu
+**Contexto:** pedido do usuário após a 1.0.0: ao sair de Favoritos/Histórico/Estatísticas/Configurações por outra aba e voltar em "Mais", o app reabria a última tela, não o menu.
+**Decisão:** `navigateToTab` não restaura a pilha salva da aba "Mais" (`restoreState = false` só para ela); as demais abas continuam restaurando (padrão de D-026). Tocar em "Mais" já estando numa tela dela também volta ao menu.
+**Consequência:** "Mais" se comporta como menu; Início, Biblioteca, Busca e Coleção mantêm onde o usuário estava.

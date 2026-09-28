@@ -174,13 +174,17 @@ fun PipocaApp() {
     }
 }
 
-/** Padrão de abas: uma pilha por aba, sem duplicar destinos. */
+/**
+ * Padrão de abas: uma pilha por aba, sem duplicar destinos. "Mais" é um menu: sempre reabre na
+ * lista de entradas, não na última tela aberta a partir dela (D-059).
+ */
 private fun NavController.navigateToTab(destination: TopLevelDestination) {
+    val restore = destination != TopLevelDestination.MORE
     navigate(destination.route) {
         popUpTo(graph.findStartDestination().id) {
             saveState = true
         }
         launchSingleTop = true
-        restoreState = true
+        restoreState = restore
     }
 }
