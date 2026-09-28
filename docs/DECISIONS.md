@@ -432,3 +432,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Junta episódios **consecutivos** (na ordem do histórico) da **mesma série** com até **10 min** entre um e outro: cobre "marcar temporada" (mesmo instante) e toques seguidos em "Assisti"; maratona real (~45 min por episódio) segue separada. Filme ou outra série no meio quebra o lote; dentro de um dia.
 - Linha do lote: pôster, série, "N episódios · T1E1–T8E22", horário do mais recente. Toque abre a série; a seta expande a lista de episódios (ordem de temporada/número).
 **Consequência:** com a temporada inteira de Dr. House marcada, 176 linhas viram 1.
+
+### D-063 — Ordem das seções nos detalhes da série
+**Contexto:** pendência de UX da D-061; a sinopse ficava abaixo da lista de temporadas (8+ linhas).
+**Decisão:** detalhes da série passam a seguir o filme: status → Progresso → Nota → Gêneros → Sinopse → **Temporadas** → Criação → Elenco → Coleção. Progresso continua logo após o status (é o resumo das temporadas).

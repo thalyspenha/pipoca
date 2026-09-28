@@ -181,15 +181,6 @@ private fun TvShowDetailsBody(
                 )
             }
         }
-        if (state.seasons.isNotEmpty()) {
-            item {
-                DetailsSection("Temporadas") {
-                    Column {
-                        state.seasons.forEach { row -> SeasonItem(row, onClick = { onSeasonClick(row.seasonNumber) }) }
-                    }
-                }
-            }
-        }
         item {
             DetailsSection(personal.rating?.let { "Sua nota: $it/10" } ?: "Avaliar") {
                 RatingSelector(rating = personal.rating, onRatingChange = onRatingChange)
@@ -200,6 +191,16 @@ private fun TvShowDetailsBody(
         }
         show.overview?.takeIf { it.isNotBlank() }?.let { overview ->
             item { DetailsSection("Sinopse") { Overview(overview) } }
+        }
+        // Temporadas depois da sinopse, como no filme: nota, gêneros e sinopse ficam perto do topo (D-063).
+        if (state.seasons.isNotEmpty()) {
+            item {
+                DetailsSection("Temporadas") {
+                    Column {
+                        state.seasons.forEach { row -> SeasonItem(row, onClick = { onSeasonClick(row.seasonNumber) }) }
+                    }
+                }
+            }
         }
         if (show.creators.isNotEmpty()) {
             item {
