@@ -26,6 +26,8 @@ data class HistoryUiState(
     /** Grupos por dia (fuso do aparelho), mais recente primeiro. */
     val days: List<HistoryDay> = emptyList(),
     val totalCount: Int = 0,
+    /** Visualizações por filtro, para os rótulos das abas ("Filmes (3)"). */
+    val counts: Map<HistoryFilter, Int> = emptyMap(),
     val isLoading: Boolean = true,
 ) {
     val isHistoryEmpty: Boolean get() = !isLoading && totalCount == 0
@@ -116,6 +118,7 @@ class HistoryViewModel @Inject constructor(
                 filter = filter,
                 days = entries.filter(filter::matches).groupByDay(zone),
                 totalCount = entries.size,
+                counts = HistoryFilter.entries.associateWith { f -> entries.count(f::matches) },
                 isLoading = false,
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), HistoryUiState())

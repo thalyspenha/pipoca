@@ -21,9 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.TextButton
@@ -39,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thalyspenha.pipoca.domain.model.DataError
+import com.thalyspenha.pipoca.presentation.components.SectionTab
 import com.thalyspenha.pipoca.presentation.components.ErrorContent
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.PosterImage
@@ -79,7 +78,7 @@ private fun SearchContentView(
         TypeSelector(
             selected = state.type,
             onTypeChange = onTypeChange,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
         )
         when (val content = state.content) {
             SearchContent.Idle -> SearchMessage(
@@ -152,16 +151,10 @@ private fun SearchField(query: String, onQueryChange: (String) -> Unit, modifier
 
 @Composable
 private fun TypeSelector(selected: SearchType, onTypeChange: (SearchType) -> Unit, modifier: Modifier = Modifier) {
-    val options = SearchType.entries
-    SingleChoiceSegmentedButtonRow(modifier) {
-        options.forEachIndexed { index, type ->
-            SegmentedButton(
-                selected = type == selected,
-                onClick = { onTypeChange(type) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-            ) {
-                Text(type.tabLabel)
-            }
+    // Abas, como Biblioteca e Favoritos: Filmes/Séries é troca de seção; chips ficam para filtros (D-064).
+    PrimaryTabRow(selectedTabIndex = selected.ordinal, modifier = modifier) {
+        SearchType.entries.forEach { type ->
+            SectionTab(selected = type == selected, onClick = { onTypeChange(type) }, text = type.tabLabel)
         }
     }
 }
@@ -205,8 +198,8 @@ private fun ResultRow(item: SearchResultItem, onClick: () -> Unit) {
 
 private val SearchType.tabLabel: String
     get() = when (this) {
-        SearchType.MOVIES -> "FILMES"
-        SearchType.TV_SHOWS -> "SÉRIES"
+        SearchType.MOVIES -> "Filmes"
+        SearchType.TV_SHOWS -> "Séries"
     }
 
 private val SearchType.itemLabel: String

@@ -133,6 +133,7 @@ Revisão de QA pós-1.0.0 (2026-09-28): fuso do "hoje", histórico duplicado por
 Revisão de UX/UI pós-1.0.0 (2026-09-28): nota com alvos maiores, confirmação ao desmarcar temporada, busca vazia no topo, gêneros como rótulos, toque na Coleção abre detalhes, ícones das abas Biblioteca/Coleção e de Estatísticas (D-061). Pendências de UX listadas em D-061.
 Histórico agrupa episódios marcados juntos (D-062).
 Detalhes da série: sinopse antes das temporadas (D-063).
+Seletor Filmes/Séries em abas iguais em Biblioteca, Favoritos, Busca e Histórico (D-064).
 
 ## Pendências gerais
 

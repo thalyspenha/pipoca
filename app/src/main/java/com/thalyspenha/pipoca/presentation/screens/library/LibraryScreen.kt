@@ -38,7 +38,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,6 +63,7 @@ import com.thalyspenha.pipoca.domain.model.MovieLibraryFilter
 import com.thalyspenha.pipoca.domain.model.TvShowLibraryCounts
 import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
 import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
+import com.thalyspenha.pipoca.presentation.components.SectionTab
 import com.thalyspenha.pipoca.presentation.components.AppIcons
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.MediaCardData
@@ -283,16 +283,8 @@ private fun Header(state: LibraryUiState, actions: LibraryActions) {
 private fun TabRow(state: LibraryUiState, onTabChange: (LibraryTab) -> Unit) {
     val tab = state.selection.tab
     PrimaryTabRow(selectedTabIndex = tab.ordinal) {
-        Tab(
-            selected = tab == LibraryTab.MOVIES,
-            onClick = { onTabChange(LibraryTab.MOVIES) },
-            text = { Text("Filmes (${state.movieCounts.all})") },
-        )
-        Tab(
-            selected = tab == LibraryTab.TV_SHOWS,
-            onClick = { onTabChange(LibraryTab.TV_SHOWS) },
-            text = { Text("Séries (${state.tvShowCounts.all})") },
-        )
+        SectionTab(selected = tab == LibraryTab.MOVIES, onClick = { onTabChange(LibraryTab.MOVIES) }, text = "Filmes (${state.movieCounts.all})")
+        SectionTab(selected = tab == LibraryTab.TV_SHOWS, onClick = { onTabChange(LibraryTab.TV_SHOWS) }, text = "Séries (${state.tvShowCounts.all})")
     }
 }
 

@@ -29,7 +29,7 @@ import javax.inject.Inject
  * - texto vazio/curto não chama a rede;
  * - mesma pesquisa (texto + tipo) não é repetida;
  * - pesquisa nova cancela a anterior (`flatMapLatest`).
- * Trocar FILMES/SÉRIES pesquisa na hora, sem debounce.
+ * Trocar Filmes/Séries pesquisa na hora, sem debounce.
  */
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel

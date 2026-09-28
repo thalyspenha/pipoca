@@ -25,7 +25,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -39,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thalyspenha.pipoca.presentation.components.SectionTab
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.PlaceholderScreen
 import com.thalyspenha.pipoca.presentation.components.PosterImage
@@ -89,16 +89,8 @@ private fun FavoritesContent(
     ) { padding ->
         Column(Modifier.padding(padding)) {
             PrimaryTabRow(selectedTabIndex = state.tab.ordinal) {
-                Tab(
-                    selected = state.tab == FavoritesTab.MOVIES,
-                    onClick = { onTabChange(FavoritesTab.MOVIES) },
-                    text = { Text("Filmes (${state.movies.size})") },
-                )
-                Tab(
-                    selected = state.tab == FavoritesTab.TV_SHOWS,
-                    onClick = { onTabChange(FavoritesTab.TV_SHOWS) },
-                    text = { Text("Séries (${state.tvShows.size})") },
-                )
+                SectionTab(selected = state.tab == FavoritesTab.MOVIES, onClick = { onTabChange(FavoritesTab.MOVIES) }, text = "Filmes (${state.movies.size})")
+                SectionTab(selected = state.tab == FavoritesTab.TV_SHOWS, onClick = { onTabChange(FavoritesTab.TV_SHOWS) }, text = "Séries (${state.tvShows.size})")
             }
             when {
                 state.isLoading -> LoadingContent()

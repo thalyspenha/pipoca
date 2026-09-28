@@ -436,3 +436,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-063 — Ordem das seções nos detalhes da série
 **Contexto:** pendência de UX da D-061; a sinopse ficava abaixo da lista de temporadas (8+ linhas).
 **Decisão:** detalhes da série passam a seguir o filme: status → Progresso → Nota → Gêneros → Sinopse → **Temporadas** → Criação → Elenco → Coleção. Progresso continua logo após o status (é o resumo das temporadas).
+
+### D-064 — Seletor Filmes/Séries no mesmo estilo
+**Contexto:** pendência de UX da D-061: Busca usava botões segmentados em CAIXA ALTA, Favoritos abas e Histórico chips.
+**Decisão:**
+- Padrão = abas (`PrimaryTabRow`), como Biblioteca e Favoritos, via componente `SectionTab` (`presentation/components`). Rótulos em caixa de frase.
+- Busca: "Filmes"/"Séries" em abas. Histórico: "Todos (n) / Filmes (n) / Séries (n)" em abas, com contagem como Biblioteca e Favoritos.
+- Aba não selecionada em `onSurfaceVariant` (o padrão do Material 3 usa a mesma cor da selecionada, só o sublinhado diferenciava).
+- Chips continuam para filtros de status/formato (Biblioteca, Coleção).

@@ -9,16 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -40,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thalyspenha.pipoca.domain.model.HistoryEntry
 import com.thalyspenha.pipoca.domain.model.HistoryFilter
 import com.thalyspenha.pipoca.domain.model.HistoryType
+import com.thalyspenha.pipoca.presentation.components.SectionTab
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
 import com.thalyspenha.pipoca.presentation.components.PlaceholderScreen
 import com.thalyspenha.pipoca.presentation.components.PosterImage
@@ -89,7 +89,7 @@ private fun HistoryContent(
                     description = "Marque filmes como assistidos ou episódios nas temporadas para montar seu histórico.",
                 )
                 else -> {
-                    FilterRow(state.filter, onFilterChange)
+                    FilterRow(state.filter, state.counts, onFilterChange)
                     if (state.days.isEmpty()) {
                         PlaceholderScreen(
                             title = "Nada aqui",
@@ -104,18 +104,12 @@ private fun HistoryContent(
     }
 }
 
+/** Abas Todos/Filmes/Séries, no mesmo estilo de Biblioteca, Favoritos e Busca (D-064). */
 @Composable
-private fun FilterRow(selected: HistoryFilter, onFilterChange: (HistoryFilter) -> Unit) {
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(HistoryFilter.entries) { filter ->
-            FilterChip(
-                selected = filter == selected,
-                onClick = { onFilterChange(filter) },
-                label = { Text(filter.label) },
-            )
+private fun FilterRow(selected: HistoryFilter, counts: Map<HistoryFilter, Int>, onFilterChange: (HistoryFilter) -> Unit) {
+    PrimaryTabRow(selectedTabIndex = selected.ordinal) {
+        HistoryFilter.entries.forEach { filter ->
+            SectionTab(selected = filter == selected, onClick = { onFilterChange(filter) }, text = "${filter.label} (${counts[filter] ?: 0})")
         }
     }
 }
