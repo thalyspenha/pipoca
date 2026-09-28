@@ -14,6 +14,11 @@ import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
 import com.thalyspenha.pipoca.domain.usecase.episodes.FakeSeasonRepository
 import com.thalyspenha.pipoca.domain.usecase.library.FakeLibraryRepository
+import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.SetMovieFavoriteUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.SetMovieStatusUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowFavoriteUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveLibraryMoviesUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveLibraryTvShowsUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveMovieLibraryCountsUseCase
@@ -55,6 +60,7 @@ class LibraryViewModelTest {
     private val seasons = FakeSeasonRepository()
     private val preferences = FakePreferencesRepository()
     private val savedState = SavedStateHandle()
+    private val clock = MutableClock()
 
     @Before
     fun setUp() {
@@ -69,10 +75,15 @@ class LibraryViewModelTest {
     private fun TestScope.started() = LibraryViewModel(
         savedState,
         ObserveLibraryMoviesUseCase(library),
-        ObserveLibraryTvShowsUseCase(library, seasons, MutableClock()),
+        ObserveLibraryTvShowsUseCase(library, seasons, clock),
         ObserveMovieLibraryCountsUseCase(library),
         ObserveTvShowLibraryCountsUseCase(library),
         preferences,
+        SetMovieStatusUseCase(library, clock),
+        SetMovieFavoriteUseCase(library, clock),
+        SetTvShowFavoriteUseCase(library, clock),
+        RemoveMovieFromLibraryUseCase(library),
+        RemoveTvShowFromLibraryUseCase(library),
     ).also { vm -> backgroundScope.launch { vm.uiState.collect {} } }
 
     private fun test(block: suspend TestScope.() -> Unit) = runTest(dispatcher) { block() }
@@ -219,5 +230,55 @@ class LibraryViewModelTest {
 
         assertEquals(LibraryTab.TV_SHOWS, vm.uiState.value.selection.tab)
         assertEquals(TvShowLibraryFilter.DROPPED, vm.uiState.value.selection.tvShowFilter)
+    }
+
+    @Test
+    fun `acao rapida marca filme assistido com historico e volta para quero assistir`() = test {
+        movie(1, "Predator", MovieStatus.WANT_TO_WATCH)
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onToggleWatched(vm.uiState.value.items.single())
+        advanceUntilIdle()
+        assertEquals(MediaStatusBadge.WATCHED, vm.uiState.value.items.single().status)
+        assertEquals(1, library.movieWatches[1L]?.size)
+
+        vm.onToggleWatched(vm.uiState.value.items.single())
+        advanceUntilIdle()
+        assertEquals(MediaStatusBadge.WANT_TO_WATCH, vm.uiState.value.items.single().status)
+    }
+
+    @Test
+    fun `acao rapida alterna favorito de serie`() = test {
+        show(10, "Lost", TvShowStatus.WATCHING)
+        val vm = started()
+        vm.onTabChange(LibraryTab.TV_SHOWS)
+        advanceUntilIdle()
+
+        vm.onToggleFavorite(vm.uiState.value.items.single())
+        advanceUntilIdle()
+
+        assertTrue(vm.uiState.value.items.single().isFavorite)
+        assertEquals(1, vm.uiState.value.tvShowCounts.favorites)
+    }
+
+    @Test
+    fun `remover tira da lista e das contagens`() = test {
+        movie(1, "Predator", MovieStatus.WATCHED)
+        movie(2, "Alien", MovieStatus.WATCHED)
+        show(10, "Lost", TvShowStatus.WATCHING)
+        library.markEpisodesWatched(listOf(ep(10, 1)), Instant.EPOCH)
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onRemove(vm.uiState.value.items.single { it.id == 1L })
+        vm.onTabChange(LibraryTab.TV_SHOWS)
+        advanceUntilIdle()
+        vm.onRemove(vm.uiState.value.items.single())
+        advanceUntilIdle()
+
+        assertEquals(1, vm.uiState.value.movieCounts.all)
+        assertEquals(0, vm.uiState.value.tvShowCounts.all)
+        assertTrue(library.watchedEpisodes.value.isEmpty())
     }
 }

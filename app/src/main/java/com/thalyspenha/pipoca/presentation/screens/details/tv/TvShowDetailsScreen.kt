@@ -1,17 +1,28 @@
 package com.thalyspenha.pipoca.presentation.screens.details.tv
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -148,12 +159,15 @@ private fun TvShowDetailsBody(
                 title = if (personal.inLibrary) "Na sua biblioteca" else "Adicionar à biblioteca",
                 action = { FavoriteButton(isFavorite = personal.isFavorite, onClick = onFavoriteClick) },
             ) {
-                StatusSelector(
-                    options = TV_SHOW_SELECTABLE_STATUSES,
-                    selected = personal.status,
-                    label = TvShowStatus::label,
-                    onClick = onStatusClick,
-                )
+                Column {
+                    StatusSelector(
+                        options = TV_SHOW_SELECTABLE_STATUSES,
+                        selected = personal.status,
+                        label = TvShowStatus::label,
+                        onClick = onStatusClick,
+                    )
+                    MoreStatusMenu(current = personal.status, onStatusClick = onStatusClick)
+                }
             }
         }
         item {
@@ -209,6 +223,38 @@ private fun TvShowDetailsBody(
             )
         }
         item { Spacer(Modifier.padding(bottom = 16.dp)) }
+    }
+}
+
+/**
+ * Pausada/Abandonada fora dos segmentos (não cabem) (D-050). O botão mostra o status quando é
+ * um desses; escolher o atual não faz nada (tirar da biblioteca fica nos segmentos).
+ */
+@Composable
+private fun MoreStatusMenu(current: TvShowStatus?, onStatusClick: (TvShowStatus) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val extra = current?.takeIf { it in TV_SHOW_EXTRA_STATUSES }
+    Box(Modifier.padding(start = 8.dp)) {
+        TextButton(onClick = { expanded = true }) {
+            Text(extra?.label ?: "Mais status")
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            TV_SHOW_EXTRA_STATUSES.forEach { status ->
+                DropdownMenuItem(
+                    text = { Text(status.label) },
+                    onClick = {
+                        if (status != current) onStatusClick(status)
+                        expanded = false
+                    },
+                    trailingIcon = if (status == current) {
+                        { Icon(Icons.Filled.Check, contentDescription = "Selecionado") }
+                    } else {
+                        null
+                    },
+                )
+            }
+        }
     }
 }
 

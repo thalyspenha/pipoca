@@ -355,3 +355,9 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Grid/Lista em `PreferencesRepository` → `SharedPreferencesRepository` (arquivo `pipoca_preferences`), servirá ao tema da Fase 10.
 - Pesquisa abre um campo no topo (voltar fecha e limpa). Estados vazios: biblioteca vazia com botão "Buscar títulos" (vai para a aba Busca); por filtro e por pesquisa com mensagem específica.
 - Itens sem cache TMDB aparecem como "Carregando…" (não disparam busca de detalhes como a Coleção; itens entram na biblioteca pelos detalhes, que já gravam o cache).
+
+### D-053 — Ações rápidas da Biblioteca e status Pausada/Abandonada
+**Decisão:**
+- Toque longo no card (`combinedClickable`, rótulo de acessibilidade "Ações rápidas") abre menu: filme — marcar assistido / mover para Quero assistir (via `SetMovieStatusUseCase`, assistido registra histórico); ambos — favoritar/desfavoritar; remover da biblioteca. Série não tem "marcar assistida" no menu (exigiria marcar todos os episódios; fica nos detalhes).
+- Remover pede confirmação (apaga histórico e, na série, episódios marcados; coleção não é afetada), em vez de snackbar com desfazer: o histórico não voltaria.
+- Detalhes da série: botão "Mais status" abaixo dos segmentos, com Pausada e Abandonada; mostra o status quando é um deles. Escolher o atual no menu não faz nada (tirar da biblioteca continua sendo tocar no segmento selecionado, D-032). Marcar episódios não tira de Pausada/Abandonada, exceto ao concluir (regra já existente em `SyncShowStatusUseCase`).

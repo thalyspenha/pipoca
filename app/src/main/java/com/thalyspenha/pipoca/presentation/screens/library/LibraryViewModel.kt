@@ -5,13 +5,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thalyspenha.pipoca.domain.model.LibrarySort
 import com.thalyspenha.pipoca.domain.model.MovieLibraryFilter
+import com.thalyspenha.pipoca.domain.model.MovieStatus
 import com.thalyspenha.pipoca.domain.model.TvShowLibraryFilter
 import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
+import com.thalyspenha.pipoca.domain.usecase.library.RemoveMovieFromLibraryUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.RemoveTvShowFromLibraryUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.SetMovieFavoriteUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.SetMovieStatusUseCase
+import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowFavoriteUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveLibraryMoviesUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveLibraryTvShowsUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveMovieLibraryCountsUseCase
 import com.thalyspenha.pipoca.domain.usecase.librarylist.ObserveTvShowLibraryCountsUseCase
+import com.thalyspenha.pipoca.presentation.components.MediaCardData
+import com.thalyspenha.pipoca.presentation.components.MediaStatusBadge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,12 +28,14 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * "Minha Biblioteca" (D-050, D-051): lista reativa do Room conforme aba, filtro, ordenação e
  * pesquisa; contagens do banco; modo Grid/Lista persistido. Seleção sobrevive à recriação do
- * processo (SavedStateHandle).
+ * processo (SavedStateHandle). Ações rápidas (toque longo) usam os use cases da biblioteca;
+ * a lista se atualiza sozinha pelo Flow.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -36,6 +46,11 @@ class LibraryViewModel @Inject constructor(
     observeMovieCounts: ObserveMovieLibraryCountsUseCase,
     observeTvShowCounts: ObserveTvShowLibraryCountsUseCase,
     private val preferences: PreferencesRepository,
+    private val setMovieStatus: SetMovieStatusUseCase,
+    private val setMovieFavorite: SetMovieFavoriteUseCase,
+    private val setTvShowFavorite: SetTvShowFavoriteUseCase,
+    private val removeMovie: RemoveMovieFromLibraryUseCase,
+    private val removeTvShow: RemoveTvShowFromLibraryUseCase,
 ) : ViewModel() {
 
     private val selection = combine(
@@ -99,6 +114,24 @@ class LibraryViewModel @Inject constructor(
 
     fun onViewModeChange(mode: LibraryViewMode) {
         preferences.setLibraryViewMode(mode)
+    }
+
+    /** Filme: alterna assistido/quero assistir (assistido registra no histórico, D-029). */
+    fun onToggleWatched(item: MediaCardData) {
+        if (!item.isMovie) return
+        val status = if (item.status == MediaStatusBadge.WATCHED) MovieStatus.WANT_TO_WATCH else MovieStatus.WATCHED
+        viewModelScope.launch { setMovieStatus(item.id, status) }
+    }
+
+    fun onToggleFavorite(item: MediaCardData) {
+        viewModelScope.launch {
+            if (item.isMovie) setMovieFavorite(item.id, !item.isFavorite) else setTvShowFavorite(item.id, !item.isFavorite)
+        }
+    }
+
+    /** Remove da biblioteca (série leva junto episódios assistidos e histórico, D-037); a tela confirma antes. */
+    fun onRemove(item: MediaCardData) {
+        viewModelScope.launch { if (item.isMovie) removeMovie(item.id) else removeTvShow(item.id) }
     }
 
     private companion object {

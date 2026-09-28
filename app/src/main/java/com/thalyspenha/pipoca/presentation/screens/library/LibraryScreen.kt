@@ -20,8 +20,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -83,6 +89,9 @@ fun LibraryScreen(
             onQueryChange = viewModel::onQueryChange,
             onViewModeChange = viewModel::onViewModeChange,
             onItemClick = onItemClick,
+            onToggleWatched = viewModel::onToggleWatched,
+            onToggleFavorite = viewModel::onToggleFavorite,
+            onRemove = viewModel::onRemove,
             onSearchTitlesClick = onSearchTitlesClick,
         ),
     )
@@ -96,11 +105,25 @@ private class LibraryActions(
     val onQueryChange: (String) -> Unit,
     val onViewModeChange: (LibraryViewMode) -> Unit,
     val onItemClick: (MediaCardData) -> Unit,
+    val onToggleWatched: (MediaCardData) -> Unit,
+    val onToggleFavorite: (MediaCardData) -> Unit,
+    val onRemove: (MediaCardData) -> Unit,
     val onSearchTitlesClick: () -> Unit,
 )
 
 @Composable
 private fun LibraryContent(state: LibraryUiState, actions: LibraryActions) {
+    var removing by remember { mutableStateOf<MediaCardData?>(null) }
+    removing?.let { item ->
+        RemoveDialog(
+            item = item,
+            onConfirm = {
+                actions.onRemove(item)
+                removing = null
+            },
+            onDismiss = { removing = null },
+        )
+    }
     when {
         state.isLoading -> LoadingContent()
         state.isLibraryEmpty -> EmptyLibrary(actions.onSearchTitlesClick)
@@ -119,19 +142,90 @@ private fun LibraryContent(state: LibraryUiState, actions: LibraryActions) {
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     items(state.items, key = MediaCardData::id) { item ->
-                        MediaPosterCard(item, grid = true, onClick = { actions.onItemClick(item) })
+                        LibraryItem(item, grid = true, actions = actions, onRemoveRequest = { removing = it })
                     }
                 }
             } else {
                 LazyColumn(contentPadding = PaddingValues(bottom = 16.dp)) {
                     items(state.items, key = MediaCardData::id) { item ->
-                        MediaPosterCard(item, grid = false, onClick = { actions.onItemClick(item) })
+                        LibraryItem(item, grid = false, actions = actions, onRemoveRequest = { removing = it })
                         HorizontalDivider(Modifier.padding(start = 96.dp))
                     }
                 }
             }
         }
     }
+}
+
+/** Card com menu de ações rápidas no toque longo (D-050): não polui o card. */
+@Composable
+private fun LibraryItem(
+    item: MediaCardData,
+    grid: Boolean,
+    actions: LibraryActions,
+    onRemoveRequest: (MediaCardData) -> Unit,
+) {
+    var menuOpen by remember { mutableStateOf(false) }
+    Box {
+        MediaPosterCard(
+            item,
+            grid = grid,
+            onClick = { actions.onItemClick(item) },
+            onLongClick = { menuOpen = true },
+        )
+        DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+            if (item.isMovie) {
+                val watched = item.status == MediaStatusBadge.WATCHED
+                DropdownMenuItem(
+                    text = { Text(if (watched) "Mover para Quero assistir" else "Marcar como assistido") },
+                    leadingIcon = { Icon(if (watched) Icons.Filled.DateRange else Icons.Filled.CheckCircle, contentDescription = null) },
+                    onClick = {
+                        actions.onToggleWatched(item)
+                        menuOpen = false
+                    },
+                )
+            }
+            DropdownMenuItem(
+                text = { Text(if (item.isFavorite) "Remover dos favoritos" else "Favoritar") },
+                leadingIcon = {
+                    Icon(if (item.isFavorite) Icons.Filled.FavoriteBorder else Icons.Filled.Favorite, contentDescription = null)
+                },
+                onClick = {
+                    actions.onToggleFavorite(item)
+                    menuOpen = false
+                },
+            )
+            DropdownMenuItem(
+                text = { Text("Remover da biblioteca") },
+                leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
+                onClick = {
+                    menuOpen = false
+                    onRemoveRequest(item)
+                },
+            )
+        }
+    }
+}
+
+/** Remover apaga também o histórico (e, na série, os episódios assistidos): pede confirmação. */
+@Composable
+private fun RemoveDialog(item: MediaCardData, onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    val title = item.title ?: "este título"
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Remover da biblioteca?") },
+        text = {
+            Text(
+                if (item.isMovie) {
+                    "\"$title\" e o histórico de visualizações dele serão apagados."
+                } else {
+                    "\"$title\", os episódios marcados e o histórico dela serão apagados."
+                } + " Itens da coleção não são afetados.",
+            )
+        },
+        confirmButton = { TextButton(onClick = onConfirm) { Text("Remover") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } },
+    )
 }
 
 /** Título, pesquisa local (nunca TMDB), ordenação e Grid/Lista. */
@@ -289,7 +383,7 @@ private fun EmptyLibrary(onSearchTitlesClick: () -> Unit) {
     }
 }
 
-private val previewActions = LibraryActions({}, {}, {}, {}, {}, {}, {}, {})
+private val previewActions = LibraryActions({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 
 @Preview(showBackground = true)
 @Composable

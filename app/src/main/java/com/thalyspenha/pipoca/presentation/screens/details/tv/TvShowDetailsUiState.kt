@@ -38,5 +38,8 @@ data class PersonalTvShow(
 fun LibraryTvShow?.toPersonalTvShow(): PersonalTvShow =
     this?.let { PersonalTvShow(status = it.status, isFavorite = it.isFavorite, rating = it.rating) } ?: PersonalTvShow()
 
-/** Status oferecidos na tela; `PAUSED`/`DROPPED` ficam para fases futuras. */
+/** Status nos botões segmentados. */
 val TV_SHOW_SELECTABLE_STATUSES = listOf(TvShowStatus.WANT_TO_WATCH, TvShowStatus.WATCHING, TvShowStatus.COMPLETED)
+
+/** Status no menu "Mais status" (D-050). */
+val TV_SHOW_EXTRA_STATUSES = listOf(TvShowStatus.PAUSED, TvShowStatus.DROPPED)

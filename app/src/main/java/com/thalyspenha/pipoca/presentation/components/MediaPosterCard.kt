@@ -1,6 +1,7 @@
 package com.thalyspenha.pipoca.presentation.components
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,19 +64,26 @@ data class MediaCardData(
 
 /**
  * Card de filme/série com o pôster como elemento principal. [grid] = pôster grande com
- * título abaixo; senão, linha de lista (pôster pequeno à esquerda).
+ * título abaixo; senão, linha de lista (pôster pequeno à esquerda). Toque longo = ações rápidas.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaPosterCard(
     data: MediaCardData,
     grid: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onLongClick: (() -> Unit)? = null,
 ) {
     val title = data.title ?: "Carregando…"
+    val clickable = Modifier.combinedClickable(
+        onClick = onClick,
+        onLongClick = onLongClick,
+        onLongClickLabel = onLongClick?.let { "Ações rápidas" },
+    )
     if (grid) {
         Column(
-            modifier = modifier.clickable(onClick = onClick).padding(4.dp),
+            modifier = modifier.then(clickable).padding(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Box {
@@ -95,7 +103,7 @@ fun MediaPosterCard(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .then(clickable)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,

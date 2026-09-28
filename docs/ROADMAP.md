@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B em andamento:** parte 1 concluída (consultas de lista com filtro/ordenação no Room, contagens, progresso de todas as séries, pesquisa local; use cases); 213 testes unitários e 32 instrumentados passando. Ainda sem tela. Próxima: "IMPLEMENTAR FASE B – PARTE 2" (tela). Fase 10 fica para depois (fase10.md lido; divisão proposta, decisões pendentes).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Próxima: Fase 10 (fase10.md lido; confirmar a divisão proposta antes de começar).
 
 ## Fases
 
@@ -109,13 +109,13 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   1. ✅ Consultas e cálculos — consultas agregadas (COUNT/GROUP BY), cálculo de tempo e distribuições no domain; testes.
   2. ✅ Tela — Estatísticas com seções e barras, entrada na aba "Mais"; docs (limitações em DATABASE.md).
 
-### 🚧 Fase B — Biblioteca (ver `biblioteca.md`)
+### ✅ Fase B — Biblioteca (ver `biblioteca.md`)
 - Tela "Minha Biblioteca": FILMES | SÉRIES, filtros por status com contagens do banco, Grid (LazyVerticalGrid) e Lista com preferência salva, `MediaPosterCard` (pôster, título, ano, status, progresso da série, favorito), ordenação, pesquisa local, estados vazios, ações rápidas em menu, reativa via Flow. Independente da coleção.
 - Decisões (D-050): abas Início · Biblioteca · Busca · Coleção · Mais; status Pausada/Abandonada passam a ser selecionáveis nos detalhes da série; ordenação no SQL, exceto progresso (em memória sobre as consultas agregadas); pesquisa local em memória ignorando acento; preferência Grid/Lista em `SharedPreferences`.
 - **Executada em 3 partes** (D-050). Uma por vez, só com "IMPLEMENTAR FASE B – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Dados — consultas de lista/contagens/ordenação no Room, progresso de todas as séries da biblioteca, pesquisa e filtros; testes.
   2. ✅ Tela — Grid/Lista, `MediaPosterCard`, filtros com contagem, ordenação, pesquisa, estados vazios, nova ordem das abas, preferência salva.
-  3. ⏳ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
+  3. ✅ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
 
 ### ⏳ Fase 10 — Polimento e release pessoal (ver `fase10.md`)
 - Lido. Divisão proposta (a confirmar ao retomar): (1) auditoria em `docs/AUDIT.md`, (2) correções, (3) Configurações (Sobre/TMDB, Tema, Limpar cache, banco, versão), (4) release (APK debug/release, RELEASE_NOTES.md).
@@ -135,7 +135,8 @@ Ordem provável derivada do prompt mestre, apenas como referência:
 
 ## Pendências gerais
 
-- Token TMDB (Read Access Token v4): ✅ validado e configurado no Mac (2026-09-26). Em outra máquina, repetir no `local.properties` (ver SETUP.md).
+- Token TMDB (Read Access Token v4): ✅ validado e configurado no Mac (2026-09-26) e no Linux (2026-09-28). Em outra máquina, repetir no `local.properties` (ver SETUP.md).
 - ✅ Testado no S25 (Android 16) em 2026-09-26: 4 testes instrumentados do DAO passando (`./gradlew connectedDebugAndroidTest`); app instalado e validado manualmente (Home, Busca filmes/séries, pôsteres e fallback, debounce = 1 requisição por pesquisa, detalhes placeholder, voltar, troca de abas). Dois bugs de navegação achados e corrigidos (D-026).
+- ✅ 2026-09-28, a partir do Linux: app reinstalado no S25 (chave de debug diferente da do Mac; dados apagados, ver SETUP.md), 32 testes instrumentados passando, aba Biblioteca verificada (estado vazio, Dark Mode).
 - Polimento visual (fase de UI): indicador da bottom bar e botão segmentado usam o `secondaryContainer` padrão (lilás), fora da paleta amarelo/vermelho do `PipocaTheme`.
 - ~~Verificar JDK/Android SDK~~ ✅ JDK 25 (JBR do Android Studio, `JAVA_HOME` no `~/.zshrc`), SDK em `~/Library/Android/sdk` (android-33…37.1). JDK 25 exige Gradle ≥ 9.1.
