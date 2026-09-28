@@ -3,6 +3,7 @@ package com.thalyspenha.pipoca.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.thalyspenha.pipoca.domain.model.ThemeMode
 import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,11 +21,9 @@ class SharedPreferencesRepository @Inject constructor(
 
     private val prefs: SharedPreferences = context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 
-    private val viewMode = MutableStateFlow(
-        prefs.getString(KEY_LIBRARY_VIEW_MODE, null)
-            ?.let { saved -> LibraryViewMode.entries.firstOrNull { it.name == saved } }
-            ?: LibraryViewMode.GRID,
-    )
+    private val viewMode = MutableStateFlow(prefs.getEnum(KEY_LIBRARY_VIEW_MODE, LibraryViewMode.GRID))
+
+    private val theme = MutableStateFlow(prefs.getEnum(KEY_THEME_MODE, ThemeMode.SYSTEM))
 
     override val libraryViewMode: Flow<LibraryViewMode> = viewMode.asStateFlow()
 
@@ -33,8 +32,20 @@ class SharedPreferencesRepository @Inject constructor(
         prefs.edit { putString(KEY_LIBRARY_VIEW_MODE, mode.name) }
     }
 
+    override val themeMode: Flow<ThemeMode> = theme.asStateFlow()
+
+    override fun setThemeMode(mode: ThemeMode) {
+        theme.value = mode
+        prefs.edit { putString(KEY_THEME_MODE, mode.name) }
+    }
+
     private companion object {
         const val FILE = "pipoca_preferences"
         const val KEY_LIBRARY_VIEW_MODE = "library_view_mode"
+        const val KEY_THEME_MODE = "theme_mode"
     }
 }
+
+/** Valor salvo desconhecido (versão antiga/renomeado) cai no padrão. */
+private inline fun <reified T : Enum<T>> SharedPreferences.getEnum(key: String, default: T): T =
+    getString(key, null)?.let { saved -> enumValues<T>().firstOrNull { it.name == saved } } ?: default

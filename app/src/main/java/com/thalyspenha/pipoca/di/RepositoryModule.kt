@@ -3,6 +3,7 @@ package com.thalyspenha.pipoca.di
 import com.thalyspenha.pipoca.data.preferences.SharedPreferencesRepository
 import com.thalyspenha.pipoca.data.repository.CollectionRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.LibraryRepositoryImpl
+import com.thalyspenha.pipoca.data.repository.MaintenanceRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.MovieRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.SearchRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.SeasonRepositoryImpl
@@ -10,6 +11,7 @@ import com.thalyspenha.pipoca.data.repository.StatsRepositoryImpl
 import com.thalyspenha.pipoca.data.repository.TvShowRepositoryImpl
 import com.thalyspenha.pipoca.domain.repository.CollectionRepository
 import com.thalyspenha.pipoca.domain.repository.LibraryRepository
+import com.thalyspenha.pipoca.domain.repository.MaintenanceRepository
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
 import com.thalyspenha.pipoca.domain.repository.SearchRepository
@@ -57,4 +59,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPreferencesRepository(impl: SharedPreferencesRepository): PreferencesRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMaintenanceRepository(impl: MaintenanceRepositoryImpl): MaintenanceRepository
 }

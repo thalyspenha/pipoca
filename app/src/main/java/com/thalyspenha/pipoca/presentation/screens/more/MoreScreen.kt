@@ -9,6 +9,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -21,9 +22,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
 
-/** Aba "Mais": entradas para telas de organização (D-043). Configurações entram depois. */
+/** Aba "Mais": entradas para telas de organização (D-043) e Configurações (D-057). */
 @Composable
-fun MoreScreen(onFavoritesClick: () -> Unit, onHistoryClick: () -> Unit, onStatsClick: () -> Unit) {
+fun MoreScreen(
+    onFavoritesClick: () -> Unit,
+    onHistoryClick: () -> Unit,
+    onStatsClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+) {
     Column(Modifier.fillMaxSize()) {
         Text(
             "Mais",
@@ -35,6 +41,8 @@ fun MoreScreen(onFavoritesClick: () -> Unit, onHistoryClick: () -> Unit, onStats
         MoreEntry(Icons.Filled.DateRange, "Histórico", "Tudo que você assistiu, por data", onHistoryClick)
         HorizontalDivider()
         MoreEntry(Icons.Filled.Info, "Estatísticas", "Tempo assistido, gêneros, notas e coleção", onStatsClick)
+        HorizontalDivider()
+        MoreEntry(Icons.Filled.Settings, "Configurações", "Tema, cache, banco de dados e sobre", onSettingsClick)
         HorizontalDivider()
     }
 }
@@ -53,5 +61,5 @@ private fun MoreEntry(icon: ImageVector, title: String, subtitle: String, onClic
 @Preview(showBackground = true)
 @Composable
 private fun MorePreview() {
-    PipocaTheme { MoreScreen(onFavoritesClick = {}, onHistoryClick = {}, onStatsClick = {}) }
+    PipocaTheme { MoreScreen(onFavoritesClick = {}, onHistoryClick = {}, onStatsClick = {}, onSettingsClick = {}) }
 }

@@ -39,6 +39,8 @@ import com.thalyspenha.pipoca.presentation.screens.home.detailsRoute
 import com.thalyspenha.pipoca.presentation.screens.library.LibraryScreen
 import com.thalyspenha.pipoca.presentation.screens.more.MoreScreen
 import com.thalyspenha.pipoca.presentation.screens.search.SearchScreen
+import com.thalyspenha.pipoca.presentation.screens.settings.AboutScreen
+import com.thalyspenha.pipoca.presentation.screens.settings.SettingsScreen
 import com.thalyspenha.pipoca.presentation.screens.stats.StatsScreen
 import com.thalyspenha.pipoca.presentation.screens.search.detailsRoute
 
@@ -116,8 +118,13 @@ fun PipocaApp() {
                     onFavoritesClick = { navController.navigate(FavoritesRoute) },
                     onHistoryClick = { navController.navigate(HistoryRoute) },
                     onStatsClick = { navController.navigate(StatsRoute) },
+                    onSettingsClick = { navController.navigate(SettingsRoute) },
                 )
             }
+            composable<SettingsRoute> {
+                SettingsScreen(onBack = navController::navigateUp, onAboutClick = { navController.navigate(AboutRoute) })
+            }
+            composable<AboutRoute> { AboutScreen(onBack = navController::navigateUp) }
             composable<StatsRoute> { StatsScreen(onBack = navController::navigateUp) }
             composable<HistoryRoute> {
                 HistoryScreen(

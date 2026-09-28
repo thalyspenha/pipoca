@@ -377,3 +377,14 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-056 — Paleta completa claro/escuro
 **Decisão:** esquemas `lightColorScheme`/`darkColorScheme` com todos os papéis na paleta manteiga/balde (containers, `tertiary`, superfícies neutras quentes e `surfaceContainer*`), sem cair no lilás padrão. Janela com fundo igual ao do app (`values`/`values-night`), para não piscar ao abrir. Ícone temático (`monochrome`) no ícone adaptativo.
 **Consequência:** indicador da bottom bar e botões de status usam o vermelho-balde em container; resolve a pendência de polimento visual.
+
+### D-057 — Configurações, tema e limpeza de cache
+**Contexto:** Fase 10, parte 3 (AUDIT.md #4, #6, #12, #14, #18, #19).
+**Decisão:**
+- Entrada "Configurações" na aba "Mais" (`SettingsRoute`), com Sobre em tela própria (`AboutRoute`). Sem dependência nova.
+- Tema Sistema/Claro/Escuro em `PreferencesRepository` (mesmo arquivo `pipoca_preferences`, D-052); aplicado em `MainActivity`, que também ajusta os ícones das barras de sistema ao tema escolhido. Cor dinâmica continua desligada.
+- Limpar cache (com confirmação): apaga imagens do Coil (memória e disco) e o cache TMDB só de títulos fora da biblioteca, coleção, histórico e (séries) com episódio marcado; créditos/pessoas órfãos saem junto. Assim o offline e os títulos do usuário não perdem nada; itens que ainda ficarem sem cache são rebuscados por `FetchMissingDetailsUseCase` (D-055). Resultado em snackbar.
+- Informações do banco: contagens pessoais e do cache, tamanho do arquivo (banco + WAL) e versão do schema (`AppDatabase.VERSION`), via `MaintenanceDao`/`MaintenanceRepository`, reativas.
+- Versão do app via `AppInfo` injetado pelo `AppModule` (único ponto que lê `BuildConfig`).
+- Sobre: texto exigido pelo TMDB ("This product uses the TMDB API but is not endorsed or certified by TMDB") e link para themoviedb.org; sem o logo oficial (evita baixar/embutir o arquivo; pode entrar depois).
+**Consequência:** achados de Configurações da auditoria resolvidos; parte 4 trata só do release.

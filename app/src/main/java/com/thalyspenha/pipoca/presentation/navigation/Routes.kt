@@ -26,3 +26,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object FavoritesRoute
 @Serializable data object HistoryRoute
 @Serializable data object StatsRoute
+
+// Configurações e Sobre, a partir da aba "Mais" (D-057).
+@Serializable data object SettingsRoute
+@Serializable data object AboutRoute

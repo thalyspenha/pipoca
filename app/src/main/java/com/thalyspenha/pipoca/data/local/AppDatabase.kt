@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thalyspenha.pipoca.data.local.converter.Converters
 import com.thalyspenha.pipoca.data.local.dao.CollectionDao
+import com.thalyspenha.pipoca.data.local.dao.MaintenanceDao
 import com.thalyspenha.pipoca.data.local.dao.StatsDao
 import com.thalyspenha.pipoca.data.local.dao.TmdbCacheDao
 import com.thalyspenha.pipoca.data.local.dao.TmdbEpisodeDao
@@ -41,7 +42,7 @@ import com.thalyspenha.pipoca.data.local.entity.WatchHistoryEntity
         UserEpisodeEntity::class,
         CollectionItemEntity::class,
     ],
-    version = 4,
+    version = AppDatabase.VERSION,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -56,7 +57,10 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun statsDao(): StatsDao
 
+    abstract fun maintenanceDao(): MaintenanceDao
+
     companion object {
         const val NAME = "pipoca.db"
+        const val VERSION = 4
     }
 }

@@ -1,6 +1,8 @@
 # Auditoria — Fase 10, parte 1
 
 > **Parte 2 (2026-09-28):** resolvidos #1, #2, #3 (D-055), #4 na parte de busca (Biblioteca usa `FetchMissingDetailsUseCase`; o que "Limpar cache" preserva fica para a P3), #5 e #7 (D-056; claro e escuro vistos no S25, com a biblioteca vazia), #17 (`key.txt` no `.gitignore`), #22 (pôsteres decorativos para leitor de tela, ordenação e estrela selecionadas anunciadas), #24 (ícone monocromático; lint sem avisos), #26 (testes das mudanças).
+>
+> **Parte 3 (2026-09-28):** resolvidos #4 (limpar cache preserva biblioteca, coleção, histórico e séries com episódio marcado), #6, #12, #14, #18, #19 e #26 (testes de Configurações e da limpeza) — D-057.
 
 Data: 2026-09-28. Base: commit `8cdd94a` (Fase B concluída). ~10 mil linhas em `app/src/main`, 225 testes unitários, 32 instrumentados, lint com 1 aviso.
 

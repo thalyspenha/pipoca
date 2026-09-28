@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.thalyspenha.pipoca.data.local.AppDatabase
 import com.thalyspenha.pipoca.data.local.dao.CollectionDao
+import com.thalyspenha.pipoca.data.local.dao.MaintenanceDao
 import com.thalyspenha.pipoca.data.local.dao.StatsDao
 import com.thalyspenha.pipoca.data.local.dao.TmdbCacheDao
 import com.thalyspenha.pipoca.data.local.dao.TmdbEpisodeDao
@@ -41,4 +42,7 @@ object DatabaseModule {
 
     @Provides
     fun provideStatsDao(database: AppDatabase): StatsDao = database.statsDao()
+
+    @Provides
+    fun provideMaintenanceDao(database: AppDatabase): MaintenanceDao = database.maintenanceDao()
 }

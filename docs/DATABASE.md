@@ -1,6 +1,6 @@
 # DATABASE
 
-Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`; `tmdb_episode` (Fase 6) por `TmdbEpisodeDao` via `SeasonRepository`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `user_episode` (Fase 6) também em `UserLibraryDao`. `collection_item` (Fase 7) por `CollectionDao` via `CollectionRepository`. `AppDatabase` versão 4, schema em `app/schemas/`.
+Room. Status: **cache TMDB** (Fase 2): `tmdb_genre`, `tmdb_movie`, `tmdb_movie_genre`, `tmdb_tv_show`, `tmdb_tv_show_genre`, `tmdb_season` (resumo vindo dos detalhes da série), `tmdb_person`, `tmdb_credit`, acesso por `TmdbCacheDao`; `tmdb_episode` (Fase 6) por `TmdbEpisodeDao` via `SeasonRepository`. **Dados pessoais** (Fase 4, parte 1): `user_movie`, `user_tv_show`, `watch_history`, acesso por `UserLibraryDao` via `LibraryRepository` (Fase 4, parte 2). Listas para a UI usam LEFT JOIN com o cache (`observeMoviesWithCache`/`observeTvShowsWithCache`): título/poster nulos quando o cache não existe, sem nunca perder o item pessoal (D-030). `user_episode` (Fase 6) também em `UserLibraryDao`. `collection_item` (Fase 7) por `CollectionDao` via `CollectionRepository`. `AppDatabase` versão 4 (`AppDatabase.VERSION`), schema em `app/schemas/`. Contagens e limpeza de cache das Configurações por `MaintenanceDao` via `MaintenanceRepository` (D-057).
 
 ## Migrações
 
@@ -18,6 +18,7 @@ A partir da versão 1 toda mudança de schema tem `Migration` explícita em `dat
 1. Duas famílias de tabelas separadas:
    - **Cache TMDB** (`tmdb_*`): pode ser atualizado ou apagado a qualquer momento.
    - **Dados pessoais** (`user_*`, `collection_item`, `watch_history`): nunca apagados pelo cache.
+   - **Limpar cache** (Configurações, D-057): apaga `tmdb_movie`/`tmdb_tv_show` de títulos fora de `user_*`, `collection_item`, `watch_history` e (séries) `user_episode`; temporadas, episódios e gêneros saem em CASCADE, créditos e pessoas órfãos em seguida; `tmdb_genre` fica. Também limpa o cache de imagens do Coil. Títulos usados continuam disponíveis offline.
 2. IDs do TMDB são a chave de identidade de filmes, séries, temporadas e episódios.
 3. Tabelas pessoais **não** têm foreign key para o cache (D-007). Assim, limpar/atualizar cache nunca apaga dado pessoal. Integridade é garantida no repositório.
 4. Nada de duplicar dado TMDB nas tabelas pessoais (título, poster etc. vêm do cache via JOIN).

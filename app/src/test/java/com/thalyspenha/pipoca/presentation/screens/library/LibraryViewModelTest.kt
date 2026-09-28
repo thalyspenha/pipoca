@@ -14,6 +14,7 @@ import com.thalyspenha.pipoca.domain.repository.LibraryViewMode
 import com.thalyspenha.pipoca.domain.repository.PreferencesRepository
 import com.thalyspenha.pipoca.domain.model.DataResult
 import com.thalyspenha.pipoca.domain.model.MovieDetails
+import com.thalyspenha.pipoca.domain.model.ThemeMode
 import com.thalyspenha.pipoca.domain.model.TmdbConfig
 import com.thalyspenha.pipoca.domain.repository.MovieRepository
 import com.thalyspenha.pipoca.domain.usecase.cache.FetchMissingDetailsUseCase
@@ -59,6 +60,12 @@ private class FakePreferencesRepository : PreferencesRepository {
 
     override fun setLibraryViewMode(mode: LibraryViewMode) {
         libraryViewMode.value = mode
+    }
+
+    override val themeMode = MutableStateFlow(ThemeMode.SYSTEM)
+
+    override fun setThemeMode(mode: ThemeMode) {
+        themeMode.value = mode
     }
 }
 

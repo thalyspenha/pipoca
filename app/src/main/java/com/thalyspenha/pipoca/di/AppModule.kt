@@ -1,6 +1,7 @@
 package com.thalyspenha.pipoca.di
 
 import com.thalyspenha.pipoca.BuildConfig
+import com.thalyspenha.pipoca.domain.model.AppInfo
 import com.thalyspenha.pipoca.domain.model.TmdbConfig
 import dagger.Module
 import dagger.Provides
@@ -18,6 +19,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTmdbConfig(): TmdbConfig = TmdbConfig(apiToken = BuildConfig.TMDB_API_TOKEN)
+
+    @Provides
+    @Singleton
+    fun provideAppInfo(): AppInfo = AppInfo(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
     /** Relógio injetável: validade do cache testável sem depender da hora real. */
     @Provides

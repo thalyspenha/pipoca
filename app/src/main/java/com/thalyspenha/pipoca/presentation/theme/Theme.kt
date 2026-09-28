@@ -68,10 +68,9 @@ private val DarkColors = darkColorScheme(
 )
 
 /**
- * Tema do app. Segue o modo claro/escuro do sistema. Esquemas completos na paleta própria (D-056):
- * nenhum papel cai no lilás padrão do Material.
- * [dynamicColor] usa as cores do papel de parede (Android 12+); desligado por padrão
- * para manter a identidade do app. Vira configuração do usuário numa fase futura.
+ * Tema do app. [darkTheme] vem da escolha nas Configurações (`MainActivity`, D-057); padrão segue o sistema. Esquemas completos
+ * na paleta própria (D-056): nenhum papel cai no lilás padrão do Material.
+ * [dynamicColor] usa as cores do papel de parede (Android 12+); desligado para manter a identidade do app.
  */
 @Composable
 fun PipocaTheme(
