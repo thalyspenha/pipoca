@@ -25,6 +25,8 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,7 +41,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thalyspenha.pipoca.domain.model.DataError
 import com.thalyspenha.pipoca.presentation.components.ErrorContent
 import com.thalyspenha.pipoca.presentation.components.LoadingContent
-import com.thalyspenha.pipoca.presentation.components.PlaceholderScreen
 import com.thalyspenha.pipoca.presentation.components.PosterImage
 import com.thalyspenha.pipoca.presentation.components.isRetryable
 import com.thalyspenha.pipoca.presentation.components.toMessage
@@ -81,21 +82,48 @@ private fun SearchContentView(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         )
         when (val content = state.content) {
-            SearchContent.Idle -> PlaceholderScreen(
+            SearchContent.Idle -> SearchMessage(
                 title = "Busca",
                 description = "Digite pelo menos 2 letras para pesquisar filmes e séries no TMDB.",
             )
             SearchContent.Loading -> LoadingContent()
-            is SearchContent.Empty -> PlaceholderScreen(
-                title = "Nada encontrado",
-                description = "Nenhum resultado para \"${content.query}\". Tente outro nome ou troque entre filmes e séries.",
-            )
+            is SearchContent.Empty -> {
+                val other = if (state.type == SearchType.MOVIES) SearchType.TV_SHOWS else SearchType.MOVIES
+                SearchMessage(
+                    title = "Nada encontrado",
+                    description = "Nenhum resultado para \"${content.query}\". Confira o nome ou procure em " +
+                        (if (other == SearchType.TV_SHOWS) "séries." else "filmes."),
+                    action = (if (other == SearchType.TV_SHOWS) "Procurar em séries" else "Procurar em filmes") to
+                        { onTypeChange(other) },
+                )
+            }
             is SearchContent.Error -> ErrorContent(
                 message = content.error.toMessage(),
                 onRetry = onRetry.takeIf { content.error.isRetryable },
             )
             is SearchContent.Results -> ResultList(content.items, onResultClick)
         }
+    }
+}
+
+/**
+ * Mensagem da Busca alinhada ao topo, logo abaixo do seletor: centralizada, ficava atrás do teclado (D-061).
+ */
+@Composable
+private fun SearchMessage(title: String, description: String, action: Pair<String, () -> Unit>? = null) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(title, style = MaterialTheme.typography.titleMedium)
+        Text(
+            description,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        action?.let { (label, onClick) -> TextButton(onClick = onClick) { Text(label) } }
     }
 }
 

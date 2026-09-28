@@ -412,3 +412,15 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Mesmo guarda no atalho "Assisti" do próximo episódio (achado no teste no S25): o segundo toque marcava o episódio seguinte.
 - Plural "0/1 episódio" nos cards e no progresso da série.
 **Consequência:** anotados sem correção (raros): "Este mês" das estatísticas não vira com a tela aberta; conclusão automática só é reavaliada ao marcar episódio, não após baixar temporadas.
+
+### D-061 — Ajustes de UX/UI pós-1.0.0
+**Contexto:** duas revisões de UX/UI (agentes) em 2026-09-28; usuário aprovou o pacote de correções rápidas.
+**Decisão:**
+- Nota pessoal: cada estrela ocupa 1/10 da largura com 48 dp de altura, sem vãos; tocar na estrela atual não remove mais a nota — botão "Remover nota" explícito.
+- Temporada: "Desmarcar todos" vira `TextButton` e pede confirmação ("Desmarcar N episódios?"), porque apaga datas e histórico. Checkbox de episódio com `contentDescription` ("Assistido: S01E03 Nome").
+- Busca: mensagens (início e sem resultado) alinhadas ao topo, título menor, para não ficarem atrás do teclado; sem resultado oferece "Procurar em séries/filmes".
+- Gêneros nos detalhes viram rótulos (sem `onClick`), não botões.
+- Coleção: tocar na linha abre os detalhes do título; o lápis edita o item (ajusta D-042, igual à seção Coleção dos detalhes).
+- Ícones próprios em `AppIcons` (caminhos Material, sem `material-icons-extended`): aba Biblioteca `VideoLibrary` (não confunde com "Ver em lista"), aba Coleção `Album` (a estrela é da nota), Estatísticas no "Mais" `BarChart` (o ⓘ parecia "Sobre").
+- Chips de filtro cortados na borda: já tinham `contentPadding` de 16 dp; o corte é o indício de rolagem, mantido.
+**Consequência:** ficam para decisão do usuário: ações rápidas visíveis na Biblioteca, ordem das seções nos detalhes da série, título repetido na barra dos detalhes, seletor Filmes/Séries unificado, agrupar Histórico, itens de baixa prioridade.

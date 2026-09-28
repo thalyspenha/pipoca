@@ -16,6 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -110,6 +114,22 @@ private fun SeasonBody(
     onUnmarkSeason: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var confirmUnmark by rememberSaveable { mutableStateOf(false) }
+    if (confirmUnmark) {
+        val count = state.episodes.count { it.isWatched }
+        AlertDialog(
+            onDismissRequest = { confirmUnmark = false },
+            title = { Text(if (count == 1) "Desmarcar 1 episódio?" else "Desmarcar $count episódios?") },
+            text = { Text("As datas em que você assistiu e os registros no histórico desta temporada serão apagados.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmUnmark = false
+                    onUnmarkSeason()
+                }) { Text("Desmarcar") }
+            },
+            dismissButton = { TextButton(onClick = { confirmUnmark = false }) { Text("Cancelar") } },
+        )
+    }
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 16.dp)) {
         if (state.isRefreshing) {
             item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
@@ -128,7 +148,8 @@ private fun SeasonBody(
                     )
                 }
                 if (state.allAiredWatched) {
-                    OutlinedButton(onClick = onUnmarkSeason) { Text("Desmarcar todos") }
+                    // Menos destaque e com confirmação: apaga datas e histórico da temporada (D-061).
+                    TextButton(onClick = { confirmUnmark = true }) { Text("Desmarcar todos") }
                 } else if (state.aired > 0) {
                     OutlinedButton(onClick = onMarkSeason) { Text("Marcar todos") }
                 }
@@ -174,10 +195,13 @@ private fun EpisodeItem(row: EpisodeRow, onToggle: (Boolean) -> Unit) {
                 )
             }
         }
+        val code = episodeCode(episode.seasonNumber, episode.episodeNumber)
         Checkbox(
             checked = row.isWatched,
             onCheckedChange = onToggle,
             enabled = row.isAired || row.isWatched,
+            // Sem isso o leitor de tela diz só "caixa de seleção", sem qual episódio (D-061).
+            modifier = Modifier.semantics { contentDescription = "Assistido: $code ${episode.name}".trim() },
         )
     }
 }

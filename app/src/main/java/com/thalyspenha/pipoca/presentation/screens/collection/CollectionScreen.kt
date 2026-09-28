@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
@@ -159,14 +159,14 @@ private fun FilterRow(selected: CollectionFilter, onFilterChange: (CollectionFil
     }
 }
 
-/** Toque edita o item (D-042); a seta abre os detalhes do título. */
+/** Toque abre os detalhes do título; o lápis edita o item (D-061, ajusta D-042). */
 @Composable
 private fun CollectionRow(item: CollectionListItem, onClick: () -> Unit, onOpenDetails: () -> Unit) {
     val title = item.title ?: "Carregando…"
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onOpenDetails)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -187,8 +187,8 @@ private fun CollectionRow(item: CollectionListItem, onClick: () -> Unit, onOpenD
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onOpenDetails) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Ver detalhes")
+        IconButton(onClick = onClick) {
+            Icon(Icons.Filled.Edit, contentDescription = "Editar item da coleção")
         }
     }
 }

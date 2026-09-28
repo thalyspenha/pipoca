@@ -1,17 +1,22 @@
 package com.thalyspenha.pipoca.presentation.components.details
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.semantics.Role
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -21,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.thalyspenha.pipoca.domain.model.PERSONAL_RATING_RANGE
@@ -62,34 +66,36 @@ fun FavoriteButton(isFavorite: Boolean, onClick: () -> Unit, modifier: Modifier 
 }
 
 /**
- * Nota pessoal 1–10 como estrelas (10 × 32 dp cabem na largura do S25). Tocar na nota atual remove a nota.
+ * Nota pessoal 1–10 como estrelas. Cada estrela ocupa 1/10 da largura com 48 dp de altura, sem vãos
+ * entre alvos (D-061). Remover a nota é um botão explícito, não tocar de novo na estrela.
  */
 @Composable
 fun RatingSelector(rating: Int?, onRatingChange: (Int?) -> Unit, modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        PERSONAL_RATING_RANGE.forEach { value ->
-            IconButton(
-                onClick = { onRatingChange(if (value == rating) null else value) },
-                modifier = Modifier
-                    .size(32.dp)
-                    .semantics {
-                        contentDescription = "Nota $value"
-                        selected = value == rating
-                    },
-            ) {
-                Icon(
-                    Icons.Filled.Star,
-                    contentDescription = null,
-                    tint = if (rating != null && value <= rating) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.outlineVariant
-                    },
-                )
+    Column(modifier.padding(horizontal = 12.dp)) {
+        Row(Modifier.fillMaxWidth().selectableGroup()) {
+            PERSONAL_RATING_RANGE.forEach { value ->
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .selectable(selected = value == rating, role = Role.RadioButton) { onRatingChange(value) }
+                        .semantics { contentDescription = "Nota $value" },
+                ) {
+                    Icon(
+                        Icons.Filled.Star,
+                        contentDescription = null,
+                        tint = if (rating != null && value <= rating) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                    )
+                }
             }
+        }
+        if (rating != null) {
+            TextButton(onClick = { onRatingChange(null) }) { Text("Remover nota") }
         }
     }
 }

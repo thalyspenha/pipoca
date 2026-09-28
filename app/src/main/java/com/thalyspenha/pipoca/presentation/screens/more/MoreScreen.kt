@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.thalyspenha.pipoca.presentation.components.AppIcons
 import com.thalyspenha.pipoca.presentation.theme.PipocaTheme
 
 /** Aba "Mais": entradas para telas de organização (D-043) e Configurações (D-057). */
@@ -40,7 +40,7 @@ fun MoreScreen(
         HorizontalDivider()
         MoreEntry(Icons.Filled.DateRange, "Histórico", "Tudo que você assistiu, por data", onHistoryClick)
         HorizontalDivider()
-        MoreEntry(Icons.Filled.Info, "Estatísticas", "Tempo assistido, gêneros, notas e coleção", onStatsClick)
+        MoreEntry(AppIcons.BarChart, "Estatísticas", "Tempo assistido, gêneros, notas e coleção", onStatsClick)
         HorizontalDivider()
         MoreEntry(Icons.Filled.Settings, "Configurações", "Tema, cache, banco de dados e sobre", onSettingsClick)
         HorizontalDivider()
