@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. **Fase 10 concluída:** versão 1.0.0 (APKs debug e release, `RELEASE_NOTES.md`); 238 testes unitários, 34 instrumentados, lint sem avisos. Próxima: Fase 11 (`fase11.md`, ainda não lido).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. **Fase 10 concluída:** versão 1.0.0 (APKs debug e release, `RELEASE_NOTES.md`); 238 testes unitários, 34 instrumentados, lint sem avisos. Projeto encerrado em 2026-09-28 na versão 1.0.0 (`fase11.md` está vazio; retomar só com novas instruções).
 
 ## Fases
 
@@ -125,17 +125,8 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   3. ✅ Configurações — aba "Mais" → Configurações: Tema (Sistema/Claro/Escuro), Limpar cache (preserva o que o usuário usa), informações do banco, versão; Sobre com atribuição ao TMDB (D-057).
   4. ✅ Release — versão 1.0.0 (versionCode 2), APK debug e release (assinado com a chave de debug, sem R8), `RELEASE_NOTES.md`, SETUP (D-058).
 
-### ⏳ Fase 11
-Definida em `fase11.md` (ainda não lido). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.
-
-Ordem provável derivada do prompt mestre, apenas como referência:
-- Biblioteca de filmes (status, favorito, nota, data).
-- Séries, temporadas, episódios e progresso.
-- Coleção física.
-- Histórico.
-- Home completa.
-- Estatísticas.
-- Configurações, polimento de UI, offline.
+### ⏸️ Fase 11
+`fase11.md` lido em 2026-09-28: arquivo vazio. Sem fase definida; projeto encerrado na 1.0.0 por decisão do usuário. Ideias para o futuro em `RELEASE_NOTES.md` (backup JSON, logo TMDB, R8, lembrete de episódios).
 
 ## Pendências gerais
 
