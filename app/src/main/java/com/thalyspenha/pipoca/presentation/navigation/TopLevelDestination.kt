@@ -8,15 +8,15 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
-/** Abas da bottom bar, na ordem de exibição. */
+/** Abas da bottom bar, na ordem de exibição (D-050). */
 enum class TopLevelDestination(
     val route: Any,
     val label: String,
     val icon: ImageVector,
 ) {
     HOME(HomeRoute, "Início", Icons.Filled.Home),
-    SEARCH(SearchRoute, "Busca", Icons.Filled.Search),
     LIBRARY(LibraryRoute, "Biblioteca", Icons.AutoMirrored.Filled.List),
+    SEARCH(SearchRoute, "Busca", Icons.Filled.Search),
     COLLECTION(CollectionRoute, "Coleção", Icons.Filled.Star),
     MORE(MoreRoute, "Mais", Icons.Filled.Menu),
 }

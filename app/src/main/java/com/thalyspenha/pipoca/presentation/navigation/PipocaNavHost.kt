@@ -92,7 +92,14 @@ fun PipocaApp() {
             composable<SearchRoute> {
                 SearchScreen(onResultClick = { item -> navController.navigate(item.detailsRoute()) })
             }
-            composable<LibraryRoute> { LibraryScreen() }
+            composable<LibraryRoute> {
+                LibraryScreen(
+                    onItemClick = { item ->
+                        navController.navigate(if (item.isMovie) MovieDetailsRoute(item.id) else TvShowDetailsRoute(item.id))
+                    },
+                    onSearchTitlesClick = { navController.navigateToTab(TopLevelDestination.SEARCH) },
+                )
+            }
             composable<CollectionRoute> {
                 CollectionScreen(
                     onItemClick = { item ->

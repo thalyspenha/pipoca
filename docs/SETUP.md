@@ -73,6 +73,13 @@ adb shell "run-as com.thalyspenha.pipoca sh -c 'rm -f databases/migration-test.d
 ```
 Não usar `./gradlew connectedDebugAndroidTest`: ao final ele desinstala o app e apaga o banco do aparelho.
 
+Cada máquina tem sua chave de debug (`~/.android/debug.keystore`). Instalar a partir de outra máquina falha com `INSTALL_FAILED_UPDATE_INCOMPATIBLE`; para não perder dados ao alternar Mac/Linux, copiar o mesmo `debug.keystore` para as duas. Em 2026-09-28 o app foi desinstalado no S25 (dados apagados) para instalar a partir do Linux.
+
+## Linux (Omarchy)
+
+- Android Studio em `~/Documents/android-studio`; JDK = JBR dele: `JAVA_HOME=~/Documents/android-studio/jbr ./gradlew build` (sem `java` no PATH).
+- SDK em `~/Android/Sdk` (`sdk.dir` no `local.properties`); `adb` já no PATH.
+
 ## Claude Code
 
 A memória local do Claude (`~/.claude/projects/...`) não é sincronizada entre máquinas. O que importa para continuar o trabalho está em `CLAUDE.md` e `docs/` (estado atual: `docs/ROADMAP.md`).

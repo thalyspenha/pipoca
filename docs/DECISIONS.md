@@ -346,3 +346,12 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `ObserveLibraryTvShowsUseCase` junta lista + três consultas agregadas de toda a biblioteca e calcula `ShowProgress` por série; progresso nulo quando não há episódios em cache nem assistidos. `PROGRESS` ordena em memória (maior % primeiro, sem progresso no fim).
 - Pesquisa local `matchesSearch` (NFD sem marcas, minúsculas) em memória; nunca TMDB.
 **Consequência:** a parte 2 monta a tela sobre esses use cases; nada de nova fonte de dados.
+
+### D-052 — Tela da Biblioteca
+**Decisão:**
+- `LibraryViewModel`: aba, filtro e ordenação separados por aba (Filmes/Séries) e pesquisa em `SavedStateHandle`; a lista é emitida junto com a seleção que a gerou (`flatMapLatest`), para nunca mostrar itens de outra aba. Ordenações só de séries são ignoradas em filmes.
+- `MediaPosterCard` reutilizável (`presentation/components`) com `MediaCardData`: Grid (pôster `w342`, título, ano, barra de progresso ou status, coração sobre o pôster) e Lista (pôster pequeno, título, ano, status, "36/50 episódios"). Barra só com episódios disponíveis > 0.
+- Status com ícones Material do `material-icons-core`; Pausa e Grade não existem nele, então vetores próprios em `AppIcons` (caminhos dos ícones Material), sem a dependência `extended`.
+- Grid/Lista em `PreferencesRepository` → `SharedPreferencesRepository` (arquivo `pipoca_preferences`), servirá ao tema da Fase 10.
+- Pesquisa abre um campo no topo (voltar fecha e limpa). Estados vazios: biblioteca vazia com botão "Buscar títulos" (vai para a aba Busca); por filtro e por pesquisa com mensagem específica.
+- Itens sem cache TMDB aparecem como "Carregando…" (não disparam busca de detalhes como a Coleção; itens entram na biblioteca pelos detalhes, que já gravam o cache).

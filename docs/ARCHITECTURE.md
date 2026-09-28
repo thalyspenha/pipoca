@@ -134,7 +134,8 @@ Valores são ponto de partida; ajustar se necessário e registrar.
 
 ## Navegação
 
-- `NavHost` único com bottom bar: Home, Busca, Biblioteca, Coleção, Mais (Estatísticas, Histórico, Configurações).
+- `NavHost` único com bottom bar: Início, Biblioteca, Busca, Coleção, Mais (Favoritos, Histórico, Estatísticas, Configurações) (D-050).
+- Preferências locais (modo Grid/Lista da Biblioteca) em `PreferencesRepository`, implementado com `SharedPreferences` em `data/preferences` (D-052).
 - Detalhes (filme, série, temporada) empilhados sobre a aba atual (`MovieDetailsRoute(id)`, `TvShowDetailsRoute(id)`); a aba de origem continua marcada na bottom bar.
 - Rotas type-safe com argumentos simples (IDs TMDB), nunca objetos grandes.
 - Estrutura final das abas pode mudar na fase de UI; registrar.

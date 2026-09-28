@@ -114,7 +114,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 - Decisões (D-050): abas Início · Biblioteca · Busca · Coleção · Mais; status Pausada/Abandonada passam a ser selecionáveis nos detalhes da série; ordenação no SQL, exceto progresso (em memória sobre as consultas agregadas); pesquisa local em memória ignorando acento; preferência Grid/Lista em `SharedPreferences`.
 - **Executada em 3 partes** (D-050). Uma por vez, só com "IMPLEMENTAR FASE B – PARTE N"; cada parte compila e termina com sugestão de commit:
   1. ✅ Dados — consultas de lista/contagens/ordenação no Room, progresso de todas as séries da biblioteca, pesquisa e filtros; testes.
-  2. ⏳ Tela — Grid/Lista, `MediaPosterCard`, filtros com contagem, ordenação, pesquisa, estados vazios, nova ordem das abas, preferência salva.
+  2. ✅ Tela — Grid/Lista, `MediaPosterCard`, filtros com contagem, ordenação, pesquisa, estados vazios, nova ordem das abas, preferência salva.
   3. ⏳ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
 
 ### ⏳ Fase 10 — Polimento e release pessoal (ver `fase10.md`)
