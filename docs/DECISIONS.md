@@ -409,5 +409,6 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - `Clock` injetado passa a ser `systemDefaultZone()` (era UTC): "hoje" de episódios exibidos, progresso e data de aquisição da coleção segue o fuso do aparelho (antes virava o dia às 21h no Brasil). Validade do cache usa `instant()`, não muda.
 - `insertWatchedEpisodesWithHistory` ignora, dentro da transação, episódios já marcados: toque duplo em marcar episódio/temporada não duplica `watch_history` nem troca a data original.
 - Detalhes de filme e série: status ignora toques enquanto a ação anterior roda (+400 ms), para o segundo toque não tirar o título da biblioteca.
+- Mesmo guarda no atalho "Assisti" do próximo episódio (achado no teste no S25): o segundo toque marcava o episódio seguinte.
 - Plural "0/1 episódio" nos cards e no progresso da série.
 **Consequência:** anotados sem correção (raros): "Este mês" das estatísticas não vira com a tela aberta; conclusão automática só é reavaliada ao marcar episódio, não após baixar temporadas.

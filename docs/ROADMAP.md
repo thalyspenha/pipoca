@@ -129,7 +129,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 `fase11.md` lido em 2026-09-28: arquivo vazio. Sem fase definida; projeto encerrado na 1.0.0 por decisão do usuário. Ideias para o futuro em `RELEASE_NOTES.md` (backup JSON, logo TMDB, R8, lembrete de episódios).
 
 Ajuste pós-1.0.0 (2026-09-28): aba "Mais" sempre reabre no menu (D-059).
-Revisão de QA pós-1.0.0 (2026-09-28): fuso do "hoje", histórico duplicado por toque duplo, toque duplo no status e plural corrigidos (D-060); 239 testes unitários, 35 instrumentados. Pendentes de baixa prioridade listados em D-060.
+Revisão de QA pós-1.0.0 (2026-09-28): fuso do "hoje", histórico duplicado por toque duplo, toque duplo no status e no "Assisti" e plural corrigidos (D-060); 240 testes unitários, 35 instrumentados. Pendentes de baixa prioridade listados em D-060.
 
 ## Pendências gerais
 

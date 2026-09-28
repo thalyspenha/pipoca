@@ -180,9 +180,16 @@ class TvShowDetailsViewModel @Inject constructor(
 
     /** Atalho "marcar próximo episódio" do card de progresso. */
     fun onMarkNextEpisode() {
+        // Toque duplo: o segundo leria o próximo já atualizado e marcaria outro episódio.
+        if (markNextJob?.isActive == true) return
         val next = (uiState.value as? TvShowDetailsUiState.Success)?.progress?.nextEpisode ?: return
-        viewModelScope.launch { markEpisode(next) }
+        markNextJob = viewModelScope.launch {
+            markEpisode(next)
+            delay(STATUS_CLICK_GUARD_MILLIS)
+        }
     }
+
+    private var markNextJob: Job? = null
 
     private companion object {
         const val ARG_ID = "id"

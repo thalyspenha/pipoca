@@ -205,6 +205,21 @@ class TvShowDetailsViewModelTest {
     }
 
     @Test
+    fun `toque duplo em marcar proximo marca um episodio so`() = test {
+        shows.details.value = breakingBad()
+        seasons.episodes.value = listOf(ep(1, 1), ep(1, 2), ep(2, 1))
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onMarkNextEpisode()
+        runCurrent()
+        vm.onMarkNextEpisode()
+        advanceUntilIdle()
+
+        assertEquals(1, vm.success().progress?.watched)
+    }
+
+    @Test
     fun `sem internet ao baixar temporadas automaticamente nao avisa, pedido pelo usuario avisa`() = test {
         shows.details.value = breakingBad()
         seasons.failOn = 2
