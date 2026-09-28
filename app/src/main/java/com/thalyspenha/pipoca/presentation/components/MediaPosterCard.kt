@@ -148,7 +148,7 @@ private fun ProgressLine(progress: MediaCardProgress, compact: Boolean) {
             Text("${progress.percent}%", style = MaterialTheme.typography.labelSmall)
         }
         Text(
-            if (compact) "${progress.watched}/${progress.available}" else "${progress.watched}/${progress.available} episódios",
+            if (compact) "${progress.watched}/${progress.available}" else "${progress.watched}/${progress.available} ${episodesWord(progress.available)}",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -189,3 +189,6 @@ private fun MediaPosterCardListPreview() {
         )
     }
 }
+
+/** "episódio" só quando o total é 1 ("0/1 episódio"). */
+internal fun episodesWord(count: Int): String = if (count == 1) "episódio" else "episódios"

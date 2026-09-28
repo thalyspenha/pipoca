@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.thalyspenha.pipoca.domain.progress.ShowProgress
 import com.thalyspenha.pipoca.presentation.components.PosterImage
+import com.thalyspenha.pipoca.presentation.components.episodesWord
 import com.thalyspenha.pipoca.util.episodeCode
 import com.thalyspenha.pipoca.util.formatDate
 
@@ -66,7 +67,7 @@ fun ProgressCard(
 private fun ProgressContent(progress: ShowProgress, isLoading: Boolean, onMarkNext: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            "${progress.watched} / ${progress.available} episódios",
+            "${progress.watched} / ${progress.available} ${episodesWord(progress.available)}",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.weight(1f),
         )

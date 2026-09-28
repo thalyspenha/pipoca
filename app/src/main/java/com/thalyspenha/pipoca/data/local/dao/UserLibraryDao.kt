@@ -267,11 +267,19 @@ interface UserLibraryDao {
     @Query("DELETE FROM watch_history WHERE show_id = :showId")
     suspend fun deleteShowHistory(showId: Long)
 
-    /** Marca episódios e registra um evento de histórico para cada, juntos. */
+    @Query("SELECT episode_id FROM user_episode WHERE episode_id IN (:episodeIds)")
+    suspend fun getWatchedEpisodeIds(episodeIds: List<Long>): List<Long>
+
+    /**
+     * Marca episódios e registra um evento de histórico para cada, juntos. Os já marcados são ignorados
+     * dentro da transação: toque duplo não duplica o histórico nem troca a data original.
+     */
     @Transaction
     suspend fun insertWatchedEpisodesWithHistory(episodes: List<UserEpisodeEntity>, events: List<WatchHistoryEntity>) {
-        upsertWatchedEpisodes(episodes)
-        insertWatches(events)
+        val already = getWatchedEpisodeIds(episodes.map { it.episodeId }).toSet()
+        if (already.size == episodes.size) return
+        upsertWatchedEpisodes(episodes.filter { it.episodeId !in already })
+        insertWatches(events.filter { it.episodeId !in already })
     }
 
     /** Desmarcar remove também o evento correspondente (DATABASE.md). */

@@ -24,10 +24,13 @@ object AppModule {
     @Singleton
     fun provideAppInfo(): AppInfo = AppInfo(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
-    /** Relógio injetável: validade do cache testável sem depender da hora real. */
+    /**
+     * Relógio injetável: validade do cache testável sem depender da hora real. No fuso do aparelho,
+     * para `LocalDate.now(clock)` ("hoje" de episódios e da coleção) não virar o dia às 21h no Brasil.
+     */
     @Provides
     @Singleton
-    fun provideClock(): Clock = Clock.systemUTC()
+    fun provideClock(): Clock = Clock.systemDefaultZone()
 
     /** Fuso do aparelho para agrupar por dia/mês/ano (estatísticas). */
     @Provides

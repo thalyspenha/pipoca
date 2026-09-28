@@ -27,6 +27,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -130,6 +131,19 @@ class TvShowDetailsViewModelTest {
         vm.onStatusClick(TvShowStatus.COMPLETED)
         advanceUntilIdle()
         assertNull(library.tvShows.value[SHOW_ID])
+    }
+
+    @Test
+    fun `toque duplo no status não tira a série da biblioteca`() = test {
+        shows.details.value = breakingBad()
+        val vm = started()
+        advanceUntilIdle()
+
+        vm.onStatusClick(TvShowStatus.WATCHING)
+        runCurrent()
+        vm.onStatusClick(TvShowStatus.WATCHING)
+        advanceUntilIdle()
+        assertEquals(TvShowStatus.WATCHING, library.tvShows.value[SHOW_ID]?.status)
     }
 
     @Test

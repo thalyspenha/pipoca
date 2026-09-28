@@ -16,6 +16,8 @@ import com.thalyspenha.pipoca.domain.usecase.library.SetMovieRatingUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetMovieStatusUseCase
 import com.thalyspenha.pipoca.presentation.components.shownFor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -97,11 +99,16 @@ class MovieDetailsViewModel @Inject constructor(
      * Remover apaga também o histórico dele (D-029).
      */
     fun onStatusClick(status: MovieStatus) {
+        // Toque duplo: o segundo leria o status já gravado e tiraria o título da biblioteca.
+        if (statusJob?.isActive == true) return
         val current = (uiState.value as? MovieDetailsUiState.Success)?.personal?.status
-        viewModelScope.launch {
+        statusJob = viewModelScope.launch {
             if (current == status) removeFromLibrary(movieId) else setStatus(movieId, status)
+            delay(STATUS_CLICK_GUARD_MILLIS)
         }
     }
+
+    private var statusJob: Job? = null
 
     fun onFavoriteClick() {
         val favorite = (uiState.value as? MovieDetailsUiState.Success)?.personal?.isFavorite ?: false
@@ -116,5 +123,6 @@ class MovieDetailsViewModel @Inject constructor(
     private companion object {
         const val ARG_ID = "id"
         const val STOP_TIMEOUT_MILLIS = 5_000L
+        const val STATUS_CLICK_GUARD_MILLIS = 400L
     }
 }

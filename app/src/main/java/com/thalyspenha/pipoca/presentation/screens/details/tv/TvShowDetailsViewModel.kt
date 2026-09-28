@@ -21,6 +21,8 @@ import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowRatingUseCase
 import com.thalyspenha.pipoca.domain.usecase.library.SetTvShowStatusUseCase
 import com.thalyspenha.pipoca.presentation.components.shownFor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -156,11 +158,16 @@ class TvShowDetailsViewModel @Inject constructor(
 
     /** Tocar no status atual tira a série da biblioteca (e os episódios assistidos, D-037). */
     fun onStatusClick(status: TvShowStatus) {
+        // Toque duplo: o segundo leria o status já gravado e tiraria o título da biblioteca.
+        if (statusJob?.isActive == true) return
         val current = (uiState.value as? TvShowDetailsUiState.Success)?.personal?.status
-        viewModelScope.launch {
+        statusJob = viewModelScope.launch {
             if (current == status) removeFromLibrary(showId) else setStatus(showId, status)
+            delay(STATUS_CLICK_GUARD_MILLIS)
         }
     }
+
+    private var statusJob: Job? = null
 
     fun onFavoriteClick() {
         val favorite = (uiState.value as? TvShowDetailsUiState.Success)?.personal?.isFavorite ?: false
@@ -180,5 +187,6 @@ class TvShowDetailsViewModel @Inject constructor(
     private companion object {
         const val ARG_ID = "id"
         const val STOP_TIMEOUT_MILLIS = 5_000L
+        const val STATUS_CLICK_GUARD_MILLIS = 400L
     }
 }

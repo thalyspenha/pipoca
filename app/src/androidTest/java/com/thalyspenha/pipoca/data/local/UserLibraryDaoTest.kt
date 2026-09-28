@@ -147,6 +147,22 @@ class UserLibraryDaoTest {
     }
 
     @Test
+    fun marcarDeNovoNaoDuplicaHistoricoNemTrocaData() = runBlocking {
+        fun mark(ids: List<Long>, at: Long) = runBlocking {
+            dao.insertWatchedEpisodesWithHistory(
+                ids.map { UserEpisodeEntity(it, 1396, 1, it.toInt(), at) },
+                ids.map { WatchHistoryEntity(mediaType = WatchMediaType.EPISODE, showId = 1396, episodeId = it, watchedAt = at) },
+            )
+        }
+        mark(listOf(1), at = 100)
+        mark(listOf(1), at = 200) // toque duplo
+        mark(listOf(1, 2), at = 300) // temporada com um já marcado
+
+        assertEquals(2, historyCount())
+        assertEquals(mapOf(1L to 100L, 2L to 300L), dao.observeWatchedEpisodes(1396).first().associate { it.episodeId to it.watchedAt })
+    }
+
+    @Test
     fun removerSerieApagaEpisodiosEHistoricoDela() = runBlocking {
         dao.upsertTvShow(UserTvShowEntity(showId = 1396, status = TvShowStatus.WATCHING, addedAt = 1, updatedAt = 1))
         dao.insertWatchedEpisodesWithHistory(
