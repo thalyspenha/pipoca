@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Próxima: "IMPLEMENTAR FASE 10 – PARTE 1" (auditoria); divisão em 4 partes confirmada (D-054).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Fase 10 parte 1 (auditoria, `docs/AUDIT.md`) concluída. Próxima: "IMPLEMENTAR FASE 10 – PARTE 2" (correções: offline sem avisos desnecessários, tema claro/escuro, acessibilidade, ícone).
 
 ## Fases
 
@@ -117,10 +117,10 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   2. ✅ Tela — Grid/Lista, `MediaPosterCard`, filtros com contagem, ordenação, pesquisa, estados vazios, nova ordem das abas, preferência salva.
   3. ✅ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
 
-### ⏳ Fase 10 — Polimento e release pessoal (ver `fase10.md`)
+### 🚧 Fase 10 — Polimento e release pessoal (ver `fase10.md`)
 - Pendentes (decidir na parte correspondente): tema em `SharedPreferences` (provável, via `PreferencesRepository`, D-052), assinatura do APK release (chave fora do git).
 - **Executada em 4 partes** (D-054). Uma por vez, só com "IMPLEMENTAR FASE 10 – PARTE N"; cada parte compila e termina com sugestão de commit:
-  1. ⏳ Auditoria — revisar o app e registrar achados em `docs/AUDIT.md`.
+  1. ✅ Auditoria — 26 achados em `docs/AUDIT.md` com severidade e destino (P2 correções, P3 Configurações, P4 release).
   2. ⏳ Correções — resolver os achados da auditoria.
   3. ⏳ Configurações — Sobre/TMDB, Tema, Limpar cache, banco, versão.
   4. ⏳ Release — APK debug/release, `RELEASE_NOTES.md`.
