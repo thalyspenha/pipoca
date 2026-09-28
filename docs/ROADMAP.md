@@ -4,7 +4,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 
 ## Estado atual
 
-**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Próxima: Fase 10 (fase10.md lido; confirmar a divisão proposta antes de começar).
+**Fase B concluída:** tela "Minha Biblioteca" (Filmes/Séries, filtros com contagem, Grid/Lista salvo, ordenação, pesquisa local, ações rápidas no toque longo) e Pausada/Abandonada nos detalhes da série; 225 testes unitários e 32 instrumentados passando. Próxima: "IMPLEMENTAR FASE 10 – PARTE 1" (auditoria); divisão em 4 partes confirmada (D-054).
 
 ## Fases
 
@@ -118,8 +118,12 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
   3. ✅ Complementos — menu de ações rápidas, Pausada/Abandonada nos detalhes, polimento; docs e ROADMAP.
 
 ### ⏳ Fase 10 — Polimento e release pessoal (ver `fase10.md`)
-- Lido. Divisão proposta (a confirmar ao retomar): (1) auditoria em `docs/AUDIT.md`, (2) correções, (3) Configurações (Sobre/TMDB, Tema, Limpar cache, banco, versão), (4) release (APK debug/release, RELEASE_NOTES.md).
-- Pendentes: tema em `SharedPreferences` (provável, alinhado a D-050), assinatura do APK release.
+- Pendentes (decidir na parte correspondente): tema em `SharedPreferences` (provável, via `PreferencesRepository`, D-052), assinatura do APK release (chave fora do git).
+- **Executada em 4 partes** (D-054). Uma por vez, só com "IMPLEMENTAR FASE 10 – PARTE N"; cada parte compila e termina com sugestão de commit:
+  1. ⏳ Auditoria — revisar o app e registrar achados em `docs/AUDIT.md`.
+  2. ⏳ Correções — resolver os achados da auditoria.
+  3. ⏳ Configurações — Sobre/TMDB, Tema, Limpar cache, banco, versão.
+  4. ⏳ Release — APK debug/release, `RELEASE_NOTES.md`.
 
 ### ⏳ Fase 11
 Definida em `fase11.md` (ainda não lido). Esta seção será atualizada com o conteúdo real de cada fase quando forem analisadas.
