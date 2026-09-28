@@ -287,7 +287,7 @@ internal fun tmdbStatusLabel(status: String): String = when (status) {
 
 private val TvShowStatus.label: String
     get() = when (this) {
-        TvShowStatus.WANT_TO_WATCH -> "Quero ver"
+        TvShowStatus.WANT_TO_WATCH -> "Quero assistir"
         TvShowStatus.WATCHING -> "Assistindo"
         TvShowStatus.COMPLETED -> "Concluída"
         TvShowStatus.PAUSED -> "Pausada"

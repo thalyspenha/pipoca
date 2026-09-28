@@ -125,7 +125,7 @@ private fun MoviesSection(movies: MovieStats) {
 private fun TvShowsSection(shows: TvShowStats) {
     Section("Séries") {
         TileRow("Total" to shows.total.toString(), "Em andamento" to shows.watching.toString())
-        TileRow("Concluídas" to shows.completed.toString(), "Quero ver" to shows.wantToWatch.toString())
+        TileRow("Concluídas" to shows.completed.toString(), "Quero assistir" to shows.wantToWatch.toString())
     }
 }
 

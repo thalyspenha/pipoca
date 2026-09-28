@@ -105,7 +105,7 @@ private fun LibraryTvShowItem.toFavoriteItem() = FavoriteItem(
     posterPath = posterPath,
     year = year,
     statusLabel = when (show.status) {
-        TvShowStatus.WANT_TO_WATCH -> "Quero ver"
+        TvShowStatus.WANT_TO_WATCH -> "Quero assistir"
         TvShowStatus.WATCHING -> "Assistindo"
         TvShowStatus.COMPLETED -> "Concluída"
         TvShowStatus.PAUSED -> "Pausada"

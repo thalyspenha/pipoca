@@ -25,6 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -50,7 +52,9 @@ fun <T> StatusSelector(
                 shape = SegmentedButtonDefaults.itemShape(index, options.size),
                 // Sem o ✓: com 3 opções o texto não cabe; o preenchimento já indica a seleção.
                 icon = {},
-            ) { Text(label(option), maxLines = 1) }
+                // Menos margem e até 2 linhas: "Quero assistir" com 3 opções e fonte grande não cabia (D-066).
+                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
+            ) { Text(label(option), maxLines = 2, textAlign = TextAlign.Center) }
         }
     }
 }

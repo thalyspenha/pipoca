@@ -448,3 +448,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-065 — Título dos detalhes só na barra depois de rolar
 **Contexto:** pendência de UX da D-061: nos detalhes de filme e série o título aparecia na barra de cima e, logo abaixo, no cabeçalho.
 **Decisão:** `DetailsScaffold(showTitle)`: a barra mostra só a seta enquanto o cabeçalho (item `DETAILS_HEADER_KEY` da lista) está visível; ao rolar além dele, o título aparece na barra (`rememberHeaderScrolledPast`, via `derivedStateOf` sobre o `LazyListState`). Carregando/erro e a tela da temporada (sem cabeçalho) continuam com título. Sem animação.
+
+### D-066 — "Quero assistir" também para séries
+**Contexto:** pendência de UX da D-061: filmes usavam "Quero assistir" e séries "Quero ver" (detalhes, Favoritos, Estatísticas).
+**Decisão:** "Quero assistir" em todo o app (status `WANT_TO_WATCH` é o mesmo). Para caber no seletor de 3 opções da série, `StatusSelector` usa margem horizontal de 6 dp e aceita 2 linhas centralizadas (com fonte grande quebra em vez de cortar). Ajusta a nomenclatura de D-034/D-048.
