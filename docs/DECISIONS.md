@@ -424,3 +424,11 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 - Ícones próprios em `AppIcons` (caminhos Material, sem `material-icons-extended`): aba Biblioteca `VideoLibrary` (não confunde com "Ver em lista"), aba Coleção `Album` (a estrela é da nota), Estatísticas no "Mais" `BarChart` (o ⓘ parecia "Sobre").
 - Chips de filtro cortados na borda: já tinham `contentPadding` de 16 dp; o corte é o indício de rolagem, mantido.
 **Consequência:** ficam para decisão do usuário: ações rápidas visíveis na Biblioteca, ordem das seções nos detalhes da série, título repetido na barra dos detalhes, seletor Filmes/Séries unificado, agrupar Histórico, itens de baixa prioridade.
+
+### D-062 — Histórico agrupa episódios marcados juntos
+**Contexto:** pedido do usuário (pendência de UX da D-061): marcar uma temporada gerava uma linha por episódio.
+**Decisão:**
+- Só na apresentação (`groupEpisodeBatches`, `HistoryViewModel.kt`); `watch_history` continua com um evento por episódio (estatísticas e desmarcar não mudam).
+- Junta episódios **consecutivos** (na ordem do histórico) da **mesma série** com até **10 min** entre um e outro: cobre "marcar temporada" (mesmo instante) e toques seguidos em "Assisti"; maratona real (~45 min por episódio) segue separada. Filme ou outra série no meio quebra o lote; dentro de um dia.
+- Linha do lote: pôster, série, "N episódios · T1E1–T8E22", horário do mais recente. Toque abre a série; a seta expande a lista de episódios (ordem de temporada/número).
+**Consequência:** com a temporada inteira de Dr. House marcada, 176 linhas viram 1.

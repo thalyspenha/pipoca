@@ -131,6 +131,7 @@ Legenda: ✅ concluída · 🚧 em andamento · ⏳ planejada
 Ajuste pós-1.0.0 (2026-09-28): aba "Mais" sempre reabre no menu (D-059).
 Revisão de QA pós-1.0.0 (2026-09-28): fuso do "hoje", histórico duplicado por toque duplo, toque duplo no status e no "Assisti" e plural corrigidos (D-060); 240 testes unitários, 35 instrumentados. Pendentes de baixa prioridade listados em D-060.
 Revisão de UX/UI pós-1.0.0 (2026-09-28): nota com alvos maiores, confirmação ao desmarcar temporada, busca vazia no topo, gêneros como rótulos, toque na Coleção abre detalhes, ícones das abas Biblioteca/Coleção e de Estatísticas (D-061). Pendências de UX listadas em D-061.
+Histórico agrupa episódios marcados juntos (D-062).
 
 ## Pendências gerais
 

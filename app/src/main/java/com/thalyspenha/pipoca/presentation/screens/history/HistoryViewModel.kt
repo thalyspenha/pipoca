@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Duration
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
@@ -30,7 +31,58 @@ data class HistoryUiState(
     val isHistoryEmpty: Boolean get() = !isLoading && totalCount == 0
 }
 
-data class HistoryDay(val date: LocalDate, val entries: List<HistoryEntry>)
+data class HistoryDay(
+    val date: LocalDate,
+    val entries: List<HistoryEntry>,
+    /** O que a tela mostra: episódios marcados juntos viram uma linha só (D-062). */
+    val items: List<HistoryItem> = entries.groupEpisodeBatches(),
+)
+
+/** Linha do histórico: uma visualização ou um lote de episódios da mesma série. */
+sealed interface HistoryItem {
+    val key: String
+
+    data class Single(val entry: HistoryEntry) : HistoryItem {
+        override val key: String get() = "e-${entry.id}"
+    }
+
+    /** Mais recente primeiro, como o histórico. Sempre 2 ou mais episódios da mesma série. */
+    data class EpisodeBatch(val entries: List<HistoryEntry>) : HistoryItem {
+        override val key: String get() = "b-${entries.first().id}"
+        val latest: HistoryEntry get() = entries.first()
+    }
+}
+
+/** Intervalo máximo entre episódios seguidos da mesma série para contarem como marcados juntos. */
+internal val BATCH_GAP: Duration = Duration.ofMinutes(10)
+
+/**
+ * Junta episódios consecutivos da mesma série marcados com até [BATCH_GAP] de diferença
+ * ("marcar temporada" grava todos no mesmo instante; toques seguidos em "Assisti" ficam a segundos).
+ * Episódios vistos em dias/horários diferentes (maratona real, ~45 min) continuam separados.
+ * A lista chega do mais recente para o mais antigo; a ordem é mantida.
+ */
+fun List<HistoryEntry>.groupEpisodeBatches(): List<HistoryItem> {
+    val result = mutableListOf<HistoryItem>()
+    var batch = mutableListOf<HistoryEntry>()
+    fun flush() {
+        when (batch.size) {
+            0 -> Unit
+            1 -> result += HistoryItem.Single(batch.single())
+            else -> result += HistoryItem.EpisodeBatch(batch)
+        }
+        batch = mutableListOf()
+    }
+    for (entry in this) {
+        val last = batch.lastOrNull()
+        val joins = last != null && entry.type == HistoryType.EPISODE && last.tmdbId == entry.tmdbId &&
+            Duration.between(entry.watchedAt, last.watchedAt).abs() <= BATCH_GAP
+        if (!joins) flush()
+        if (entry.type == HistoryType.EPISODE) batch += entry else result += HistoryItem.Single(entry)
+    }
+    flush()
+    return result
+}
 
 /** Agrupa por dia local mantendo a ordem (mais recente primeiro). */
 fun List<HistoryEntry>.groupByDay(zone: ZoneId): List<HistoryDay> =

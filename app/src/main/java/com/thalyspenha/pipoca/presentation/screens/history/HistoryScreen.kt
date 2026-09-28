@@ -22,6 +22,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -125,7 +132,12 @@ private fun HistoryList(days: List<HistoryDay>, onEntryClick: (HistoryEntry) -> 
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp),
                 )
             }
-            items(day.entries, key = { it.id }) { entry -> HistoryRow(entry, onClick = { onEntryClick(entry) }) }
+            items(day.items, key = { it.key }) { item ->
+                when (item) {
+                    is HistoryItem.Single -> HistoryRow(item.entry, onClick = { onEntryClick(item.entry) })
+                    is HistoryItem.EpisodeBatch -> BatchRow(item, onClick = { onEntryClick(item.latest) })
+                }
+            }
         }
     }
 }
@@ -154,6 +166,73 @@ private fun HistoryRow(entry: HistoryEntry, onClick: () -> Unit) {
             )
         }
     }
+}
+
+/**
+ * Episódios da mesma série marcados juntos (D-062): "22 episódios · T8E1–T8E22". Toque abre a série;
+ * a seta mostra a lista dos episódios.
+ */
+@Composable
+private fun BatchRow(batch: HistoryItem.EpisodeBatch, onClick: () -> Unit) {
+    val latest = batch.latest
+    val title = latest.title ?: "Carregando…"
+    var expanded by rememberSaveable(batch.key) { mutableStateOf(false) }
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PosterImage(posterPath = latest.posterPath, title = title, modifier = Modifier.width(48.dp))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    listOfNotNull("${batch.entries.size} episódios", batch.rangeLabel()).joinToString(" · "),
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    timeLabel(latest.watchedAt),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            IconButton(onClick = { expanded = !expanded }) {
+                Icon(
+                    if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Esconder episódios" else "Mostrar episódios",
+                )
+            }
+        }
+        if (expanded) {
+            // Ordem de exibição: do primeiro ao último episódio, como numa temporada.
+            batch.entries.sortedWith(compareBy({ it.seasonNumber }, { it.episodeNumber })).forEach { entry ->
+                entry.episodeLine()?.let {
+                    Text(
+                        it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 80.dp, end = 16.dp, top = 2.dp, bottom = 2.dp),
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+        }
+    }
+}
+
+/** "T8E1–T8E22" (menor e maior código); nulo se faltar temporada/número. */
+private fun HistoryItem.EpisodeBatch.rangeLabel(): String? {
+    val codes = entries.mapNotNull { e -> e.seasonNumber?.let { s -> e.episodeNumber?.let { n -> s to n } } }
+    if (codes.size != entries.size) return null
+    val sorted = codes.sortedWith(compareBy({ it.first }, { it.second }))
+    return episodeCode(sorted.first().first, sorted.first().second) + "–" +
+        episodeCode(sorted.last().first, sorted.last().second)
 }
 
 private val HistoryFilter.label: String
