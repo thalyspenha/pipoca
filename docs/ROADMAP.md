@@ -134,6 +134,7 @@ Revisão de UX/UI pós-1.0.0 (2026-09-28): nota com alvos maiores, confirmação
 Histórico agrupa episódios marcados juntos (D-062).
 Detalhes da série: sinopse antes das temporadas (D-063).
 Seletor Filmes/Séries em abas iguais em Biblioteca, Favoritos, Busca e Histórico (D-064).
+Título dos detalhes só na barra depois de rolar (D-065).
 
 ## Pendências gerais
 

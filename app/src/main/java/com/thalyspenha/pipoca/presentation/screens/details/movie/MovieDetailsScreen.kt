@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +29,8 @@ import com.thalyspenha.pipoca.presentation.components.details.CastRow
 import com.thalyspenha.pipoca.presentation.components.details.CollectionSection
 import com.thalyspenha.pipoca.presentation.components.details.DetailsHeader
 import com.thalyspenha.pipoca.presentation.components.details.DetailsScaffold
+import com.thalyspenha.pipoca.presentation.components.details.rememberHeaderScrolledPast
+import com.thalyspenha.pipoca.presentation.components.details.DETAILS_HEADER_KEY
 import com.thalyspenha.pipoca.presentation.components.details.DetailsSection
 import com.thalyspenha.pipoca.presentation.components.details.FavoriteButton
 import com.thalyspenha.pipoca.presentation.components.details.GenreChips
@@ -74,12 +78,15 @@ private fun MovieDetailsContent(
     onEditCollectionItem: (Long) -> Unit,
 ) {
     val success = state as? MovieDetailsUiState.Success
+    val listState = rememberLazyListState()
+    val headerScrolledPast = rememberHeaderScrolledPast(listState)
     DetailsScaffold(
         title = success?.movie?.title ?: "Filme",
         onBack = onBack,
         refreshError = success?.refreshError,
         onRetry = onRetry,
         onDismissRefreshError = onDismissRefreshError,
+        showTitle = success == null || headerScrolledPast,
     ) { modifier ->
         when (state) {
             MovieDetailsUiState.Loading -> LoadingContent(modifier)
@@ -90,6 +97,7 @@ private fun MovieDetailsContent(
             )
             is MovieDetailsUiState.Success -> MovieDetailsBody(
                 state = state,
+                listState = listState,
                 onStatusClick = onStatusClick,
                 onFavoriteClick = onFavoriteClick,
                 onRatingChange = onRatingChange,
@@ -104,6 +112,7 @@ private fun MovieDetailsContent(
 @Composable
 private fun MovieDetailsBody(
     state: MovieDetailsUiState.Success,
+    listState: LazyListState,
     onStatusClick: (MovieStatus) -> Unit,
     onFavoriteClick: () -> Unit,
     onRatingChange: (Int?) -> Unit,
@@ -113,11 +122,11 @@ private fun MovieDetailsBody(
 ) {
     val movie = state.movie
     val personal = state.personal
-    LazyColumn(modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+    LazyColumn(state = listState, modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         if (state.isRefreshing) {
             item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
         }
-        item {
+        item(key = DETAILS_HEADER_KEY) {
             DetailsHeader(
                 title = movie.title,
                 posterPath = movie.posterPath,
