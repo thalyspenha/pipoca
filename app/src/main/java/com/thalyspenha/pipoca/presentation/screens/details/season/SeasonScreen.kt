@@ -162,47 +162,56 @@ private fun SeasonBody(
     }
 }
 
+/**
+ * Episódio: imagem menor, título/data e checkbox numa linha; sinopse embaixo com a largura toda
+ * (antes ficava espremida entre a imagem de 128 dp e o checkbox, D-067).
+ */
 @Composable
 private fun EpisodeItem(row: EpisodeRow, onToggle: (Boolean) -> Unit) {
     val episode = row.episode
     var expanded by rememberSaveable(episode.id) { mutableStateOf(false) }
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { expanded = !expanded }
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        EpisodeStill(episode, Modifier.width(128.dp))
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                "${episode.episodeNumber}. ${episode.name.ifBlank { episodeCode(episode.seasonNumber, episode.episodeNumber) }}",
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                episodeInfo(episode, row.isAired),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            episode.overview?.let {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            EpisodeStill(episode, Modifier.width(96.dp))
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    it,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = if (expanded) Int.MAX_VALUE else 2,
+                    "${episode.episodeNumber}. ${episode.name.ifBlank { episodeCode(episode.seasonNumber, episode.episodeNumber) }}",
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
+                Text(
+                    episodeInfo(episode, row.isAired),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
+            val code = episodeCode(episode.seasonNumber, episode.episodeNumber)
+            Checkbox(
+                checked = row.isWatched,
+                onCheckedChange = onToggle,
+                enabled = row.isAired || row.isWatched,
+                // Sem isso o leitor de tela diz só "caixa de seleção", sem qual episódio (D-061).
+                modifier = Modifier.semantics { contentDescription = "Assistido: $code ${episode.name}".trim() },
+            )
         }
-        val code = episodeCode(episode.seasonNumber, episode.episodeNumber)
-        Checkbox(
-            checked = row.isWatched,
-            onCheckedChange = onToggle,
-            enabled = row.isAired || row.isWatched,
-            // Sem isso o leitor de tela diz só "caixa de seleção", sem qual episódio (D-061).
-            modifier = Modifier.semantics { contentDescription = "Assistido: $code ${episode.name}".trim() },
-        )
+        episode.overview?.takeIf { it.isNotBlank() }?.let {
+            Text(
+                it,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = if (expanded) Int.MAX_VALUE else 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 

@@ -452,3 +452,7 @@ Registro de decisões arquiteturais. Formato: contexto → decisão → consequ�
 ### D-066 — "Quero assistir" também para séries
 **Contexto:** pendência de UX da D-061: filmes usavam "Quero assistir" e séries "Quero ver" (detalhes, Favoritos, Estatísticas).
 **Decisão:** "Quero assistir" em todo o app (status `WANT_TO_WATCH` é o mesmo). Para caber no seletor de 3 opções da série, `StatusSelector` usa margem horizontal de 6 dp e aceita 2 linhas centralizadas (com fonte grande quebra em vez de cortar). Ajusta a nomenclatura de D-034/D-048.
+
+### D-067 — Linha de episódio com sinopse em largura total
+**Contexto:** pendência de UX da D-061: na tela da temporada, título e sinopse ficavam espremidos entre a imagem de 128 dp e o checkbox (títulos quebrando, sinopse com ~25 caracteres por linha).
+**Decisão:** `EpisodeItem` em duas partes: linha com imagem de 96 dp, título/data e checkbox; sinopse embaixo com a largura toda (3 linhas; toque expande, como antes).

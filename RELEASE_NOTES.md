@@ -9,6 +9,7 @@ Ainda na versão 1.0.0 (sem novo APK release); instalado no S25 como debug.
 - UX: estrelas da nota maiores e "Remover nota", confirmação ao desmarcar temporada, busca sem resultado no topo, gêneros como rótulos, toque na Coleção abre detalhes, novos ícones de Biblioteca/Coleção/Estatísticas (D-061).
 - Histórico agrupa episódios marcados juntos (D-062); sinopse antes das temporadas (D-063); abas Filmes/Séries iguais em todas as telas (D-064); título dos detalhes só na barra depois de rolar (D-065).
 - "Quero assistir" também para séries, no lugar de "Quero ver" (D-066).
+- Temporada: sinopse do episódio em largura total, sem espremer o texto (D-067).
 
 ## 1.0.0 (versionCode 2) — 2026-09-28
 
